@@ -14,15 +14,20 @@ project(":retinazer") {
         mockitoVersion = "1.10.19"
     }
 
-    task artifactSources(type: Jar) {
-        from sourceSets.main.allSource
-        classifier = 'sources'
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
     }
 
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
 
     artifacts {
         archives jar
-        archives artifactSources
+        archives javadocJar
+        archives sourcesJar
     }
 
     repositories {
