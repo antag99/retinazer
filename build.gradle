@@ -1,4 +1,14 @@
 
+
+// Disable Java 8 doclint which throws errors
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
 project(":retinazer") {
     apply plugin: "maven"
     apply plugin: "java"
