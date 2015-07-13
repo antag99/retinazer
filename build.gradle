@@ -1,0 +1,25 @@
+
+project(":retinazer") {
+    apply plugin: "maven"
+    apply plugin: "java"
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    group = 'com.github.antag99'
+    version = '0.1.0'
+    sourceCompatibility = 1.8
+
+    ext {
+        jUnitVersion = "4.12"
+        mockitoVersion = "1.10.19"
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile "junit:junit:$jUnitVersion"
+        testCompile "org.mockito:mockito-core:$mockitoVersion"
+    }
+}
