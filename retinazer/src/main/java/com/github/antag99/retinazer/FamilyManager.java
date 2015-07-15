@@ -53,7 +53,7 @@ final class FamilyManager extends EntitySystem {
     }
 
     public Family getFamily(FamilyConfig config) {
-        int index = familyIndexes.getOrDefault(config, familyIndexes.size());
+        int index = familyIndexes.containsKey(config) ? familyIndexes.get(config) : familyIndexes.size();
         if (index == familyIndexes.size()) {
             Mask components = new Mask();
             Mask excludedComponents = new Mask();

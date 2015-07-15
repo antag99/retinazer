@@ -19,8 +19,8 @@ project(":retinazer") {
     version = '0.1.0'
 
     compileJava {
-        sourceCompatibility = 1.6
-        targetCompatibility = 1.6
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
     }
 
     ext {
