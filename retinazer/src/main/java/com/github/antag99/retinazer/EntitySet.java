@@ -1,9 +1,10 @@
 package com.github.antag99.retinazer;
 
 import java.util.AbstractSet;
-import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.github.antag99.retinazer.utils.Mask;
 
 /**
  * Entity set; supports retrieving and destroying entities, but does
@@ -18,12 +19,12 @@ import java.util.NoSuchElementException;
 public final class EntitySet extends AbstractSet<Entity> {
     // Engine the entities belong to
     final Engine engine;
-    // BitSet updated by FamilyManager
-    final BitSet entities;
+    // Mask updated by FamilyManager
+    final Mask entities;
 
     EntitySet(Engine engine) {
         this.engine = engine;
-        this.entities = new BitSet();
+        this.entities = new Mask();
     }
 
     private final class EntityIterator implements Iterator<Entity> {
@@ -92,7 +93,7 @@ public final class EntitySet extends AbstractSet<Entity> {
 
     public void process(EntityProcessor processor) {
         final Engine engine = this.engine;
-        final BitSet entities = this.entities;
+        final Mask entities = this.entities;
         for (int i = entities.nextSetBit(0); i != -1; entities.nextSetBit(i + 1)) {
             processor.process(engine.getEntityForIndex(i));
         }

@@ -21,23 +21,23 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.BitSet;
+import com.github.antag99.retinazer.utils.Mask;
 
 public final class Family {
     public static final FamilyConfig EMPTY = new FamilyConfig();
 
-    private final BitSet components;
-    private final BitSet excludedComponents;
+    private final Mask components;
+    private final Mask excludedComponents;
     final int index;
 
-    Family(BitSet components, BitSet excludedComponents, int index) {
+    Family(Mask components, Mask excludedComponents, int index) {
         this.components = components;
         this.excludedComponents = excludedComponents;
         this.index = index;
     }
 
     public boolean matches(Entity entity) {
-        if (!components.stream().allMatch(entity.components::get)) {
+        if (!components.isSubsetOf(entity.components)) {
             return false;
         }
 

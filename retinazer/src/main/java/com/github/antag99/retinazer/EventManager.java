@@ -23,22 +23,22 @@ package com.github.antag99.retinazer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Mask;
 
 final class EventManager extends EntitySystem {
     private @Inject Engine engine;
     private EventListenerData[] eventListeners = new EventListenerData[0];
-    private Map<Class<? extends Event>, BitSet> eventFilters = new HashMap<>();
-    private Map<Family, BitSet> familyFilters = new HashMap<>();
+    private Map<Class<? extends Event>, Mask> eventFilters = new HashMap<>();
+    private Map<Family, Mask> familyFilters = new HashMap<>();
 
     public EventManager(EngineConfig config) {
         for (Class<? extends Event> eventType : config.getEventTypes()) {
-            eventFilters.put(eventType, new BitSet());
+            eventFilters.put(eventType, new Mask());
         }
     }
 
@@ -68,8 +68,8 @@ final class EventManager extends EntitySystem {
         }
     }
 
-    private BitSet getFamilyFilter(Family family) {
-        return familyFilters.computeIfAbsent(family, k -> new BitSet());
+    private Mask getFamilyFilter(Family family) {
+        return familyFilters.computeIfAbsent(family, k -> new Mask());
     }
 
     public <T extends Event> void addEventListener(Class<T> eventClass, Family family, int priority,
@@ -84,7 +84,7 @@ final class EventManager extends EntitySystem {
         }
 
         // Allocate space for the listener in the bitmasks, by shifting up.
-        for (BitSet familyFilter : familyFilters.values()) {
+        for (Mask familyFilter : familyFilters.values()) {
             for (int k = eventListeners.length - 1; k >= insertionIndex; --k) {
                 if (familyFilter.get(k)) {
                     familyFilter.clear(k);
@@ -93,7 +93,7 @@ final class EventManager extends EntitySystem {
             }
         }
 
-        for (BitSet eventFilter : eventFilters.values()) {
+        for (Mask eventFilter : eventFilters.values()) {
             for (int k = eventListeners.length - 1; k >= insertionIndex; --k) {
                 if (eventFilter.get(k)) {
                     eventFilter.clear(k);
@@ -116,7 +116,7 @@ final class EventManager extends EntitySystem {
         getEventListeners(eventClass).set(insertionIndex);
         getFamilyFilter(family).set(insertionIndex);
 
-        for (Entry<Class<? extends Event>, BitSet> eventFilter : eventFilters.entrySet()) {
+        for (Entry<Class<? extends Event>, Mask> eventFilter : eventFilters.entrySet()) {
             if (eventClass.isAssignableFrom(eventFilter.getKey())) {
                 eventFilter.getValue().set(insertionIndex);
             }
@@ -127,7 +127,7 @@ final class EventManager extends EntitySystem {
         for (int i = 0, n = eventListeners.length; i < n; ++i) {
             if (eventListeners[i] == listener) {
                 // Remove the listener from bitmasks, by shifting down.
-                for (BitSet familyFilter : familyFilters.values()) {
+                for (Mask familyFilter : familyFilters.values()) {
                     for (int k = i; k < eventListeners.length; --k) {
                         if (familyFilter.get(k + 1)) {
                             familyFilter.clear(k + 1);
@@ -138,7 +138,7 @@ final class EventManager extends EntitySystem {
                     }
                 }
 
-                for (BitSet eventFilter : eventFilters.values()) {
+                for (Mask eventFilter : eventFilters.values()) {
                     eventFilter.clear(i);
                     for (int k = i; k < eventListeners.length; --k) {
                         if (eventFilter.get(k + 1)) {
@@ -158,8 +158,8 @@ final class EventManager extends EntitySystem {
         }
     }
 
-    private BitSet getEventListeners(Class<? extends Event> eventClass) {
-        BitSet eventListeners = eventFilters.get(eventClass);
+    private Mask getEventListeners(Class<? extends Event> eventClass) {
+        Mask eventListeners = eventFilters.get(eventClass);
         if (eventListeners == null) {
             throw new IllegalArgumentException(
                     "Event type " + eventClass.getName() + " has not been registered");
@@ -169,8 +169,8 @@ final class EventManager extends EntitySystem {
 
     @SuppressWarnings("unchecked")
     public void dispatchEvent(Event event, Entity entity) {
-        BitSet bits = new BitSet();
-        for (Entry<Family, BitSet> familyFilter : familyFilters.entrySet()) {
+        Mask bits = new Mask();
+        for (Entry<Family, Mask> familyFilter : familyFilters.entrySet()) {
             if (familyFilter.getKey().matches(entity)) {
                 bits.or(familyFilter.getValue());
             }
@@ -209,6 +209,6 @@ final class EventManager extends EntitySystem {
     public void reset() {
         eventListeners = new EventListenerData[0];
         familyFilters.clear();
-        eventFilters.values().forEach(BitSet::clear);
+        eventFilters.values().forEach(Mask::clear);
     }
 }

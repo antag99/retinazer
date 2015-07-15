@@ -22,16 +22,16 @@
 package com.github.antag99.retinazer;
 
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager extends EntitySystem {
     private EntityListener[] entityListeners = new EntityListener[0];
-    private Bag<BitSet> listenersForFamily = new Bag<>();
+    private Bag<Mask> listenersForFamily = new Bag<>();
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
     private Bag<Family> families = new Bag<>();
 
@@ -55,8 +55,8 @@ final class FamilyManager extends EntitySystem {
     public Family getFamily(FamilyConfig config) {
         int index = familyIndexes.getOrDefault(config, familyIndexes.size());
         if (index == familyIndexes.size()) {
-            BitSet components = new BitSet();
-            BitSet excludedComponents = new BitSet();
+            Mask components = new Mask();
+            Mask excludedComponents = new Mask();
 
             config.getComponents().stream().map(componentManager::getIndex).forEach(components::set);
             config.getExcludedComponents().stream().map(componentManager::getIndex).forEach(excludedComponents::set);
@@ -64,9 +64,11 @@ final class FamilyManager extends EntitySystem {
             familyIndexes.put(config.clone(), index);
             families.set(index, new Family(components, excludedComponents, index));
             entitiesForFamily.set(index, new EntitySet(engine));
-            listenersForFamily.set(index, new BitSet());
+            listenersForFamily.set(index, new Mask());
 
-            entityManager.getEntities().forEach((it) -> updateFamilyMembership(it, false));
+            for (int i = entityManager.currentEntities.nextSetBit(0); i != -1; i = entityManager.currentEntities.nextSetBit(i + 1)) {
+                updateFamilyMembership(entityManager.getEntityForIndex(i), false);
+            }
         }
 
         return families.get(index);
@@ -100,7 +102,7 @@ final class FamilyManager extends EntitySystem {
                 entityListeners[index] = last;
 
                 for (int i = 0, n = familyIndexes.size(); i < n; ++i) {
-                    BitSet listeners = listenersForFamily.get(i);
+                    Mask listeners = listenersForFamily.get(i);
                     if (listeners.get(lastIndex)) {
                         listeners.set(index);
                         listeners.clear(lastIndex);
@@ -115,12 +117,12 @@ final class FamilyManager extends EntitySystem {
     public void updateFamilyMembership(Entity entity, boolean remove) {
         // Find families that the entity was added to/removed from, and fill
         // the bit sets with corresponding listener bits.
-        BitSet addListenerBits = new BitSet();
-        BitSet removeListenerBits = new BitSet();
+        Mask addListenerBits = new Mask();
+        Mask removeListenerBits = new Mask();
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
-            final BitSet listenersMask = this.listenersForFamily.get(i);
-            final BitSet familyEntities = this.entitiesForFamily.get(i).entities;
+            final Mask listenersMask = this.listenersForFamily.get(i);
+            final Mask familyEntities = this.entitiesForFamily.get(i).entities;
 
             boolean belongsToFamily = familyEntities.get(entity.getIndex());
             boolean matches = families.get(i).matches(entity) && !remove;

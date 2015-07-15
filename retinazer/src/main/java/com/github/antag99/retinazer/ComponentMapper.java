@@ -21,10 +21,10 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.BitSet;
 import java.util.Objects;
 
 import com.github.antag99.retinazer.utils.Bag;
+import com.github.antag99.retinazer.utils.Mask;
 
 public final class ComponentMapper<T extends Component> {
     Class<T> componentType;
@@ -33,9 +33,11 @@ public final class ComponentMapper<T extends Component> {
     // Next components of this type
     Bag<T> nextComponents = new Bag<T>();
     // Components that will be added next
-    BitSet componentsAdded = new BitSet();
+    Mask componentsAdded = new Mask();
     // Components that will be removed next
-    BitSet componentsRemoved = new BitSet();
+    Mask componentsRemoved = new Mask();
+    // Whether any component has been modified
+    boolean dirty = false;
 
     ComponentMapper(Class<T> componentType) {
         this.componentType = componentType;
@@ -69,6 +71,7 @@ public final class ComponentMapper<T extends Component> {
 
         nextComponents.set(entity.getIndex(), instance);
         componentsAdded.set(entity.getIndex());
+        dirty = true;
     }
 
     public void remove(Entity entity) {
@@ -78,5 +81,6 @@ public final class ComponentMapper<T extends Component> {
         componentsAdded.clear(index);
         nextComponents.set(index, null);
         componentsRemoved.set(index);
+        dirty = true;
     }
 }

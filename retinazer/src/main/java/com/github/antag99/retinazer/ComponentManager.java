@@ -22,15 +22,16 @@
 package com.github.antag99.retinazer;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Mask;
 
 final class ComponentManager extends EntitySystem {
     private ComponentMapper<?>[] componentMappers;
+    private Mask tmpMask1 = new Mask(), tmpMask2 = new Mask();
 
     private @Inject EntityManager entityManager;
     private @Inject FamilyManager familyManager;
@@ -108,11 +109,14 @@ final class ComponentManager extends EntitySystem {
         for (int i = 0, n = componentMappers.length; i < n; ++i) {
             @SuppressWarnings("unchecked")
             ComponentMapper<Component> mapper = (ComponentMapper<Component>) componentMappers[i];
+            if (!mapper.dirty) {
+                continue;
+            }
+            mapper.dirty = false;
 
-            BitSet componentsAdded = (BitSet) mapper.componentsAdded.clone();
+            Mask componentsAdded = tmpMask1.set(mapper.componentsAdded);
+            Mask componentsRemoved = tmpMask2.set(mapper.componentsRemoved);
             mapper.componentsAdded.clear();
-
-            BitSet componentsRemoved = (BitSet) mapper.componentsRemoved.clone();
             mapper.componentsRemoved.clear();
 
             for (int k = componentsRemoved.nextSetBit(0); k != -1; k = componentsRemoved.nextSetBit(k + 1)) {

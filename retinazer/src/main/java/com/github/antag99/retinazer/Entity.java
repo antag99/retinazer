@@ -21,8 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.BitSet;
-
+import com.github.antag99.retinazer.utils.Mask;
 import com.github.antag99.retinazer.utils.UuidComponent;
 
 /**
@@ -32,7 +31,7 @@ public final class Entity {
     private Engine engine = null;
     private int index = -1;
 
-    BitSet components = new BitSet();
+    Mask components = new Mask();
 
     Entity(Engine engine, int index) {
         this.engine = engine;

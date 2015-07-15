@@ -21,31 +21,25 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.BitSet;
-
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Mask;
 import com.github.antag99.retinazer.utils.UuidComponent;
 
 final class EntityManager extends EntitySystem {
     // The entity bag; stores all current entities
-    private Bag<Entity> entities = new Bag<Entity>();
+    Bag<Entity> entities = new Bag<Entity>();
     // Indices of entities that are currently active
-    private BitSet currentEntities = new BitSet();
+    Mask currentEntities = new Mask();
     // Indices of entities that will be active next tick
-    private BitSet nextEntities = new BitSet();
-    // Iterable for accessing active entities
-    private Iterable<Entity> iterable = () -> new EntityIterator(this, currentEntities);
+    Mask nextEntities = new Mask();
+    Mask tmpMask = new Mask();
 
     private @Inject Engine engine;
     private @Inject FamilyManager familyManager;
     private @Inject ComponentManager componentManager;
 
     public EntityManager(EngineConfig config) {
-    }
-
-    public Iterable<Entity> getEntities() {
-        return iterable;
     }
 
     public Entity createEntity() {
@@ -82,8 +76,7 @@ final class EntityManager extends EntitySystem {
     }
 
     public void applyEntityAdditions() {
-        BitSet addedEntities = new BitSet();
-        addedEntities.or(nextEntities);
+        Mask addedEntities = tmpMask.set(nextEntities);
         addedEntities.xor(currentEntities);
         addedEntities.and(nextEntities);
         currentEntities.or(addedEntities);
@@ -95,8 +88,7 @@ final class EntityManager extends EntitySystem {
     }
 
     public void applyEntityRemovals() {
-        BitSet removedEntities = new BitSet();
-        removedEntities.or(nextEntities);
+        Mask removedEntities = tmpMask.set(nextEntities);
         removedEntities.xor(currentEntities);
         removedEntities.and(currentEntities);
         currentEntities.xor(removedEntities);
