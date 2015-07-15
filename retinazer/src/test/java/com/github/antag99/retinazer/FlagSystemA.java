@@ -21,12 +21,12 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public class FlagSystemA extends FamilySystem {
+public class FlagSystemA extends EntityProcessorSystem {
     public FlagSystemA() {
         super(Family.with(FlagComponentA.class));
     }
 
     @Override
-    protected void process(Entity entity) {
+    public void process(Entity entity) {
     }
 }

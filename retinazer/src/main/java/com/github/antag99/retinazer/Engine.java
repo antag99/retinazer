@@ -181,11 +181,11 @@ public final class Engine {
         return uuidManager.getEntityForUuid(uuid);
     }
 
-    public Iterable<Entity> getEntities() {
+    public EntitySet getEntities() {
         return familyManager.getEntities();
     }
 
-    public Iterable<Entity> getEntitiesFor(FamilyConfig family) {
+    public EntitySet getEntitiesFor(FamilyConfig family) {
         return familyManager.getEntitiesFor(family);
     }
 

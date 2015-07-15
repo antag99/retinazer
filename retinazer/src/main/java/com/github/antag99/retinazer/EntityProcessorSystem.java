@@ -23,12 +23,12 @@ package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.utils.Inject;
 
-public abstract class FamilySystem extends EntitySystem {
+public abstract class EntityProcessorSystem extends EntitySystem implements EntityProcessor {
     private @Inject Engine engine;
     private FamilyConfig family;
-    private Iterable<Entity> entities;
+    private EntitySet entities;
 
-    public FamilySystem(FamilyConfig family) {
+    public EntityProcessorSystem(FamilyConfig family) {
         this.family = family;
     }
 
@@ -44,12 +44,10 @@ public abstract class FamilySystem extends EntitySystem {
 
     @Override
     protected final void update() {
-        for (Entity entity : entities) {
-            process(entity);
-        }
+        entities.process(this);
     }
 
-    public Iterable<Entity> getEntities() {
+    public EntitySet getEntities() {
         return entities;
     }
 
@@ -57,5 +55,6 @@ public abstract class FamilySystem extends EntitySystem {
         return family;
     }
 
-    protected abstract void process(Entity entity);
+    @Override
+    public abstract void process(Entity entity);
 }

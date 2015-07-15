@@ -35,22 +35,21 @@ final class FamilyManager extends EntitySystem {
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
     private Bag<Family> families = new Bag<>();
 
-    private Bag<BitSet> entitiesForFamily = new Bag<>();
-    private Bag<Iterable<Entity>> iterableForFamily = new Bag<>();
+    private Bag<EntitySet> entitiesForFamily = new Bag<>();
 
+    private @Inject Engine engine;
     private @Inject EntityManager entityManager;
     private @Inject ComponentManager componentManager;
 
     public FamilyManager(EngineConfig config) {
     }
 
-    public Iterable<Entity> getEntities() {
+    public EntitySet getEntities() {
         return getEntitiesFor(Family.EMPTY);
     }
 
-    public Iterable<Entity> getEntitiesFor(FamilyConfig family) {
-        Iterable<Entity> entities = iterableForFamily.get(getFamily(family).index);
-        return entities;
+    public EntitySet getEntitiesFor(FamilyConfig family) {
+        return entitiesForFamily.get(getFamily(family).index);
     }
 
     public Family getFamily(FamilyConfig config) {
@@ -64,8 +63,7 @@ final class FamilyManager extends EntitySystem {
 
             familyIndexes.put(config.clone(), index);
             families.set(index, new Family(components, excludedComponents, index));
-            entitiesForFamily.set(index, new BitSet());
-            iterableForFamily.set(index, () -> new EntityIterator(entityManager, entitiesForFamily.get(index)));
+            entitiesForFamily.set(index, new EntitySet(engine));
             listenersForFamily.set(index, new BitSet());
 
             entityManager.getEntities().forEach((it) -> updateFamilyMembership(it, false));
@@ -122,7 +120,7 @@ final class FamilyManager extends EntitySystem {
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
             final BitSet listenersMask = this.listenersForFamily.get(i);
-            final BitSet familyEntities = this.entitiesForFamily.get(i);
+            final BitSet familyEntities = this.entitiesForFamily.get(i).entities;
 
             boolean belongsToFamily = familyEntities.get(entity.getIndex());
             boolean matches = families.get(i).matches(entity) && !remove;
@@ -157,6 +155,5 @@ final class FamilyManager extends EntitySystem {
         familyIndexes.clear();
         families.clear();
         entitiesForFamily.clear();
-        iterableForFamily.clear();
     }
 }
