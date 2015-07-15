@@ -33,8 +33,8 @@ import com.github.antag99.retinazer.utils.Mask;
 final class EventManager extends EntitySystem {
     private @Inject Engine engine;
     private EventListenerData[] eventListeners = new EventListenerData[0];
-    private Map<Class<? extends Event>, Mask> eventFilters = new HashMap<>();
-    private Map<Family, Mask> familyFilters = new HashMap<>();
+    private Map<Class<? extends Event>, Mask> eventFilters = new HashMap<Class<? extends Event>, Mask>();
+    private Map<Family, Mask> familyFilters = new HashMap<Family, Mask>();
 
     public EventManager(EngineConfig config) {
         for (Class<? extends Event> eventType : config.getEventTypes()) {
@@ -60,7 +60,7 @@ final class EventManager extends EntitySystem {
         public void handleEvent(Event event, Entity entity) {
             try {
                 method.invoke(owner, event, entity);
-            } catch (IllegalAccessException | IllegalArgumentException ex) {
+            } catch (IllegalAccessException ex) {
                 throw new AssertionError(ex);
             } catch (InvocationTargetException ex) {
                 throw Internal.sneakyThrow(ex.getCause());
@@ -69,7 +69,11 @@ final class EventManager extends EntitySystem {
     }
 
     private Mask getFamilyFilter(Family family) {
-        return familyFilters.computeIfAbsent(family, k -> new Mask());
+        Mask filter = familyFilters.get(family);
+        if (filter == null) {
+            familyFilters.put(family, filter = new Mask());
+        }
+        return filter;
     }
 
     public <T extends Event> void addEventListener(Class<T> eventClass, Family family, int priority,
@@ -209,6 +213,8 @@ final class EventManager extends EntitySystem {
     public void reset() {
         eventListeners = new EventListenerData[0];
         familyFilters.clear();
-        eventFilters.values().forEach(Mask::clear);
+        for (Mask mask : eventFilters.values()) {
+            mask.clear();
+        }
     }
 }

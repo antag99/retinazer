@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class UuidManager extends EntitySystem implements EntityListener {
-    private Map<Long, Entity> entitiesById = new HashMap<>();
+    private Map<Long, Entity> entitiesById = new HashMap<Long, Entity>();
 
     public UuidManager(EngineConfig config) {
     }

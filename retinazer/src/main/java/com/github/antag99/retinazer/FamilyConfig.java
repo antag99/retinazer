@@ -29,9 +29,9 @@ import java.util.Set;
  * Immutable copy-on-write family configuration.
  */
 public final class FamilyConfig {
-    private final Set<Class<? extends Component>> components = new LinkedHashSet<>();
+    private final Set<Class<? extends Component>> components = new LinkedHashSet<Class<? extends Component>>();
     private final Set<Class<? extends Component>> componentsView = unmodifiableSet(components);
-    private final Set<Class<? extends Component>> excludedComponents = new LinkedHashSet<>();
+    private final Set<Class<? extends Component>> excludedComponents = new LinkedHashSet<Class<? extends Component>>();
     private final Set<Class<? extends Component>> excludedComponentsView = unmodifiableSet(excludedComponents);
 
     FamilyConfig() {

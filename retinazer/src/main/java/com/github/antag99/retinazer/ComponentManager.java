@@ -36,10 +36,11 @@ final class ComponentManager extends EntitySystem {
     private @Inject EntityManager entityManager;
     private @Inject FamilyManager familyManager;
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public ComponentManager(EngineConfig config) {
-        List<ComponentMapper<?>> componentMappers = new ArrayList<>();
+        List<ComponentMapper<?>> componentMappers = new ArrayList<ComponentMapper<?>>();
         for (Class<? extends Component> componentType : config.getComponentTypes()) {
-            componentMappers.add(new ComponentMapper<>(componentType));
+            componentMappers.add(new ComponentMapper(componentType));
         }
         this.componentMappers = componentMappers.toArray(new ComponentMapper[0]);
     }
@@ -93,8 +94,13 @@ final class ComponentManager extends EntitySystem {
         return getMapper(getIndex(componentType));
     }
 
-    public Iterable<Component> getComponents(Entity entity) {
-        return () -> new ComponentIterator(entity);
+    public Iterable<Component> getComponents(final Entity entity) {
+        return new Iterable<Component>() {
+            @Override
+            public Iterator<Component> iterator() {
+                return new ComponentIterator(entity);
+            }
+        };
     }
 
     public void destroyComponents(Entity entity) {

@@ -25,13 +25,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.UuidComponent;
 
 public final class Engine {
-    private List<EntitySystem> systems = new ArrayList<>();
+    private final EntitySystem[] systems;
     private float deltaTime;
 
     EngineConfig config;
@@ -50,38 +51,35 @@ public final class Engine {
 
     Engine(EngineConfig config) {
         this.config = config;
-        addSystem(new EntityManager(config));
-        addSystem(new ComponentManager(config));
-        addSystem(new FamilyManager(config));
-        addSystem(new EventManager(config));
-        addSystem(new UuidManager(config));
-        config.getSystems().forEach(this::addSystem);
+        List<EntitySystem> systems = new ArrayList<EntitySystem>();
+        systems.add(new EntityManager(config));
+        systems.add(new ComponentManager(config));
+        systems.add(new FamilyManager(config));
+        systems.add(new EventManager(config));
+        systems.add(new UuidManager(config));
+        systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
+        this.systems = systems.toArray(new EntitySystem[0]);
         initialize();
-    }
-
-    private void addSystem(EntitySystem system) {
-        systems.add(system);
-        systems.sort((a, b) -> Integer.compare(b.getPriority(), a.getPriority()));
     }
 
     private void initialize() {
         injectDependencies(this);
-        for (int i = 0, n = systems.size(); i < n; ++i) {
-            injectDependencies(systems.get(i));
+        for (int i = 0, n = systems.length; i < n; ++i) {
+            injectDependencies(systems[i]);
         }
         eventManager.registerEventHandlers();
         familyManager.addEntityListener(Family.with(UuidComponent.class), uuidManager);
-        for (int i = 0, n = systems.size(); i < n; ++i) {
-            systems.get(i).initialize();
+        for (int i = 0, n = systems.length; i < n; ++i) {
+            systems[i].initialize();
         }
     }
 
     private void destroy() {
-        for (int i = 0, n = systems.size(); i < n; ++i) {
-            systems.get(i).destroy();
+        for (int i = 0, n = systems.length; i < n; ++i) {
+            systems[i].destroy();
         }
-        for (int i = 0, n = systems.size(); i < n; ++i) {
-            uninjectDependencies(systems.get(i));
+        for (int i = 0, n = systems.length; i < n; ++i) {
+            uninjectDependencies(systems[i]);
         }
         entityManager.reset();
         eventManager.reset();
@@ -129,7 +127,7 @@ public final class Engine {
                 try {
                     field.setAccessible(true);
                     field.set(object, dependency);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                } catch (IllegalAccessException ex) {
                     throw new AssertionError(ex);
                 }
             }
@@ -146,7 +144,7 @@ public final class Engine {
                 try {
                     field.setAccessible(true);
                     field.set(object, null);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                } catch (IllegalAccessException ex) {
                     throw new AssertionError(ex);
                 }
             }
@@ -194,9 +192,9 @@ public final class Engine {
     }
 
     public <T extends EntitySystem> T getSystem(Class<T> systemClass) {
-        for (int i = 0, n = systems.size(); i < n; i++)
-            if (systems.get(i).getClass() == systemClass)
-                return systemClass.cast(systems.get(i));
+        for (int i = 0, n = systems.length; i < n; i++)
+            if (systems[i].getClass() == systemClass)
+                return systemClass.cast(systems[i]);
         throw new IllegalArgumentException("System not registered: " + systemClass.getName());
     }
 
@@ -225,12 +223,12 @@ public final class Engine {
     }
 
     public void update() {
-        for (int i = 0, n = systems.size(); i < n; ++i)
-            systems.get(i).beforeUpdate();
-        for (int i = 0, n = systems.size(); i < n; ++i)
-            systems.get(i).update();
-        for (int i = 0, n = systems.size(); i < n; ++i)
-            systems.get(i).afterUpdate();
+        for (int i = 0, n = systems.length; i < n; ++i)
+            systems[i].beforeUpdate();
+        for (int i = 0, n = systems.length; i < n; ++i)
+            systems[i].update();
+        for (int i = 0, n = systems.length; i < n; ++i)
+            systems[i].afterUpdate();
         entityManager.applyEntityAdditions();
         componentManager.applyComponentChanges();
         entityManager.applyEntityRemovals();

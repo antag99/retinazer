@@ -44,10 +44,10 @@ public final class EngineConfig {
     private EngineConfig() {
     }
 
-    private final Map<Class<?>, Object> dependencies = new LinkedHashMap<>();
-    private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<>();
-    private final Set<Class<? extends Component>> componentTypes = new LinkedHashSet<>();
-    private final Set<Class<? extends Event>> eventTypes = new LinkedHashSet<>();
+    private final Map<Class<?>, Object> dependencies = new LinkedHashMap<Class<?>, Object>();
+    private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<Class<?>, EntitySystem>();
+    private final Set<Class<? extends Component>> componentTypes = new LinkedHashSet<Class<? extends Component>>();
+    private final Set<Class<? extends Event>> eventTypes = new LinkedHashSet<Class<? extends Event>>();
     private final Iterable<Object> dependenciesView = unmodifiableCollection(dependencies.values());
     private final Iterable<EntitySystem> systemsView = unmodifiableCollection(systems.values());
     private final Iterable<Class<? extends Component>> componentsTypesView = unmodifiableCollection(componentTypes);

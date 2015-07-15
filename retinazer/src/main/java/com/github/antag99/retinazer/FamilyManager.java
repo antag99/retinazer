@@ -31,11 +31,11 @@ import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager extends EntitySystem {
     private EntityListener[] entityListeners = new EntityListener[0];
-    private Bag<Mask> listenersForFamily = new Bag<>();
-    private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
-    private Bag<Family> families = new Bag<>();
+    private Bag<Mask> listenersForFamily = new Bag<Mask>();
+    private Map<FamilyConfig, Integer> familyIndexes = new HashMap<FamilyConfig, Integer>();
+    private Bag<Family> families = new Bag<Family>();
 
-    private Bag<EntitySet> entitiesForFamily = new Bag<>();
+    private Bag<EntitySet> entitiesForFamily = new Bag<EntitySet>();
 
     private @Inject Engine engine;
     private @Inject EntityManager entityManager;
@@ -58,8 +58,10 @@ final class FamilyManager extends EntitySystem {
             Mask components = new Mask();
             Mask excludedComponents = new Mask();
 
-            config.getComponents().stream().map(componentManager::getIndex).forEach(components::set);
-            config.getExcludedComponents().stream().map(componentManager::getIndex).forEach(excludedComponents::set);
+            for (Class<? extends Component> componentType : config.getComponents())
+                components.set(componentManager.getIndex(componentType));
+            for (Class<? extends Component> componentType : config.getExcludedComponents())
+                excludedComponents.set(componentManager.getIndex(componentType));
 
             familyIndexes.put(config.clone(), index);
             families.set(index, new Family(components, excludedComponents, index));
