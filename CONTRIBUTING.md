@@ -1,8 +1,11 @@
 # Contributing to Retinazer
-Looking to contribute? Awesome! Please review these guidelines in order to save me from headache.
+Looking to contribute? Awesome! Please review these guidelines before submitting a pull request.
 
 ## Code style
-Make sure to use the eclipse formatter provided in `eclipse-formatter.xml`. Also, templates exist to automatically insert the license header, provided in `eclipse-templates.xml`. Alternatively, the contents of `HEADER.txt` can be inserted at the beginning of each file.
+Use the eclipse formatter (`eclipse-formatter.xml`). Also, make sure to insert the license header (`HEADER.txt`). This can be done automatically by using the eclipse templates (`eclipse-templates.xml`).
+
+## Git style
+Commit messages should be imperative ("fix" rather than "fixed" or "fixes").
 
 ## License
 By contributing your code, you agree to license your contribution under the MIT license.
