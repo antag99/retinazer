@@ -94,7 +94,7 @@ public final class EntitySet extends AbstractSet<Entity> {
     public void process(EntityProcessor processor) {
         final Engine engine = this.engine;
         final Mask entities = this.entities;
-        for (int i = entities.nextSetBit(0); i != -1; entities.nextSetBit(i + 1)) {
+        for (int i = entities.nextSetBit(0); i != -1; i = entities.nextSetBit(i + 1)) {
             processor.process(engine.getEntityForIndex(i));
         }
     }
