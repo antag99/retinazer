@@ -69,6 +69,7 @@
 
     <modules>
         <module>retinazer</module>
+        <module>retinazer-benchmarks</module>
     </modules>
 
     <build>
