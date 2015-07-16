@@ -32,7 +32,7 @@ import org.mockito.InOrder;
 
 import com.github.antag99.retinazer.utils.Inject;
 
-public class RetinazerTests {
+public class RetinazerTest {
     @Test
     public void testEngine() {
         Engine engine = EngineConfig.create().finish();
