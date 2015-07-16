@@ -3,3 +3,14 @@ jdk:
   - openjdk7
 after_success:
   - mvn clean test jacoco:report coveralls:report
+deploy:
+  provider: script
+  script: ./deploy.sh
+  on:
+    branch: master
+# Stores the GIT_NAME, GIT_EMAIL and GH_TOKEN environment variables
+# travis encrypt -r <username>/<repository> \
+#     'GIT_NAME="<username>" GIT_EMAIL="<email>" GH_TOKEN="<auth token>"'
+env:
+  global:
+    secure: "iVG9fZzxtmt9QOojeXphIIgaai4OAilnGdbBz7We8amaHivCBzAIzhg07BcplOPaQS6tplH8q1V5YvMJ2ApU+jPmeItskK0bSmLSpY+ZOP5TkrNGMwTBnnGwfleANlM/Ow3l30NnRHcAw4TLFyW/eerCt1JYvGq5gWoHXgKb/0sy2ag3aoE3a5Sjokw9cxbFZTmo14mYdGoDaTQy+JdaSTk/oKYajOJeNMZScNy76+cdtYJ8e5XEPqB6rIXRJoMUjEWBGe+7gsrwTcg2Xc6IcbdXdatWYtmUC9aEexLgmcUP/Cn5UJGYxOCwzhpK4CTzWH/hzUX07oUnx9wfxrz5/csWUOH44iDbAd+aEv3xLjJPV5vVsfwz985/5p4P+qW9Kyp7VRUI3xMJbc1IVByOaSNbUtAtX9u5IcvexO+VSVgfZNRq87t9xmAGc/qpaYc1dhRkl18k/dDJJ26Pm0iPk2/twU1u0gS0w8zPR2STldzOv/h8Y0K2nfhd1mp8d68gRd3YbvHCwyjyP0Y2sDp32tJZxk4/GkyvVr4UsZhUdhJN9ZS/vzFPWkRQq8KlO3DHyF5Czl79/jzbKK6a7x68UeHWUiVOAmkI7LX8+pNnQoRCc6o+Y9DxJgLEsthcznrpzONBkLQgDnj+Uw1fD+dZUAUmELKOJ9I+eqn1SnVBVes="
