@@ -75,6 +75,9 @@ public final class Engine {
     }
 
     private void destroy() {
+        for (Entity entity : getEntities())
+            entity.destroy();
+        entityManager.applyEntityRemovals();
         for (int i = 0, n = systems.length; i < n; ++i) {
             systems[i].destroy();
         }
