@@ -5,11 +5,6 @@ git remote set-url --push origin ${REMOTE/#git:/https:}
 git remote set-branches --add origin gh-pages
 git fetch
 
-## Copy old artifacts to ~/maven
-git checkout gh-pages
-cp -rf ./maven ~
-git checkout master
-
 ## Deploy artifacts to ~/maven
 mvn deploy
 
