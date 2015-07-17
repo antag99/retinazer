@@ -44,7 +44,7 @@ else
 fi
 
 ## Add lines of code badge
-wget https://img.shields.io/badge/loc-${LINES_OF_CODE}-green.svg -O loc.svg
+wget https://img.shields.io/badge/lines_of_code-${LINES_OF_CODE}-orange.svg -O loc.svg
 
 ## Commit changes
 git config user.name ${GIT_NAME}
