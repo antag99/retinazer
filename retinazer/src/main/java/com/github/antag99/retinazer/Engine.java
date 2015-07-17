@@ -118,6 +118,8 @@ public final class Engine {
                             .getMapper(((Class<?>) param).asSubclass(Component.class));
                 } else if (EntitySystem.class.isAssignableFrom(dependencyType)) {
                     dependency = getSystem(field.getType().asSubclass(EntitySystem.class));
+                } else if (dependencyType.isPrimitive()) {
+                    throw new IllegalArgumentException("Invalid dependency type: " + dependencyType.getName());
                 } else {
                     for (Object candidate : config.getDependencies()) {
                         if (dependencyType.isInstance(candidate)) {
