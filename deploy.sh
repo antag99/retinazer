@@ -1,11 +1,17 @@
 #!/bin/bash
 
+if ! [ "$TRAVIS" ]; then
+    echo "Deployment script should be run in a Travis environment"
+    exit 1
+fi
+
 REMOTE=`git config remote.origin.url`
 git remote set-url --push origin ${REMOTE/#git:/https:}
 git remote set-branches --add origin gh-pages
 git fetch
 
 ## Deploy artifacts to ~/maven
+rm -rfv ~/maven
 mvn deploy
 
 ## Find current version to display in commit message
@@ -39,7 +45,7 @@ git config user.email ${GIT_EMAIL}
 git config credential.helper "store --file=.git/credentials"
 printf "%s" "https://${GH_TOKEN}:@github.com" > .git/credentials
 
-git add --all .
+git add --all
 git commit -m "Upload artifacts for ${VERSION}"
 git push origin gh-pages
 rm .git/credentials
