@@ -101,8 +101,8 @@ public class RetinazerTest {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity(5L);
         engine.update();
-        assertEquals(5L, entity.getUuid());
-        assertSame(entity, engine.getEntityForUuid(5L));
+        assertEquals(5L, entity.getGuid());
+        assertSame(entity, engine.getEntityForGuid(5L));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -110,14 +110,14 @@ public class RetinazerTest {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity();
         engine.update();
-        entity.getUuid();
+        entity.getGuid();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testEntityDelayGuid() {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity(5L);
-        entity.getUuid();
+        entity.getGuid();
     }
 
     @Test

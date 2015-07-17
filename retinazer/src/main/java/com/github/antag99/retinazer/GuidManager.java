@@ -24,24 +24,24 @@ package com.github.antag99.retinazer;
 import java.util.HashMap;
 import java.util.Map;
 
-final class UuidManager extends EntitySystem implements EntityListener {
+final class GuidManager extends EntitySystem implements EntityListener {
     private Map<Long, Entity> entitiesById = new HashMap<Long, Entity>();
 
-    public UuidManager(EngineConfig config) {
+    public GuidManager(EngineConfig config) {
     }
 
-    public Entity getEntityForUuid(long uuid) {
-        return entitiesById.get(uuid);
+    public Entity getEntityForGuid(long guid) {
+        return entitiesById.get(guid);
     }
 
     @Override
     public void entityAdded(Entity entity) {
-        entitiesById.put(entity.getUuid(), entity);
+        entitiesById.put(entity.getGuid(), entity);
     }
 
     @Override
     public void entityRemoved(Entity entity) {
-        entitiesById.remove(entity.getUuid());
+        entitiesById.remove(entity.getGuid());
     }
 
     public void reset() {

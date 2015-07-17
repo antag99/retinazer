@@ -28,7 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.antag99.retinazer.utils.UuidComponent;
+import com.github.antag99.retinazer.utils.GuidComponent;
 
 /**
  * Immutable copy-on-write engine configuration. This is used to setup static
@@ -38,7 +38,7 @@ import com.github.antag99.retinazer.utils.UuidComponent;
  */
 public final class EngineConfig {
     private static final EngineConfig DEFAULT = new EngineConfig()
-            .withComponentType(UuidComponent.class)
+            .withComponentType(GuidComponent.class)
             .withEventType(Event.class);
 
     private EngineConfig() {

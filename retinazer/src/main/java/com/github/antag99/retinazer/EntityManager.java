@@ -24,7 +24,7 @@ package com.github.antag99.retinazer;
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
-import com.github.antag99.retinazer.utils.UuidComponent;
+import com.github.antag99.retinazer.utils.GuidComponent;
 
 final class EntityManager extends EntitySystem {
     // The entity bag; stores all current entities
@@ -50,9 +50,9 @@ final class EntityManager extends EntitySystem {
         return entity;
     }
 
-    public Entity createEntity(long uuid) {
+    public Entity createEntity(long guid) {
         Entity entity = createEntity();
-        engine.uuidMapper.add(entity, new UuidComponent(uuid));
+        engine.guidMapper.add(entity, new GuidComponent(guid));
         return entity;
     }
 

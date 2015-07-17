@@ -23,14 +23,14 @@ package com.github.antag99.retinazer.utils;
 
 import com.github.antag99.retinazer.Component;
 
-public final class UuidComponent implements Component {
-    private final long uuid;
+public final class GuidComponent implements Component {
+    private final long guid;
 
-    public UuidComponent(long uuid) {
-        this.uuid = uuid;
+    public GuidComponent(long guid) {
+        this.guid = guid;
     }
 
-    public long getUuid() {
-        return uuid;
+    public long getGuid() {
+        return guid;
     }
 }

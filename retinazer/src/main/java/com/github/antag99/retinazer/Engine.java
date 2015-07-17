@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.github.antag99.retinazer.utils.Inject;
-import com.github.antag99.retinazer.utils.UuidComponent;
+import com.github.antag99.retinazer.utils.GuidComponent;
 
 public final class Engine {
     private final EntitySystem[] systems;
@@ -45,9 +45,9 @@ public final class Engine {
     @Inject
     EventManager eventManager;
     @Inject
-    UuidManager uuidManager;
+    GuidManager guidManager;
     @Inject
-    ComponentMapper<UuidComponent> uuidMapper;
+    ComponentMapper<GuidComponent> guidMapper;
 
     Engine(EngineConfig config) {
         this.config = config;
@@ -56,7 +56,7 @@ public final class Engine {
         systems.add(new ComponentManager(config));
         systems.add(new FamilyManager(config));
         systems.add(new EventManager(config));
-        systems.add(new UuidManager(config));
+        systems.add(new GuidManager(config));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
         initialize();
@@ -72,7 +72,7 @@ public final class Engine {
             injectDependencies(systems[i]);
         }
         eventManager.registerEventHandlers();
-        familyManager.addEntityListener(Family.with(UuidComponent.class), uuidManager);
+        familyManager.addEntityListener(Family.with(GuidComponent.class), guidManager);
         for (int i = 0, n = systems.length; i < n; ++i) {
             systems[i].initialize();
         }
@@ -91,7 +91,7 @@ public final class Engine {
         entityManager.reset();
         eventManager.reset();
         familyManager.reset();
-        uuidManager.reset();
+        guidManager.reset();
         uninjectDependencies(this);
     }
 
@@ -174,16 +174,16 @@ public final class Engine {
         return entityManager.createEntity();
     }
 
-    public Entity createEntity(long uuid) {
-        return entityManager.createEntity(uuid);
+    public Entity createEntity(long guid) {
+        return entityManager.createEntity(guid);
     }
 
     public Entity getEntityForIndex(int index) {
         return entityManager.getEntityForIndex(index);
     }
 
-    public Entity getEntityForUuid(long uuid) {
-        return uuidManager.getEntityForUuid(uuid);
+    public Entity getEntityForGuid(long guid) {
+        return guidManager.getEntityForGuid(guid);
     }
 
     public EntitySet getEntities() {
