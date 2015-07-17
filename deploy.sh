@@ -39,7 +39,7 @@ git config user.email ${GIT_EMAIL}
 git config credential.helper "store --file=.git/credentials"
 printf "%s" "https://${GH_TOKEN}:@github.com" > .git/credentials
 
-git add .
+git add --all .
 git commit -m "Upload artifacts for ${VERSION}"
 git push origin gh-pages
 rm .git/credentials
