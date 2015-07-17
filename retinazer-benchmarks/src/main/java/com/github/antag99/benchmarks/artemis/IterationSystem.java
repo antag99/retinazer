@@ -3,16 +3,16 @@ package com.github.antag99.benchmarks.artemis;
 import org.openjdk.jmh.infra.Blackhole;
 
 import com.artemis.Aspect;
+import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.systems.EntityProcessingSystem;
-import com.github.antag99.benchmarks.artemis.components.ComponentF;
 
-public class IterationSystemF extends EntityProcessingSystem {
+public abstract class IterationSystem extends EntityProcessingSystem {
     private Blackhole voidness = new Blackhole();
 
     @SuppressWarnings("unchecked")
-    public IterationSystemF() {
-        super(Aspect.getAspectForAll(ComponentF.class));
+    public IterationSystem(Class<? extends Component> componentType) {
+        super(Aspect.getAspectForAll(componentType));
     }
 
     @Override

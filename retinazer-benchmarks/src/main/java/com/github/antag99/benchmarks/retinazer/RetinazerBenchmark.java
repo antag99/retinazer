@@ -1,18 +1,21 @@
 package com.github.antag99.benchmarks.retinazer;
 
 import com.github.antag99.benchmarks.JmhSettings;
-import com.github.antag99.benchmarks.retinazer.components.ComponentA;
-import com.github.antag99.benchmarks.retinazer.components.ComponentB;
-import com.github.antag99.benchmarks.retinazer.components.ComponentC;
-import com.github.antag99.benchmarks.retinazer.components.ComponentD;
-import com.github.antag99.benchmarks.retinazer.components.ComponentE;
-import com.github.antag99.benchmarks.retinazer.components.ComponentF;
-import com.github.antag99.benchmarks.retinazer.components.ComponentG;
-import com.github.antag99.benchmarks.retinazer.components.ComponentH;
 import com.github.antag99.retinazer.Component;
 import com.github.antag99.retinazer.EngineConfig;
 
 public abstract class RetinazerBenchmark extends JmhSettings {
+    // @off
+    public static final class ComponentA implements Component {}
+    public static final class ComponentB implements Component {}
+    public static final class ComponentC implements Component {}
+    public static final class ComponentD implements Component {}
+    public static final class ComponentE implements Component {}
+    public static final class ComponentF implements Component {}
+    public static final class ComponentG implements Component {}
+    public static final class ComponentH implements Component {}
+    // @on
+
     @SuppressWarnings("unchecked")
     private static Class<? extends Component>[] componentTypes = new Class[] {
             ComponentA.class,
@@ -25,27 +28,19 @@ public abstract class RetinazerBenchmark extends JmhSettings {
             ComponentH.class
     };
 
-    private static EngineConfig config = EngineConfig.create();
-
-    static {
-        for (Class<? extends Component> componentType : componentTypes) {
-            config = config.withComponentType(componentType);
-        }
-    }
-
-    public static <T> T newInstance(Class<T> clazz) {
-        try {
-            return clazz.cast(clazz.newInstance());
-        } catch (InstantiationException | IllegalAccessException ex) {
-            throw new IllegalArgumentException("Failed to instantiate object", ex);
-        }
-    }
-
     public Class<? extends Component>[] getComponentTypes() {
         return componentTypes;
     }
 
     public EngineConfig getConfig() {
         return config;
+    }
+
+    private static EngineConfig config = EngineConfig.create();
+
+    static {
+        for (Class<? extends Component> componentType : componentTypes) {
+            config = config.withComponentType(componentType);
+        }
     }
 }

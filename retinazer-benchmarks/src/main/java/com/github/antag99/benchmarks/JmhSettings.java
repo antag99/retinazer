@@ -21,7 +21,6 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 3, time = 10, timeUnit = TimeUnit.SECONDS)
 public class JmhSettings {
-
     @Param(value = { "8192", "16384", "32768", "131072" })
     private int entityCount;
 
@@ -29,4 +28,11 @@ public class JmhSettings {
         return entityCount;
     }
 
+    public static <T> T newInstance(Class<T> clazz) {
+        try {
+            return clazz.cast(clazz.newInstance());
+        } catch (InstantiationException | IllegalAccessException ex) {
+            throw new IllegalArgumentException("Failed to instantiate object", ex);
+        }
+    }
 }

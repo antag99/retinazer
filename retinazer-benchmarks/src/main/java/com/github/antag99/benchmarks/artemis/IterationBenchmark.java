@@ -13,14 +13,16 @@ public class IterationBenchmark extends ArtemisBenchmark {
     @Setup
     public void setup() {
         world = new World();
-        world.setSystem(new IterationSystemA());
-        world.setSystem(new IterationSystemB());
-        world.setSystem(new IterationSystemC());
-        world.setSystem(new IterationSystemD());
-        world.setSystem(new IterationSystemE());
-        world.setSystem(new IterationSystemF());
-        world.setSystem(new IterationSystemG());
-        world.setSystem(new IterationSystemH());
+        // @off
+        world.setSystem(new IterationSystem(ComponentA.class) {});
+        world.setSystem(new IterationSystem(ComponentB.class) {});
+        world.setSystem(new IterationSystem(ComponentC.class) {});
+        world.setSystem(new IterationSystem(ComponentD.class) {});
+        world.setSystem(new IterationSystem(ComponentE.class) {});
+        world.setSystem(new IterationSystem(ComponentF.class) {});
+        world.setSystem(new IterationSystem(ComponentG.class) {});
+        world.setSystem(new IterationSystem(ComponentH.class) {});
+        // @on
         world.initialize();
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
