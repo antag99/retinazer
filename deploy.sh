@@ -23,15 +23,14 @@ git clean -dffx .
 
 ## Checkout gh-pages branch and copy the artifacts
 git checkout gh-pages
+## Remove old snapshot versions
+rm -rfv ./maven/**/*/*-SNAPSHOT/
 cp -rf ~/maven .
 
 if [ $SNAPSHOT ]
 then
     # Use commit hash in the message
     VERSION=$REVISION
-else
-    # Remove all snapshot versions
-    rm -rfv ./maven/**/*/*-SNAPSHOT/
 fi
 
 ## Commit changes
