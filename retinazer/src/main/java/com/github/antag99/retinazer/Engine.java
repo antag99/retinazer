@@ -62,6 +62,10 @@ public final class Engine {
         initialize();
     }
 
+    public EngineConfig getConfig() {
+        return config;
+    }
+
     private void initialize() {
         injectDependencies(this);
         for (int i = 0, n = systems.length; i < n; ++i) {
