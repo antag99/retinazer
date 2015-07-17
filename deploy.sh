@@ -10,6 +10,9 @@ git remote set-url --push origin ${REMOTE/#git:/https:}
 git remote set-branches --add origin gh-pages
 git fetch
 
+## Count lines of code
+LINES_OF_CODE=`git ls-files | grep .java$ | xargs cat | wc -l`
+
 ## Deploy artifacts to ~/maven
 rm -rfv ~/maven
 mvn deploy
@@ -39,6 +42,9 @@ else
     # Remove old snapshot versions
     rm -rfv ./maven/**/*/*-SNAPSHOT/
 fi
+
+## Add lines of code badge
+wget https://img.shields.io/badge/loc-${LINES_OF_CODE}-green.svg -O loc.svg
 
 ## Commit changes
 git config user.name ${GIT_NAME}
