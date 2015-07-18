@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This handy script is run by Travis CI; generates badges and other stuff
 
 if ! [ "$TRAVIS" ]; then
