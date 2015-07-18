@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # This handy script is run by Travis CI; generates badges and other stuff
 
 if ! [ "$GIT_NAME" && "$GIT_EMAIL" && "$GH_TOKEN" ]; then
@@ -20,7 +20,6 @@ LINES_OF_CODE=`git ls-files | grep .java$ | xargs cat | wc -l`
 # git clean -dffx .
 
 git checkout gh-pages
-cp -rf ~/maven .
 
 ## Update lines of code
 if [ "$LINES_OF_CODE" != "$OLD_LINES_OF_CODE" ]; then
