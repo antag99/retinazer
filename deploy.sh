@@ -1,10 +1,15 @@
 #!/bin/sh
 # This handy script is run by Travis CI; generates badges and other stuff
 
-if ! [ "$GIT_NAME" && "$GIT_EMAIL" && "$GH_TOKEN" ]; then
+if ! [ "$TRAVIS" ]; then
     echo "This script is intended to be run by Travis CI"
     exit 1
 fi
+
+REMOTE=`git config remote.origin.url`
+git remote set-url --push origin ${REMOTE/#git:/https:}
+git remote set-branches --add origin gh-pages
+git fetch
 
 REVISION=`git rev-parse HEAD`
 
