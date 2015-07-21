@@ -21,200 +21,262 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import static java.lang.String.format;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import com.github.antag99.retinazer.Event.WithEntity;
 import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class EventManager extends EntitySystem {
     private @Inject Engine engine;
-    private EventListenerData[] eventListeners = new EventListenerData[0];
-    private Map<Class<? extends Event>, Mask> eventFilters = new HashMap<Class<? extends Event>, Mask>();
-    private Map<Family, Mask> familyFilters = new HashMap<Family, Mask>();
+    private Set<Class<? extends Event>> eventTypes = new HashSet<>();
+    private Map<EventConstraint, Mask> constraints = new HashMap<>();
+    private EventHandlerData[] handlers = new EventHandlerData[0];
 
-    public EventManager(EngineConfig config) {
-        for (Class<? extends Event> eventType : config.getEventTypes()) {
-            eventFilters.put(eventType, new Mask());
+    private Mask getHandlers(EventConstraint constraint) {
+        Mask handlerMask = constraints.get(constraint);
+        if (handlerMask == null) {
+            constraints.put(constraint, handlerMask = new Mask());
         }
+        return handlerMask;
     }
 
-    private static class EventListenerData {
-        public int priority;
-        public EventListener<?> listener;
+    /*
+     * Event constraints are used to mask event handlers based on some criteria.
+     *
+     * TODO: Event constraints could be made public API in the future
+     */
+    private interface EventConstraint {
+
+        public boolean accept(Event event);
     }
 
-    private static class EventHandlerListener implements EventListener<Event> {
-        private Object owner;
-        private Method method;
+    private static final class TypeConstraint implements EventConstraint {
+        private Class<? extends Event> type;
 
-        public EventHandlerListener(Object owner, Method method) {
-            this.owner = owner;
-            this.method = method;
+        public TypeConstraint(Class<? extends Event> type) {
+            this.type = type;
         }
 
         @Override
-        public void handleEvent(Event event, Entity entity) {
+        public boolean accept(Event event) {
+            return type.isInstance(event);
+        }
+
+        @Override
+        public int hashCode() {
+            return type.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof TypeConstraint))
+                return false;
+            return ((TypeConstraint) obj).type.equals(type);
+        }
+    }
+
+    private static final class FamilyConstraint implements EventConstraint {
+        private Class<?> type;
+        private Method getter;
+        private int family;
+
+        public FamilyConstraint(Method getter, FamilyMatcher family) {
+            this.type = getter.getDeclaringClass();
+            this.getter = getter;
+            this.family = family.index;
+        }
+
+        @Override
+        public boolean accept(Event event) {
             try {
-                method.invoke(owner, event, entity);
+                return type.isInstance(event) &&
+                    ((Entity) getter.invoke(event)).families.get(family);
             } catch (IllegalAccessException ex) {
+                // Shouldn't happen as methods are marked as accessible
                 throw new AssertionError(ex);
             } catch (InvocationTargetException ex) {
+                // Avoid wrapping checked exceptions by bypassing the java compiler
+                throw Internal.sneakyThrow(ex.getCause());
+            }
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof FamilyConstraint))
+                return false;
+            FamilyConstraint other = (FamilyConstraint) obj;
+            return other.type.equals(type) &&
+                other.getter.equals(getter) &&
+                other.family == family;
+        }
+
+        @Override
+        public int hashCode() {
+            return (type.hashCode() * 31 + getter.hashCode()) * 31 + family;
+        }
+    }
+
+    private static final class EventHandlerData {
+        public final EventListener listener;
+        public final int priority;
+        public final Method method;
+
+        public EventHandlerData(EventListener listener, int priority, Method method) {
+            this.listener = listener;
+            this.priority = priority;
+            this.method = method;
+        }
+    }
+
+    public EventManager(EngineConfig config) {
+        for (Class<? extends Event> eventType : config.getEventTypes()) {
+            eventTypes.add(eventType);
+        }
+    }
+
+    public void reset() {
+        constraints.clear();
+        handlers = new EventHandlerData[0];
+    }
+
+    public void dispatchEvent(Event event) {
+        // Waste speed by checking for consistency
+        if (!eventTypes.contains(event.getClass())) {
+            throw new IllegalArgumentException("Event type "
+                + event.getClass().getName() + " has not been registered");
+        }
+
+        Mask excluded = engine.maskPool.obtain();
+        Iterator<Entry<EventConstraint, Mask>> iterator = constraints.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Entry<EventConstraint, Mask> constraint = iterator.next();
+            if (!constraint.getKey().accept(event)) {
+                excluded.or(constraint.getValue());
+            }
+        }
+        EventHandlerData[] handlers = this.handlers;
+        for (int i = excluded.nextClearBit(0); i != -1 && i < handlers.length; i = excluded.nextClearBit(i + 1)) {
+            try {
+                handlers[i].method.invoke(handlers[i].listener, event);
+            } catch (IllegalAccessException ex) {
+                // Shouldn't happen as methods are marked as accessible
+                throw new AssertionError(ex);
+            } catch (InvocationTargetException ex) {
+                // Avoid wrapping checked exceptions by bypassing the java compiler
                 throw Internal.sneakyThrow(ex.getCause());
             }
         }
     }
 
-    private Mask getFamilyFilter(Family family) {
-        Mask filter = familyFilters.get(family);
-        if (filter == null) {
-            familyFilters.put(family, filter = new Mask());
-        }
-        return filter;
-    }
-
-    public <T extends Event> void addEventListener(Class<T> eventClass, Family family, int priority,
-            EventListener<? super T> listener) {
-        int insertionIndex = 0;
-        while (insertionIndex < eventListeners.length) {
-            if (eventListeners[insertionIndex].priority <= priority) {
-                insertionIndex++;
-            } else {
-                break;
-            }
-        }
-
-        // Allocate space for the listener in the bitmasks, by shifting up.
-        for (Mask familyFilter : familyFilters.values()) {
-            for (int k = eventListeners.length - 1; k >= insertionIndex; --k) {
-                if (familyFilter.get(k)) {
-                    familyFilter.clear(k);
-                    familyFilter.set(k + 1);
+    public void addEventListener(EventListener listener) {
+        for (Method method : Internal.getAllMethods(listener.getClass())) {
+            EventHandler eventHandler = method.getAnnotation(EventHandler.class);
+            if (eventHandler != null) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length != 1) {
+                    throw new IllegalArgumentException("Invalid @EventHandler:"
+                        + " Expected event argument");
                 }
-            }
-        }
-
-        for (Mask eventFilter : eventFilters.values()) {
-            for (int k = eventListeners.length - 1; k >= insertionIndex; --k) {
-                if (eventFilter.get(k)) {
-                    eventFilter.clear(k);
-                    eventFilter.set(k + 1);
+                if (!Event.class.isAssignableFrom(parameterTypes[0])) {
+                    throw new IllegalArgumentException("Invalid @EventHandler:"
+                        + " Argument must be a subclass of Event");
                 }
-            }
-        }
+                Class<? extends Event> handlerType = parameterTypes[0].asSubclass(Event.class);
 
-        EventListenerData eventListenerData = new EventListenerData();
-        eventListenerData.priority = priority;
-        eventListenerData.listener = listener;
-        EventListenerData[] newEventListeners = new EventListenerData[eventListeners.length + 1];
-        System.arraycopy(eventListeners, 0, newEventListeners, 0, insertionIndex);
-        System.arraycopy(eventListeners, insertionIndex,
-                newEventListeners, insertionIndex + 1,
-                eventListeners.length - insertionIndex);
-        newEventListeners[insertionIndex] = eventListenerData;
-        eventListeners = newEventListeners;
+                if (!eventTypes.contains(handlerType)) {
+                    throw new IllegalArgumentException("Event type "
+                        + handlerType.getName() + " has not been registered");
+                }
 
-        getEventListeners(eventClass).set(insertionIndex);
-        getFamilyFilter(family).set(insertionIndex);
-
-        for (Entry<Class<? extends Event>, Mask> eventFilter : eventFilters.entrySet()) {
-            if (eventClass.isAssignableFrom(eventFilter.getKey())) {
-                eventFilter.getValue().set(insertionIndex);
-            }
-        }
-    }
-
-    public void removeEventListener(EventListener<?> listener) {
-        for (int i = 0, n = eventListeners.length; i < n; ++i) {
-            if (eventListeners[i] == listener) {
-                // Remove the listener from bitmasks, by shifting down.
-                for (Mask familyFilter : familyFilters.values()) {
-                    for (int k = i; k < eventListeners.length; --k) {
-                        if (familyFilter.get(k + 1)) {
-                            familyFilter.clear(k + 1);
-                            familyFilter.set(k);
-                        } else {
-                            familyFilter.clear(k);
-                        }
+                int priority = eventHandler.priority();
+                int insertionIndex = 0;
+                while (insertionIndex < handlers.length) {
+                    if (handlers[insertionIndex].priority > priority) {
+                        break;
                     }
+                    insertionIndex++;
                 }
 
-                for (Mask eventFilter : eventFilters.values()) {
-                    eventFilter.clear(i);
-                    for (int k = i; k < eventListeners.length; --k) {
-                        if (eventFilter.get(k + 1)) {
-                            eventFilter.clear(k + 1);
-                            eventFilter.set(k);
-                        } else {
-                            eventFilter.clear(k);
-                        }
+                for (Mask handlerMask : constraints.values()) {
+                    handlerMask.push(insertionIndex);
+                }
+
+                TypeConstraint typeConstraint = new TypeConstraint(handlerType);
+                getHandlers(typeConstraint).set(insertionIndex);
+
+                // Replace defaults based on @WithEntity annotations
+                for (WithEntity withEntity : eventHandler.value()) {
+                    FamilyMatcher family = engine.getMatcher(Family
+                        .with(withEntity.with())
+                        .exclude(withEntity.exclude()));
+                    String propertyName = withEntity.name();
+                    String getterName = format("get%s%s",
+                        Character.toUpperCase(propertyName.charAt(0)),
+                        propertyName.substring(1));
+                    Method getter;
+                    try {
+                        getter = handlerType.getMethod(getterName);
+                        getter.setAccessible(true);
+                    } catch (NoSuchMethodException ex) {
+                        throw new IllegalArgumentException(
+                            "No getter for property " + propertyName
+                                + " was found on " + handlerType.getName());
                     }
+                    if (Modifier.isStatic(getter.getModifiers())) {
+                        throw new IllegalArgumentException(
+                            "Property " + propertyName + " cannot be static");
+                    }
+                    if (getter.getReturnType() != Entity.class) {
+                        throw new IllegalArgumentException(
+                            "Property " + propertyName + " must be an Entity");
+                    }
+                    FamilyConstraint constraint = new FamilyConstraint(getter, family);
+                    getHandlers(constraint).set(insertionIndex);
                 }
 
-                EventListenerData[] newEventListeners = new EventListenerData[eventListeners.length - 1];
-                System.arraycopy(eventListeners, 0, newEventListeners, 0, i);
-                System.arraycopy(eventListeners, i + 1, newEventListeners, i, eventListeners.length - i - 1);
-                eventListeners = newEventListeners;
+                EventHandlerData eventHandlerData = new EventHandlerData(
+                    listener, priority, method);
+
+                EventHandlerData[] newHandlers = new EventHandlerData[handlers.length + 1];
+                System.arraycopy(handlers, 0, newHandlers, 0, insertionIndex);
+                System.arraycopy(handlers, insertionIndex,
+                    newHandlers, insertionIndex + 1,
+                    handlers.length - insertionIndex);
+                newHandlers[insertionIndex] = eventHandlerData;
+                handlers = newHandlers;
             }
         }
     }
 
-    private Mask getEventListeners(Class<? extends Event> eventClass) {
-        Mask eventListeners = eventFilters.get(eventClass);
-        if (eventListeners == null) {
-            throw new IllegalArgumentException(
-                    "Event type " + eventClass.getName() + " has not been registered");
-        }
-        return eventListeners;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void dispatchEvent(Event event, Entity entity) {
-        Mask bits = new Mask();
-        for (Entry<Family, Mask> familyFilter : familyFilters.entrySet()) {
-            if (familyFilter.getKey().matches(entity)) {
-                bits.or(familyFilter.getValue());
-            }
-        }
-        bits.and(getEventListeners(event.getClass()));
-
-        EventListenerData[] items = this.eventListeners;
-        for (int i = bits.nextSetBit(0); i != -1; i = bits.nextSetBit(i + 1)) {
-            ((EventListener<Event>) items[i].listener).handleEvent(event, entity);
-        }
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void registerEventHandlers() {
-        for (EntitySystem system : engine.getSystems()) {
-            Class<? extends EntitySystem> systemClass = system.getClass();
-            for (Method method : Internal.getAllMethods(systemClass)) {
-                EventHandler handler = method.getAnnotation(EventHandler.class);
-                if (handler != null) {
-                    Class<?>[] parameterTypes = method.getParameterTypes();
-                    if (parameterTypes.length != 2)
-                        throw new IllegalArgumentException("Invalid signature for @EventHandler " + method.getName());
-                    if (!Event.class.isAssignableFrom(parameterTypes[0]))
-                        throw new IllegalArgumentException("Invalid signature for @EventHandler " + method.getName());
-                    if (parameterTypes[1] != Entity.class)
-                        throw new IllegalArgumentException("Invalid signature for @EventHandler " + method.getName());
-                    Class eventClass = parameterTypes[0];
-                    FamilyConfig familyConfig = Family.with(handler.value()).exclude(handler.exclude());
-                    addEventListener(eventClass, engine.getFamily(familyConfig), handler.priority(),
-                            new EventHandlerListener(system, method));
+    public void removeEventListener(EventListener listener) {
+        if (listener == null)
+            throw new NullPointerException("listener must not be null");
+        for (int i = 0, n = handlers.length; i < n; i++) {
+            EventHandlerData eventHandler = handlers[i];
+            if (eventHandler.listener == listener) {
+                for (Mask handlerMask : constraints.values()) {
+                    handlerMask.pop(i);
                 }
-            }
-        }
-    }
 
-    public void reset() {
-        eventListeners = new EventListenerData[0];
-        familyFilters.clear();
-        for (Mask mask : eventFilters.values()) {
-            mask.clear();
+                EventHandlerData[] newHandlers = new EventHandlerData[handlers.length - 1];
+                System.arraycopy(handlers, 0, newHandlers, 0, i);
+                System.arraycopy(handlers, i + 1, newHandlers, i, newHandlers.length - i);
+                handlers = newHandlers;
+
+                i--;
+                n--;
+            }
         }
     }
 }

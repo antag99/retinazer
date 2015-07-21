@@ -31,8 +31,8 @@ import com.github.antag99.retinazer.utils.Mask;
 
 final class ComponentManager extends EntitySystem {
     private ComponentMapper<?>[] componentMappers;
-    private Mask tmpMask1 = new Mask(), tmpMask2 = new Mask();
 
+    private @Inject Engine engine;
     private @Inject EntityManager entityManager;
     private @Inject FamilyManager familyManager;
 
@@ -120,8 +120,8 @@ final class ComponentManager extends EntitySystem {
             }
             mapper.dirty = false;
 
-            Mask componentsAdded = tmpMask1.set(mapper.componentsAdded);
-            Mask componentsRemoved = tmpMask2.set(mapper.componentsRemoved);
+            Mask componentsAdded = engine.maskPool.obtain().set(mapper.componentsAdded);
+            Mask componentsRemoved = engine.maskPool.obtain().set(mapper.componentsRemoved);
             mapper.componentsAdded.clear();
             mapper.componentsRemoved.clear();
 
@@ -144,6 +144,9 @@ final class ComponentManager extends EntitySystem {
                 entity.components.set(i);
                 familyManager.updateFamilyMembership(entity, false);
             }
+
+            engine.maskPool.free(componentsAdded);
+            engine.maskPool.free(componentsRemoved);
         }
     }
 }

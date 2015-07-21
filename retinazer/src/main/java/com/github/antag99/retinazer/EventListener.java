@@ -21,7 +21,8 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public interface EventListener<T extends Event> {
-
-    public void handleEvent(T event, Entity entity);
+/**
+ * Tagging interface for event listeners.
+ */
+public interface EventListener {
 }

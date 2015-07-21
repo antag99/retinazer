@@ -58,7 +58,7 @@ public final class FamilyConfig {
     }
 
     @Override
-    public FamilyConfig clone() {
+    protected FamilyConfig clone() {
         FamilyConfig config = new FamilyConfig();
         config.components.addAll(components);
         config.excludedComponents.addAll(excludedComponents);

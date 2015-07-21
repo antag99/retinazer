@@ -33,7 +33,7 @@ final class FamilyManager extends EntitySystem {
     private EntityListener[] entityListeners = new EntityListener[0];
     private Bag<Mask> listenersForFamily = new Bag<Mask>();
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<FamilyConfig, Integer>();
-    private Bag<Family> families = new Bag<Family>();
+    private Bag<FamilyMatcher> families = new Bag<FamilyMatcher>();
 
     private Bag<EntitySet> entitiesForFamily = new Bag<EntitySet>();
 
@@ -52,7 +52,7 @@ final class FamilyManager extends EntitySystem {
         return entitiesForFamily.get(getFamily(family).index);
     }
 
-    public Family getFamily(FamilyConfig config) {
+    public FamilyMatcher getFamily(FamilyConfig config) {
         int index = familyIndexes.containsKey(config) ? familyIndexes.get(config) : familyIndexes.size();
         if (index == familyIndexes.size()) {
             Mask components = new Mask();
@@ -64,7 +64,7 @@ final class FamilyManager extends EntitySystem {
                 excludedComponents.set(componentManager.getIndex(componentType));
 
             familyIndexes.put(config.clone(), index);
-            families.set(index, new Family(components, excludedComponents, index));
+            families.set(index, new FamilyMatcher(components, excludedComponents, index));
             entitiesForFamily.set(index, new EntitySet(engine));
             listenersForFamily.set(index, new Mask());
 
@@ -117,6 +117,7 @@ final class FamilyManager extends EntitySystem {
     }
 
     public void updateFamilyMembership(Entity entity, boolean remove) {
+        final Mask entityFamilies = entity.families;
         // Find families that the entity was added to/removed from, and fill
         // the bit sets with corresponding listener bits.
         Mask addListenerBits = new Mask();
@@ -133,9 +134,11 @@ final class FamilyManager extends EntitySystem {
                 if (matches) {
                     addListenerBits.or(listenersMask);
                     familyEntities.set(entity.getIndex());
+                    entityFamilies.set(i);
                 } else {
                     removeListenerBits.or(listenersMask);
                     familyEntities.clear(entity.getIndex());
+                    entityFamilies.clear(i);
                 }
             }
         }

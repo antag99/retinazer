@@ -24,51 +24,64 @@ package com.github.antag99.retinazer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 final class Internal {
     private Internal() {
     }
 
-    private static void getAllFields(Class<?> clazz, List<Field> fields) {
-        for (Field field : clazz.getDeclaredFields()) {
-            fields.add(field);
-        }
+    private static void getAllFields(Class<?> clazz, Map<Class<?>, Field[]> fields) {
+        fields.put(clazz, clazz.getDeclaredFields());
 
-        if (clazz != Object.class) {
-            getAllFields(clazz.getSuperclass(), fields);
-        }
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass != null && !fields.containsKey(superClass))
+            getAllFields(superClass, fields);
+
+        for (Class<?> superInterface : clazz.getInterfaces())
+            if (!fields.containsKey(superInterface))
+                getAllFields(superInterface, fields);
     }
 
     public static Field[] getAllFields(Class<?> clazz) {
-        List<Field> fields = new ArrayList<Field>();
+        Map<Class<?>, Field[]> fields = new HashMap<>();
         getAllFields(clazz, fields);
-        return fields.toArray(new Field[0]);
+        List<Field> allFields = new ArrayList<>();
+        for (Field[] array : fields.values())
+            allFields.addAll(Arrays.asList(array));
+        return allFields.toArray(new Field[0]);
     }
 
-    private static void getAllMethods(Class<?> clazz, List<Method> methods) {
-        for (Method method : clazz.getDeclaredMethods()) {
-            methods.add(method);
-        }
+    private static void getAllMethods(Class<?> clazz, Map<Class<?>, Method[]> methods) {
+        methods.put(clazz, clazz.getDeclaredMethods());
 
-        if (clazz != Object.class) {
-            getAllMethods(clazz.getSuperclass(), methods);
-        }
+        Class<?> superClass = clazz.getSuperclass();
+        if (superClass != null && !methods.containsKey(superClass))
+            getAllMethods(superClass, methods);
+
+        for (Class<?> superInterface : clazz.getInterfaces())
+            if (!methods.containsKey(superInterface))
+                getAllMethods(superInterface, methods);
     }
 
     public static Method[] getAllMethods(Class<?> clazz) {
-        List<Method> methods = new ArrayList<Method>();
+        Map<Class<?>, Method[]> methods = new HashMap<>();
         getAllMethods(clazz, methods);
-        return methods.toArray(new Method[0]);
+        List<Method> allMethods = new ArrayList<>();
+        for (Method[] array : methods.values())
+            allMethods.addAll(Arrays.asList(array));
+        return allMethods.toArray(new Method[0]);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends RuntimeException> void doSneakyThrow(Throwable throwable) {
-        throw (T) throwable;
+    private static <T extends Throwable> void doSneakyThrow(Throwable ex) throws T {
+        throw (T) ex;
     }
 
     public static RuntimeException sneakyThrow(Throwable ex) {
-        doSneakyThrow(ex);
+        Internal.<RuntimeException> doSneakyThrow(ex);
         return null;
     }
 }

@@ -26,12 +26,33 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.github.antag99.retinazer.Event.WithEntity;
+
+/**
+ * Annotation used to mark event handlers in an {@link EventListener}.
+ *
+ * <pre>
+ * <code>
+ * public final class DeathListener implements EventListener {
+ *     &#64;EventHandler
+ *     private void handleDeathEvent(DeathEvent event) {
+ *         // ...
+ *     }
+ * }
+ * </code>
+ * </pre>
+ */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventHandler {
-    public Class<? extends Component>[]value() default {};
 
-    public Class<? extends Component>[]exclude() default {};
+    /**
+     * Constraints for entities
+     */
+    public WithEntity[]value() default {};
 
+    /**
+     * Priority of this event handler; lower value means it will be executed first.
+     */
     public int priority() default 0;
 }

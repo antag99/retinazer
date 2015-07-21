@@ -21,5 +21,38 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public final class EventB implements Event {
+import com.github.antag99.retinazer.utils.Mask;
+
+public final class FamilyMatcher {
+    private final Mask components;
+    private final Mask excludedComponents;
+    final int index;
+
+    FamilyMatcher(Mask components, Mask excludedComponents, int index) {
+        this.components = components;
+        this.excludedComponents = excludedComponents;
+        this.index = index;
+    }
+
+    public boolean matches(Entity entity) {
+        if (!components.isSubsetOf(entity.components)) {
+            return false;
+        }
+
+        if (excludedComponents.intersects(entity.components)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return index;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
 }

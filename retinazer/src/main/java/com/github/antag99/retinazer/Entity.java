@@ -31,7 +31,18 @@ public final class Entity {
     private Engine engine = null;
     private int index = -1;
 
+    /**
+     * Stores what components this entity has. This is stored with the entities
+     * in order to speed up family filtering, which uses bitwise operations.
+     */
     Mask components = new Mask();
+
+    /**
+     * Stores what families this entity belongs to. This is also stored in a
+     * family to entities mapping, this mask is used for speeding up operations
+     * like event filtering.
+     */
+    Mask families = new Mask();
 
     Entity(Engine engine, int index) {
         this.engine = engine;
@@ -107,22 +118,15 @@ public final class Entity {
      * </p>
      * The preferred usage pattern for this method is using a for-each loop such
      * as:
-     * 
+     *
      * <pre>
      * for (Component component : entity.getComponents()) {
-     *    ...
+     *     ...
      * }
      * </pre>
      */
     public Iterable<Component> getComponents() {
         return engine.componentManager.getComponents(this);
-    }
-
-    /**
-     * Dispatches the given event to the listeners of this entity
-     */
-    public void dispatch(Event event) {
-        engine.eventManager.dispatchEvent(event, this);
     }
 
     public void destroy() {

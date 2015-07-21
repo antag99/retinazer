@@ -21,7 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public abstract class EntitySystem {
+public abstract class EntitySystem implements EventListener {
     public int getPriority() {
         return 0;
     }

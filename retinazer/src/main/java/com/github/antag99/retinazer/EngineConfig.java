@@ -128,7 +128,7 @@ public final class EngineConfig {
     }
 
     @Override
-    public EngineConfig clone() {
+    protected EngineConfig clone() {
         EngineConfig config = new EngineConfig();
         config.dependencies.putAll(dependencies);
         config.systems.putAll(systems);

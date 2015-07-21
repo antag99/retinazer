@@ -21,52 +21,55 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public class EventABCSystem extends EntitySystem {
-    @EventHandler(priority = -5)
-    public void beforeHandleEventA(EventA event, Entity entity) {
+/**
+ * <p>
+ * Pool implementation for recycling objects; this saves the performance impact
+ * of garbage collection, which is mostly important for weak mobile devices.
+ * </p>
+ * <p>
+ * This class is not public API to avoid name clashes with various game libraries.
+ * </p>
+ *
+ * @param <T> Type of objects to be recycled
+ */
+abstract class Pool<T> {
+    private Object[] buffer;
+    private int last = -1;
+
+    public Pool() {
+        this(16);
     }
 
-    @EventHandler(priority = -5)
-    public void beforeHandleEventB(EventB event, Entity entity) {
+    public Pool(int capacity) {
+        buffer = new Object[capacity];
     }
 
-    @EventHandler(priority = -5)
-    public void beforeHandleEventC(EventC event, Entity entity) {
+    /**
+     * Creates a new object; called when this pool has run out of available objects
+     *
+     * @return The new object
+     */
+    protected abstract T create();
+
+    /**
+     * Destroys the given object; called when it is freed to reset to pristine state
+     *
+     * @param object The object to destroy
+     */
+    protected void destroy(T object) {
     }
 
-    @EventHandler(priority = -10)
-    public void beforeHandleEvent(Event event, Entity entity) {
+    @SuppressWarnings("unchecked")
+    public T obtain() {
+        if (last == -1)
+            return create();
+        return (T) buffer[last--];
     }
 
-    @EventHandler(priority = 0)
-    public void handleEventA(EventA event, Entity entity) {
-    }
-
-    @EventHandler(priority = 0)
-    public void handleEventB(EventB event, Entity entity) {
-    }
-
-    @EventHandler(priority = 0)
-    public void handleEventC(EventC event, Entity entity) {
-    }
-
-    @EventHandler(priority = 1)
-    public void handleEvent(Event event, Entity entity) {
-    }
-
-    @EventHandler(priority = 5)
-    public void afterHandleEventA(EventA event, Entity entity) {
-    }
-
-    @EventHandler(priority = 5)
-    public void afterHandleEventB(EventB event, Entity entity) {
-    }
-
-    @EventHandler(priority = 5)
-    public void afterHandleEventC(EventC event, Entity entity) {
-    }
-
-    @EventHandler(priority = 10)
-    public void afterHandleEvent(Event event, Entity entity) {
+    public void free(T object) {
+        if (last < buffer.length) {
+            destroy(object);
+            buffer[++last] = object;
+        }
     }
 }
