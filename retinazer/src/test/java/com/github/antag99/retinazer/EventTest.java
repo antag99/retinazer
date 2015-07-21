@@ -29,7 +29,7 @@ import org.mockito.InOrder;
 
 import com.github.antag99.retinazer.Event.WithEntity;
 
-public class EventTests {
+public class EventTest {
 
     /**
      * Test event that tests no-entity event dispatch
