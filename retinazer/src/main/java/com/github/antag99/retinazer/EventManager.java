@@ -180,6 +180,16 @@ final class EventManager extends EntitySystem {
     }
 
     public void addEventListener(EventListener listener) {
+        if (listener == null)
+            throw new NullPointerException("listener must not be null");
+
+        for (int i = 0, n = handlers.length; i < n; i++) {
+            if (handlers[i].listener == listener) {
+                throw new IllegalArgumentException(
+                    "The given listener has already been added");
+            }
+        }
+
         for (Method method : Internal.getAllMethods(listener.getClass())) {
             EventHandler eventHandler = method.getAnnotation(EventHandler.class);
             if (eventHandler != null) {
