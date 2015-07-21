@@ -27,8 +27,8 @@ import java.lang.annotation.Target;
 
 /**
  * Events are used for communication between systems. They can be parameterized
- * with entities, and then filtered on the listener size using the {@link WithEntity}
- * annotation. All that needs to be done is to add public getters for the entities.
+ * with entities, and then filtered on the handler side using the {@link WithEntity}
+ * annotation. All that needs to be done is adding public getters for the entities.
  *
  * @see WithEntity
  */
@@ -92,13 +92,13 @@ public interface Event {
 
         /**
          * The entity must have <b>all</b> of these components in order for the
-         * listener to receive the event.
+         * handler to receive the event.
          */
         public Class<? extends Component>[]with() default {};
 
         /**
          * The entity must have <b>none</b> of these components in order for the
-         * listener to receive the event.
+         * handler to receive the event.
          */
         public Class<? extends Component>[]exclude() default {};
     }

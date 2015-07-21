@@ -427,14 +427,32 @@ public final class Engine {
         familyManager.removeEntityListener(listener);
     }
 
+    /**
+     * Dispatches the given event to all registered listeners.
+     *
+     * @param event
+     *            The event to dispatch.
+     */
     public void dispatchEvent(Event event) {
         eventManager.dispatchEvent(event);
     }
 
+    /**
+     * Adds the given event listener and registers all it's handlers
+     *
+     * @param listener
+     *            The listener to add.
+     */
     public void addEventListener(EventListener listener) {
         eventManager.addEventListener(listener);
     }
 
+    /**
+     * Removes the given event listeners and unregisteres all it's handlers
+     *
+     * @param listener
+     *            The listener to remove.
+     */
     public void removeEventListener(EventListener listener) {
         eventManager.removeEventListener(listener);
     }
