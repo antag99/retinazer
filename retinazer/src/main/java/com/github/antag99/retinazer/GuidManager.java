@@ -35,12 +35,12 @@ final class GuidManager extends EntitySystem implements EntityListener {
     }
 
     @Override
-    public void entityAdded(Entity entity) {
+    public void entityAdd(Entity entity) {
         entitiesById.put(entity.getGuid(), entity);
     }
 
     @Override
-    public void entityRemoved(Entity entity) {
+    public void entityRemove(Entity entity) {
         entitiesById.remove(entity.getGuid());
     }
 

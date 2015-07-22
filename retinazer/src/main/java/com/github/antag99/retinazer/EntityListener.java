@@ -21,9 +21,24 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+/**
+ * Entity listeners are invoked when an entity gets added or removed from the
+ * members of a family. This happens both when the entity is added or destroyed
+ * and when any of it's components are changed.
+ */
 public interface EntityListener {
 
-    public void entityAdded(Entity entity);
+    /**
+     * Called when the given entity has been added
+     *
+     * @param entity The entity that was added
+     */
+    public void entityAdd(Entity entity);
 
-    public void entityRemoved(Entity entity);
+    /**
+     * Called before the given entity is removed
+     *
+     * @param entity The entity that is to be removed
+     */
+    public void entityRemove(Entity entity);
 }

@@ -125,22 +125,22 @@ final class ComponentManager extends EntitySystem {
             mapper.componentsAdded.clear();
             mapper.componentsRemoved.clear();
 
-            for (int k = componentsRemoved.nextSetBit(0); k != -1; k = componentsRemoved.nextSetBit(k + 1)) {
-                mapper.components.set(k, null);
-            }
-
-            for (int k = componentsAdded.nextSetBit(0); k != -1; k = componentsAdded.nextSetBit(k + 1)) {
-                mapper.components.set(k, mapper.nextComponents.get(k));
-            }
-
-            for (int k = componentsRemoved.nextSetBit(0); k != -1; k = componentsRemoved.nextSetBit(k + 1)) {
-                Entity entity = entityManager.getEntityForIndex(k);
+            for (int ii = componentsRemoved.nextSetBit(0); ii != -1; ii = componentsRemoved.nextSetBit(ii + 1)) {
+                Entity entity = entityManager.getEntityForIndex(ii);
                 entity.components.clear(i);
                 familyManager.updateFamilyMembership(entity, false);
             }
 
-            for (int k = componentsAdded.nextSetBit(0); k != -1; k = componentsAdded.nextSetBit(k + 1)) {
-                Entity entity = entityManager.getEntityForIndex(k);
+            for (int ii = componentsRemoved.nextSetBit(0); ii != -1; ii = componentsRemoved.nextSetBit(ii + 1)) {
+                mapper.components.set(ii, null);
+            }
+
+            for (int ii = componentsAdded.nextSetBit(0); ii != -1; ii = componentsAdded.nextSetBit(ii + 1)) {
+                mapper.components.set(ii, mapper.nextComponents.get(ii));
+            }
+
+            for (int ii = componentsAdded.nextSetBit(0); ii != -1; ii = componentsAdded.nextSetBit(ii + 1)) {
+                Entity entity = entityManager.getEntityForIndex(ii);
                 entity.components.set(i);
                 familyManager.updateFamilyMembership(entity, false);
             }

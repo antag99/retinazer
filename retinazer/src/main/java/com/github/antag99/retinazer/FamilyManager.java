@@ -148,11 +148,11 @@ final class FamilyManager extends EntitySystem {
         EntityListener[] items = this.entityListeners;
 
         for (int i = removeListenerBits.nextSetBit(0); i != -1; i = removeListenerBits.nextSetBit(i + 1)) {
-            items[i].entityRemoved(entity);
+            items[i].entityRemove(entity);
         }
 
         for (int i = addListenerBits.nextSetBit(0); i != -1; i = addListenerBits.nextSetBit(i + 1)) {
-            items[i].entityAdded(entity);
+            items[i].entityAdd(entity);
         }
     }
 

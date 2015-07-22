@@ -146,12 +146,12 @@ public class RetinazerTest {
         Entity entity = engine.createEntity();
         verifyNoMoreInteractions(listener);
         engine.update();
-        verify(listener).entityAdded(entity);
+        verify(listener).entityAdd(entity);
         verifyNoMoreInteractions(listener);
         entity.destroy();
         verifyNoMoreInteractions(listener);
         engine.update();
-        verify(listener).entityRemoved(entity);
+        verify(listener).entityRemove(entity);
         verifyNoMoreInteractions(listener);
     }
 
@@ -173,19 +173,19 @@ public class RetinazerTest {
         entity.add(new FlagComponentA());
         order.verifyNoMoreInteractions();
         engine.update();
-        order.verify(listenerA).entityAdded(entity);
+        order.verify(listenerA).entityAdd(entity);
         order.verifyNoMoreInteractions();
         entity.remove(FlagComponentA.class);
         engine.update();
-        order.verify(listenerA).entityRemoved(entity);
+        order.verify(listenerA).entityRemove(entity);
         order.verifyNoMoreInteractions();
         entity.add(new FlagComponentB());
         engine.update();
-        order.verify(listenerB).entityAdded(entity);
+        order.verify(listenerB).entityAdd(entity);
         order.verifyNoMoreInteractions();
         entity.destroy();
         engine.update();
-        order.verify(listenerB).entityRemoved(entity);
+        order.verify(listenerB).entityRemove(entity);
         order.verifyNoMoreInteractions();
     }
 
