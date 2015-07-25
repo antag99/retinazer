@@ -74,7 +74,6 @@ public final class Engine {
     }
 
     private void initialize() {
-        injectDependencies(this);
         for (int i = 0, n = systems.length; i < n; i++) {
             injectDependencies(systems[i]);
         }
@@ -104,7 +103,6 @@ public final class Engine {
         guidManager.reset();
         eventManager.reset();
         familyManager.reset();
-        uninjectDependencies(this);
     }
 
     /**
