@@ -10,7 +10,7 @@ deploy:
     branch: master
 # Stores the GIT_NAME, GIT_EMAIL and GH_TOKEN environment variables
 # travis encrypt -r <username>/<repository> \
-#     'GIT_NAME="<username>" GIT_EMAIL="<email>" GH_TOKEN="<auth token>"'
+#     'GH_TOKEN=<auth token>'
 env:
   global:
-    secure: "nYbSuiuZ2wRV8+0zoOoI2rZW3MvvG1jjq2iQotN3MI7ph8jt4a+6eTu+kz3BzzVa2V4zK6q7Z4z8+tU/qYAFXs0Ds5irwBxem3lGGVQ9gdv4YpNl1Ud5gQLWgVW+tlqIRPhnfnM4um5fDoYP5WQ1lKMbdRyjmJyc9LvdTffwX9Zm10/6+h24O1SP9AXKpfsKMbAzp2rJmqdI7Gs+J4RQoEjaekEb6eMcmKuO5ogLaMBPiiVr0pq+z02KLRgV+8ke3PRQgayx/3fd2c62fYM6OElMaWtl/LWerATvKeund8bmKUKYNz+fBDJnGWVRog32BqKDCbseKHNLQD+bHzwBFNqf66cLXsF1mcRp/pEPxlIoY2FgPBcmw43y5FIkDL7tFwtd05WQtwCQ+zyqWgjbysBQpVOHpr6QfJTw27apt4kGwER168yf1jmDB3BMZHBv5qbXkmdNr8fF799CGRFgyE1F0LZmqSDhc7wecwb1+NLsylQJtY0fu6rshTlG1Q3vD2qioh2ur0JEKqLGVKpWRCw7EDB8OeI00/iOl4flJfKJ1iKp01IjZLb7TVUjJpu4QTV7McEWgqaUqXB+YXL0/rjQ/CG5pPQ/JAbtzey4fRHBfrkOtc2PDFRiNJR+ibQ57kD+HmScJWlYtN2RzuvC90zp6/OhLzwdBQhMnu+jtHY="
+    secure: "TveiBmYBb5FsoWLamSsLj4FWVzOKrfKFD38Fi7BRfyxxM9fdKQJtNZco+r4XzgdGtZCub4nIZ5MOygASFLkYPZ5A794a/3sVnuCRHnGtX4obcqq+/EiCM4TKxr9YNTK/okTYt89+bYrjWrymetElLSRudxuTec3SGLWn9WeShPVK7GuGDVuNj5/r3F4p0I/WVzBgfckkJ07Gwzhf94gg0lUDH5n4sWtP/i/b/trkotq+xRd+m3474NfOae/lI7KuIXR5vzQQlaU43MfE81Ijh85tIh/WGstuVeO/GfBuZZQosZkxmwGFDD9HZUmve2ZE1sFwzc+X8AIZFc2P4kjK5iCHo2PpTFNPT50hcNHfkb/zNxJMjKXiUZ55NPvQ8jGuSuFTqZGzq552DFVAdhL4LKVC1f2EWXybPjv95Ei2owBQ6wbQkNz8DfkYEvbAW70Yai/qCNvR1GFXeWj4U6jj9v9a+aDWmeYmaw79StEoA/J54bJ5v1/4U3C5Qksp7ubgOepRRG0148ziEqcC6aeVnm8FLYWOuijuMfBMGNVn8yZSRpCne6tyZapZ6y0VDO5FC1XQqxjYXQASEUJjMg/oLmHPDau0UxtK8uxXPUj36dxKWaIwgFbs8jVdu0jXLifu3HTxrYsQVbrCSH8b0GHITRpXwj1e1YpUzv8lj4Geijc="

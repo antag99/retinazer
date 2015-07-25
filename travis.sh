@@ -13,8 +13,8 @@ git fetch
 
 REVISION=`git rev-parse HEAD`
 
-git config user.name ${GIT_NAME}
-git config user.email ${GIT_EMAIL}
+git config user.name "Anton Gustafsson Bot"
+git config user.email "antag99bot@gmail.com"
 git config credential.helper "store --file=.git/credentials"
 printf "%s" "https://${GH_TOKEN}:@github.com" > .git/credentials
 
