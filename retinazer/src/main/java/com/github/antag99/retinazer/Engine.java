@@ -120,10 +120,11 @@ public final class Engine {
      * <li>Removes all event listeners</li>
      * <li>Calls {@link #uninjectDependencies(Object)} with each system</li>
      * <li>Removes all remaining entities (no notifications here)</li>
-     * <li>Calls {@link #injectDependencies(Object) with each system</li>
+     * <li>Calls {@link #injectDependencies(Object)} with each system</li>
      * <li>Adds all systems as event listeners</li>
      * <li>Calls {@link EntitySystem#initialize()} for each system</li>
      * </ul>
+     *
      * After this method has been called, the engine should be in it's initial
      * state, same as right after it was created. (This can, however, be
      * affected by improper implementations of registered systems.)
