@@ -44,6 +44,9 @@ public final class LongBag {
 
     public void set(int index, long value) {
         if (index >= buffer.length) {
+            if (value == 0L) {
+                return;
+            }
             buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
         }
 

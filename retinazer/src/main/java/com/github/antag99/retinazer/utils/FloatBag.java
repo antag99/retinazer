@@ -44,6 +44,9 @@ public final class FloatBag {
 
     public void set(int index, float value) {
         if (index >= buffer.length) {
+            if (value == 0f) {
+                return;
+            }
             buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
         }
 

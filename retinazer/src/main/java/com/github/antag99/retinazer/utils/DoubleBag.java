@@ -44,6 +44,9 @@ public final class DoubleBag {
 
     public void set(int index, double value) {
         if (index >= buffer.length) {
+            if (value == 0d) {
+                return;
+            }
             buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
         }
 

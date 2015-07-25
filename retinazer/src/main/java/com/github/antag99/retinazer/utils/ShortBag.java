@@ -44,6 +44,9 @@ public final class ShortBag {
 
     public void set(int index, short value) {
         if (index >= buffer.length) {
+            if (value == 0) {
+                return;
+            }
             buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
         }
 

@@ -58,6 +58,9 @@ public final class Bag<E> {
 
     public void set(int index, E value) {
         if (index >= buffer.length) {
+            if (value == null) {
+                return;
+            }
             buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
         }
 
