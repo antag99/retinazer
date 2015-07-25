@@ -61,6 +61,14 @@ public final class EngineConfig {
         return dependenciesView;
     }
 
+    public EntitySystem getSystem(Class<? extends EntitySystem> systemType) {
+        EntitySystem system = systems.get(systemType);
+        if (system == null) {
+            throw new IllegalArgumentException("System not registered: " + systemType);
+        }
+        return system;
+    }
+
     public Iterable<EntitySystem> getSystems() {
         return systemsView;
     }
