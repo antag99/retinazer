@@ -27,7 +27,7 @@ import java.util.Map;
 final class GuidManager extends EntitySystem implements EntityListener {
     private Map<Long, Entity> entitiesById = new HashMap<Long, Entity>();
 
-    public GuidManager(EngineConfig config) {
+    public GuidManager(Engine engine) {
     }
 
     public Entity getEntityForGuid(long guid) {

@@ -48,29 +48,24 @@ public final class Engine {
     };
 
     EngineConfig config;
-    @Inject
     EntityManager entityManager;
-    @Inject
     ComponentManager componentManager;
-    @Inject
     FamilyManager familyManager;
-    @Inject
     EventManager eventManager;
-    @Inject
     GuidManager guidManager;
-    @Inject
     ComponentMapper<GuidComponent> guidMapper;
 
     Engine(EngineConfig config) {
         this.config = config;
         List<EntitySystem> systems = new ArrayList<EntitySystem>();
-        systems.add(new EntityManager(config));
-        systems.add(new ComponentManager(config));
-        systems.add(new FamilyManager(config));
-        systems.add(new EventManager(config));
-        systems.add(new GuidManager(config));
+        systems.add(entityManager = new EntityManager(this));
+        systems.add(componentManager = new ComponentManager(this));
+        systems.add(familyManager = new FamilyManager(this));
+        systems.add(eventManager = new EventManager(this));
+        systems.add(guidManager = new GuidManager(this));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
+        guidMapper = componentManager.getMapper(GuidComponent.class);
         initialize();
     }
 

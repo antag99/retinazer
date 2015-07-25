@@ -34,22 +34,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.github.antag99.retinazer.Event.WithEntity;
-import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class EventManager extends EntitySystem {
-    private @Inject Engine engine;
-    private Set<Class<? extends Event>> eventTypes = new HashSet<>();
-    private Map<EventConstraint, Mask> constraints = new HashMap<>();
-    private EventHandlerData[] handlers = new EventHandlerData[0];
-
-    private Mask getHandlers(EventConstraint constraint) {
-        Mask handlerMask = constraints.get(constraint);
-        if (handlerMask == null) {
-            constraints.put(constraint, handlerMask = new Mask());
-        }
-        return handlerMask;
-    }
 
     /*
      * Event constraints are used to mask event handlers based on some criteria.
@@ -139,10 +126,24 @@ final class EventManager extends EntitySystem {
         }
     }
 
-    public EventManager(EngineConfig config) {
-        for (Class<? extends Event> eventType : config.getEventTypes()) {
+    private Engine engine;
+    private Set<Class<? extends Event>> eventTypes = new HashSet<>();
+    private Map<EventConstraint, Mask> constraints = new HashMap<>();
+    private EventHandlerData[] handlers = new EventHandlerData[0];
+
+    public EventManager(Engine engine) {
+        this.engine = engine;
+        for (Class<? extends Event> eventType : engine.config.getEventTypes()) {
             eventTypes.add(eventType);
         }
+    }
+
+    private Mask getHandlers(EventConstraint constraint) {
+        Mask handlerMask = constraints.get(constraint);
+        if (handlerMask == null) {
+            constraints.put(constraint, handlerMask = new Mask());
+        }
+        return handlerMask;
     }
 
     public void reset() {

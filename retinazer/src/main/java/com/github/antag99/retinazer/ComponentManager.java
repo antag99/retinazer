@@ -26,20 +26,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class ComponentManager extends EntitySystem {
     private ComponentMapper<?>[] componentMappers;
 
-    private @Inject Engine engine;
-    private @Inject EntityManager entityManager;
-    private @Inject FamilyManager familyManager;
+    private Engine engine;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public ComponentManager(EngineConfig config) {
+    public ComponentManager(Engine engine) {
+        this.engine = engine;
         List<ComponentMapper<?>> componentMappers = new ArrayList<ComponentMapper<?>>();
-        for (Class<? extends Component> componentType : config.getComponentTypes()) {
+        for (Class<? extends Component> componentType : engine.config.getComponentTypes()) {
             componentMappers.add(new ComponentMapper(componentType));
         }
         this.componentMappers = componentMappers.toArray(new ComponentMapper[0]);
@@ -126,9 +124,9 @@ final class ComponentManager extends EntitySystem {
             mapper.componentsRemoved.clear();
 
             for (int ii = componentsRemoved.nextSetBit(0); ii != -1; ii = componentsRemoved.nextSetBit(ii + 1)) {
-                Entity entity = entityManager.getEntityForIndex(ii);
+                Entity entity = engine.entityManager.getEntityForIndex(ii);
                 entity.components.clear(i);
-                familyManager.updateFamilyMembership(entity, false);
+                engine.familyManager.updateFamilyMembership(entity, false);
             }
 
             for (int ii = componentsRemoved.nextSetBit(0); ii != -1; ii = componentsRemoved.nextSetBit(ii + 1)) {
@@ -140,9 +138,9 @@ final class ComponentManager extends EntitySystem {
             }
 
             for (int ii = componentsAdded.nextSetBit(0); ii != -1; ii = componentsAdded.nextSetBit(ii + 1)) {
-                Entity entity = entityManager.getEntityForIndex(ii);
+                Entity entity = engine.entityManager.getEntityForIndex(ii);
                 entity.components.set(i);
-                familyManager.updateFamilyMembership(entity, false);
+                engine.familyManager.updateFamilyMembership(entity, false);
             }
 
             engine.maskPool.free(componentsAdded);

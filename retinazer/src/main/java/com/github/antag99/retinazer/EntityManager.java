@@ -22,7 +22,6 @@
 package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.utils.Bag;
-import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
 import com.github.antag99.retinazer.utils.GuidComponent;
 
@@ -35,11 +34,10 @@ final class EntityManager extends EntitySystem {
     Mask nextEntities = new Mask();
     Mask tmpMask = new Mask();
 
-    private @Inject Engine engine;
-    private @Inject FamilyManager familyManager;
-    private @Inject ComponentManager componentManager;
+    private Engine engine;
 
-    public EntityManager(EngineConfig config) {
+    public EntityManager(Engine engine) {
+        this.engine = engine;
     }
 
     public Entity createEntity() {
@@ -60,7 +58,7 @@ final class EntityManager extends EntitySystem {
         if (!nextEntities.get(entity.getIndex()))
             return;
         nextEntities.clear(entity.getIndex());
-        componentManager.destroyComponents(entity);
+        engine.componentManager.destroyComponents(entity);
     }
 
     public Entity getEntityForIndex(int index) {
@@ -83,7 +81,7 @@ final class EntityManager extends EntitySystem {
 
         for (int i = addedEntities.nextSetBit(0); i != -1; i = addedEntities.nextSetBit(i + 1)) {
             Entity entity = entities.get(i);
-            familyManager.updateFamilyMembership(entity, false);
+            engine.familyManager.updateFamilyMembership(entity, false);
         }
     }
 
@@ -95,7 +93,7 @@ final class EntityManager extends EntitySystem {
 
         for (int i = removedEntities.nextSetBit(0); i != -1; i = removedEntities.nextSetBit(i + 1)) {
             Entity entity = entities.get(i);
-            familyManager.updateFamilyMembership(entity, true);
+            engine.familyManager.updateFamilyMembership(entity, true);
             entities.set(i, null);
         }
     }

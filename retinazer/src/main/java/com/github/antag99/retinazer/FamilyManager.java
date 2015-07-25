@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.antag99.retinazer.utils.Bag;
-import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager extends EntitySystem {
@@ -37,11 +36,10 @@ final class FamilyManager extends EntitySystem {
 
     private Bag<EntitySet> entitiesForFamily = new Bag<EntitySet>();
 
-    private @Inject Engine engine;
-    private @Inject EntityManager entityManager;
-    private @Inject ComponentManager componentManager;
+    private Engine engine;
 
-    public FamilyManager(EngineConfig config) {
+    public FamilyManager(Engine engine) {
+        this.engine = engine;
     }
 
     public EntitySet getEntities() {
@@ -59,17 +57,17 @@ final class FamilyManager extends EntitySystem {
             Mask excludedComponents = new Mask();
 
             for (Class<? extends Component> componentType : config.getComponents())
-                components.set(componentManager.getIndex(componentType));
+                components.set(engine.componentManager.getIndex(componentType));
             for (Class<? extends Component> componentType : config.getExcludedComponents())
-                excludedComponents.set(componentManager.getIndex(componentType));
+                excludedComponents.set(engine.componentManager.getIndex(componentType));
 
             familyIndexes.put(config.clone(), index);
             families.set(index, new FamilyMatcher(components, excludedComponents, index));
             entitiesForFamily.set(index, new EntitySet(engine));
             listenersForFamily.set(index, new Mask());
 
-            for (int i = entityManager.currentEntities.nextSetBit(0); i != -1; i = entityManager.currentEntities.nextSetBit(i + 1)) {
-                updateFamilyMembership(entityManager.getEntityForIndex(i), false);
+            for (int i = engine.entityManager.currentEntities.nextSetBit(0); i != -1; i = engine.entityManager.currentEntities.nextSetBit(i + 1)) {
+                updateFamilyMembership(engine.entityManager.getEntityForIndex(i), false);
             }
         }
 
