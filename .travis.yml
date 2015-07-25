@@ -5,7 +5,7 @@ after_success:
   - mvn clean test jacoco:report coveralls:report
 deploy:
   provider: script
-  script: ./deploy.sh
+  script: ./travis.sh
   on:
     branch: master
 # Stores the GIT_NAME, GIT_EMAIL and GH_TOKEN environment variables
