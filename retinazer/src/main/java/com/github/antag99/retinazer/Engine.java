@@ -448,7 +448,7 @@ public final class Engine {
     }
 
     /**
-     * Removes the given event listeners and unregisteres all it's handlers
+     * Removes the given event listeners and unregisters all it's handlers
      *
      * @param listener
      *            The listener to remove.
