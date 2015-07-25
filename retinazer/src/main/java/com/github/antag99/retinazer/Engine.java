@@ -405,7 +405,7 @@ public final class Engine {
 
     /**
      * Adds the given entity listener, which will be invoked every time an
-     * entity is adGUIDded/removed to/from the set of entities matched by the
+     * entity is added/removed to/from the set of entities matched by the
      * given family; this happens both when an entity's components are changed
      * and when it's destroyed.
      *
