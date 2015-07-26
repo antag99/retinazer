@@ -6,24 +6,25 @@ import org.openjdk.jmh.annotations.Setup;
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
+import com.artemis.WorldConfiguration;
 
 public class IterationBenchmark extends ArtemisBenchmark {
     private World world;
 
     @Setup
     public void setup() {
-        world = new World();
         // @off
-        world.setSystem(new IterationSystem(ComponentA.class) {});
-        world.setSystem(new IterationSystem(ComponentB.class) {});
-        world.setSystem(new IterationSystem(ComponentC.class) {});
-        world.setSystem(new IterationSystem(ComponentD.class) {});
-        world.setSystem(new IterationSystem(ComponentE.class) {});
-        world.setSystem(new IterationSystem(ComponentF.class) {});
-        world.setSystem(new IterationSystem(ComponentG.class) {});
-        world.setSystem(new IterationSystem(ComponentH.class) {});
+        world = new World(new WorldConfiguration()
+                .setSystem(new IterationSystem(ComponentA.class) {})
+                .setSystem(new IterationSystem(ComponentB.class) {})
+                .setSystem(new IterationSystem(ComponentC.class) {})
+                .setSystem(new IterationSystem(ComponentD.class) {})
+                .setSystem(new IterationSystem(ComponentE.class) {})
+                .setSystem(new IterationSystem(ComponentF.class) {})
+                .setSystem(new IterationSystem(ComponentG.class) {})
+                .setSystem(new IterationSystem(ComponentH.class) {})
+        );
         // @on
-        world.initialize();
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
         for (int i = 0, n = getEntityCount(); i < n; ++i) {

@@ -12,7 +12,7 @@ public abstract class IterationSystem extends EntityProcessingSystem {
 
     @SuppressWarnings("unchecked")
     public IterationSystem(Class<? extends Component> componentType) {
-        super(Aspect.getAspectForAll(componentType));
+        super(Aspect.all(componentType));
     }
 
     @Override

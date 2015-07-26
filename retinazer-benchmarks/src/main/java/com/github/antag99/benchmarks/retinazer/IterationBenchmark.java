@@ -12,8 +12,8 @@ public class IterationBenchmark extends RetinazerBenchmark {
 
     @Setup
     public void setup() {
+        // @off
         engine = getConfig()
-                // @off
                 .withSystem(new IterationSystem(ComponentA.class) {})
                 .withSystem(new IterationSystem(ComponentB.class) {})
                 .withSystem(new IterationSystem(ComponentC.class) {})
@@ -22,8 +22,8 @@ public class IterationBenchmark extends RetinazerBenchmark {
                 .withSystem(new IterationSystem(ComponentF.class) {})
                 .withSystem(new IterationSystem(ComponentG.class) {})
                 .withSystem(new IterationSystem(ComponentH.class) {})
-                // @on
                 .finish();
+        // @on
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
         for (int i = 0, n = getEntityCount(); i < n; ++i) {
