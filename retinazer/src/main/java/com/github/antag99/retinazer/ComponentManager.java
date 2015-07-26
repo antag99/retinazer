@@ -84,12 +84,8 @@ final class ComponentManager extends EntitySystem {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Component> ComponentMapper<T> getMapper(int index) {
-        return (ComponentMapper<T>) componentMappers[index];
-    }
-
     public <T extends Component> ComponentMapper<T> getMapper(Class<T> componentType) {
-        return getMapper(getIndex(componentType));
+        return (ComponentMapper<T>) componentMappers[getIndex(componentType)];
     }
 
     public Iterable<Component> getComponents(final Entity entity) {
