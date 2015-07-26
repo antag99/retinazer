@@ -360,10 +360,30 @@ public final class Engine {
      * @throws IllegalArgumentException If the system does not exist
      */
     public <T extends EntitySystem> T getSystem(Class<T> systemClass) {
+        return getSystem(systemClass, false);
+    }
+
+    /**
+     * Gets the system of the given type. Note that only one system of a type
+     * can exist in an engine configuration.
+     *
+     * @param systemClass The type of the system
+     * @param optional Whether to return {@code null} if the system does not exist
+     * @return The system, or {@code null} if {@code optional} is {@code true} and
+     *         the system does not exist.
+     * @throws IllegalArgumentException If {@code optional} is {@code false} and
+     *             the system does not exist.
+     */
+    public <T extends EntitySystem> T getSystem(Class<T> systemClass, boolean optional) {
         for (int i = 0, n = systems.length; i < n; i++)
             if (systems[i].getClass() == systemClass)
                 return systemClass.cast(systems[i]);
-        throw new IllegalArgumentException("System not registered: " + systemClass.getName());
+
+        if (!optional) {
+            throw new IllegalArgumentException("System not registered: " + systemClass.getName());
+        } else {
+            return null;
+        }
     }
 
     /**
