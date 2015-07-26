@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
@@ -54,6 +56,79 @@ public class EntityTest {
         assertEqualsUnordered(
                 Arrays.asList(newFlagComponentA, newFlagComponentC),
                 entity.getComponents());
+    }
+
+    @Test
+    public void testComponentIteratorRemove() {
+        Engine engine = EngineConfig.create()
+                .withComponentType(FlagComponentA.class)
+                .withComponentType(FlagComponentB.class)
+                .withComponentType(FlagComponentC.class)
+                .finish();
+        Entity entity = engine.createEntity();
+        FlagComponentA flagComponentA = new FlagComponentA();
+        FlagComponentB flagComponentB = new FlagComponentB();
+        FlagComponentC flagComponentC = new FlagComponentC();
+        entity.add(flagComponentA);
+        entity.add(flagComponentB);
+        entity.add(flagComponentC);
+        engine.update();
+        assertEqualsUnordered(
+                Arrays.asList(flagComponentA, flagComponentB, flagComponentC),
+                entity.getComponents());
+        Iterator<Component> iterator = entity.getComponents().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next() == flagComponentB) {
+                iterator.remove();
+            }
+        }
+        assertEqualsUnordered(
+                Arrays.asList(flagComponentA, flagComponentB, flagComponentC),
+                entity.getComponents());
+        engine.update();
+        assertEqualsUnordered(
+                Arrays.asList(flagComponentA, flagComponentC),
+                entity.getComponents());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testComponentIteratorIllegalStateException() {
+        Engine engine = EngineConfig.create()
+                .withComponentType(FlagComponentA.class)
+                .withComponentType(FlagComponentB.class)
+                .withComponentType(FlagComponentC.class)
+                .finish();
+        Entity entity = engine.createEntity();
+        FlagComponentA flagComponentA = new FlagComponentA();
+        FlagComponentB flagComponentB = new FlagComponentB();
+        FlagComponentC flagComponentC = new FlagComponentC();
+        entity.add(flagComponentA);
+        entity.add(flagComponentB);
+        entity.add(flagComponentC);
+        engine.update();
+        entity.getComponents().iterator().remove();
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testComponentIteratorNoSuchElementException() {
+        Engine engine = EngineConfig.create()
+                .withComponentType(FlagComponentA.class)
+                .withComponentType(FlagComponentB.class)
+                .withComponentType(FlagComponentC.class)
+                .finish();
+        Entity entity = engine.createEntity();
+        FlagComponentA flagComponentA = new FlagComponentA();
+        FlagComponentB flagComponentB = new FlagComponentB();
+        FlagComponentC flagComponentC = new FlagComponentC();
+        entity.add(flagComponentA);
+        entity.add(flagComponentB);
+        entity.add(flagComponentC);
+        engine.update();
+        Iterator<Component> iterator = entity.getComponents().iterator();
+        iterator.next();
+        iterator.next();
+        iterator.next();
+        iterator.next();
     }
 
     @Test
