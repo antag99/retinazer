@@ -32,10 +32,10 @@ public class EntityListenerTest {
         EntityListener listenerB = mock(EntityListener.class);
         InOrder order = inOrder(listenerA, listenerB);
         Engine engine = EngineConfig.create()
-            .withComponentType(FlagComponentA.class)
-            .withComponentType(FlagComponentB.class)
-            .withComponentType(FlagComponentC.class)
-            .finish();
+                .withComponentType(FlagComponentA.class)
+                .withComponentType(FlagComponentB.class)
+                .withComponentType(FlagComponentC.class)
+                .finish();
         engine.addEntityListener(Family.with(FlagComponentA.class), listenerA);
         engine.addEntityListener(Family.with(FlagComponentB.class), listenerB);
         Entity entity = engine.createEntity();

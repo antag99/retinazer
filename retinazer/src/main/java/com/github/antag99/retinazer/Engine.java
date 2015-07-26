@@ -143,7 +143,7 @@ public final class Engine {
                 } else if (dependencyType == ComponentMapper.class) {
                     Type param = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                     dependency = getSystem(ComponentManager.class)
-                        .getMapper(((Class<?>) param).asSubclass(Component.class));
+                            .getMapper(((Class<?>) param).asSubclass(Component.class));
                 } else if (EntitySystem.class.isAssignableFrom(dependencyType)) {
                     dependency = getSystem(field.getType().asSubclass(EntitySystem.class));
                 } else if (dependencyType.isPrimitive()) {

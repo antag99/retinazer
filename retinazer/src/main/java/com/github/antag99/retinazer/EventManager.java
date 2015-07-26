@@ -88,7 +88,7 @@ final class EventManager extends EntitySystem {
         public boolean accept(Event event) {
             try {
                 return type.isInstance(event) &&
-                    ((Entity) getter.invoke(event)).families.get(family);
+                        ((Entity) getter.invoke(event)).families.get(family);
             } catch (IllegalAccessException ex) {
                 // Shouldn't happen as methods are marked as accessible
                 throw new AssertionError(ex);
@@ -104,8 +104,8 @@ final class EventManager extends EntitySystem {
                 return false;
             FamilyConstraint other = (FamilyConstraint) obj;
             return other.type.equals(type) &&
-                other.getter.equals(getter) &&
-                other.family == family;
+                    other.getter.equals(getter) &&
+                    other.family == family;
         }
 
         @Override
@@ -155,7 +155,7 @@ final class EventManager extends EntitySystem {
         // Waste speed by checking for consistency
         if (!eventTypes.contains(event.getClass())) {
             throw new IllegalArgumentException("Event type "
-                + event.getClass().getName() + " has not been registered");
+                    + event.getClass().getName() + " has not been registered");
         }
 
         Mask excluded = engine.maskPool.obtain();
@@ -187,7 +187,7 @@ final class EventManager extends EntitySystem {
         for (int i = 0, n = handlers.length; i < n; i++) {
             if (handlers[i].listener == listener) {
                 throw new IllegalArgumentException(
-                    "The given listener has already been added");
+                        "The given listener has already been added");
             }
         }
 
@@ -197,17 +197,17 @@ final class EventManager extends EntitySystem {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes.length != 1) {
                     throw new IllegalArgumentException("Invalid @EventHandler:"
-                        + " Expected event argument");
+                            + " Expected event argument");
                 }
                 if (!Event.class.isAssignableFrom(parameterTypes[0])) {
                     throw new IllegalArgumentException("Invalid @EventHandler:"
-                        + " Argument must be a subclass of Event");
+                            + " Argument must be a subclass of Event");
                 }
                 Class<? extends Event> handlerType = parameterTypes[0].asSubclass(Event.class);
 
                 if (!eventTypes.contains(handlerType)) {
                     throw new IllegalArgumentException("Event type "
-                        + handlerType.getName() + " has not been registered");
+                            + handlerType.getName() + " has not been registered");
                 }
 
                 int priority = eventHandler.priority();
@@ -229,41 +229,41 @@ final class EventManager extends EntitySystem {
                 // Replace defaults based on @WithEntity annotations
                 for (WithEntity withEntity : eventHandler.value()) {
                     FamilyMatcher family = engine.getMatcher(Family
-                        .with(withEntity.with())
-                        .exclude(withEntity.exclude()));
+                            .with(withEntity.with())
+                            .exclude(withEntity.exclude()));
                     String propertyName = withEntity.name();
                     String getterName = format("get%s%s",
-                        Character.toUpperCase(propertyName.charAt(0)),
-                        propertyName.substring(1));
+                            Character.toUpperCase(propertyName.charAt(0)),
+                            propertyName.substring(1));
                     Method getter;
                     try {
                         getter = handlerType.getMethod(getterName);
                         getter.setAccessible(true);
                     } catch (NoSuchMethodException ex) {
                         throw new IllegalArgumentException(
-                            "No getter for property " + propertyName
-                                + " was found on " + handlerType.getName());
+                                "No getter for property " + propertyName
+                                        + " was found on " + handlerType.getName());
                     }
                     if (Modifier.isStatic(getter.getModifiers())) {
                         throw new IllegalArgumentException(
-                            "Property " + propertyName + " cannot be static");
+                                "Property " + propertyName + " cannot be static");
                     }
                     if (getter.getReturnType() != Entity.class) {
                         throw new IllegalArgumentException(
-                            "Property " + propertyName + " must be an Entity");
+                                "Property " + propertyName + " must be an Entity");
                     }
                     FamilyConstraint constraint = new FamilyConstraint(getter, family);
                     getHandlers(constraint).set(insertionIndex);
                 }
 
                 EventHandlerData eventHandlerData = new EventHandlerData(
-                    listener, priority, method);
+                        listener, priority, method);
 
                 EventHandlerData[] newHandlers = new EventHandlerData[handlers.length + 1];
                 System.arraycopy(handlers, 0, newHandlers, 0, insertionIndex);
                 System.arraycopy(handlers, insertionIndex,
-                    newHandlers, insertionIndex + 1,
-                    handlers.length - insertionIndex);
+                        newHandlers, insertionIndex + 1,
+                        handlers.length - insertionIndex);
                 newHandlers[insertionIndex] = eventHandlerData;
                 handlers = newHandlers;
             }

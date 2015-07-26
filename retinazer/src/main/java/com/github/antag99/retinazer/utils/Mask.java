@@ -140,7 +140,7 @@ public final class Mask {
         }
         long word = words[wordIndex];
         words[wordIndex] = (word & ((1L << index) - 1)) |
-            ((word & ~((1L << index) - 1)) << 1);
+                ((word & ~((1L << index) - 1)) << 1);
         boolean carry = (word >>> 63) != 0;
         for (int i = wordIndex + 1, n = words.length; i < n; i++) {
             word = words[i];
@@ -167,7 +167,7 @@ public final class Mask {
         }
         long word = words[wordIndex];
         words[wordIndex] = (word & ((1L << index) - 1)) |
-            (((word >> 1) & ~((1L << index) - 1)));
+                (((word >> 1) & ~((1L << index) - 1)));
         for (int i = wordIndex + 1, n = words.length; i < n; i++) {
             // Carry bit
             if ((words[i] & 1) != 0)

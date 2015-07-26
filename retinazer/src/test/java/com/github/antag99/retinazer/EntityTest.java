@@ -12,10 +12,10 @@ public class EntityTest {
     @Test
     public void testEntity() {
         Engine engine = EngineConfig.create()
-            .withComponentType(FlagComponentA.class)
-            .withComponentType(FlagComponentB.class)
-            .withComponentType(FlagComponentC.class)
-            .finish();
+                .withComponentType(FlagComponentA.class)
+                .withComponentType(FlagComponentB.class)
+                .withComponentType(FlagComponentC.class)
+                .finish();
         Entity entity = engine.createEntity();
         FlagComponentA flagComponentA = new FlagComponentA();
         FlagComponentB flagComponentB = new FlagComponentB();
@@ -24,36 +24,36 @@ public class EntityTest {
         entity.add(flagComponentB);
         entity.add(flagComponentC);
         assertEqualsUnordered(
-            Arrays.asList(),
-            entity.getComponents());
+                Arrays.asList(),
+                entity.getComponents());
         engine.update();
         assertEqualsUnordered(
-            Arrays.asList(flagComponentA, flagComponentB, flagComponentC),
-            entity.getComponents());
+                Arrays.asList(flagComponentA, flagComponentB, flagComponentC),
+                entity.getComponents());
         entity.remove(FlagComponentB.class);
         assertEqualsUnordered(
-            Arrays.asList(flagComponentA, flagComponentB, flagComponentC),
-            entity.getComponents());
+                Arrays.asList(flagComponentA, flagComponentB, flagComponentC),
+                entity.getComponents());
         engine.update();
         assertEqualsUnordered(
-            Arrays.asList(flagComponentA, flagComponentC),
-            entity.getComponents());
+                Arrays.asList(flagComponentA, flagComponentC),
+                entity.getComponents());
         FlagComponentA newFlagComponentA = new FlagComponentA();
         entity.add(newFlagComponentA);
         assertEqualsUnordered(
-            Arrays.asList(flagComponentA, flagComponentC),
-            entity.getComponents());
+                Arrays.asList(flagComponentA, flagComponentC),
+                entity.getComponents());
         engine.update();
         assertEqualsUnordered(
-            Arrays.asList(newFlagComponentA, flagComponentC),
-            entity.getComponents());
+                Arrays.asList(newFlagComponentA, flagComponentC),
+                entity.getComponents());
         FlagComponentC newFlagComponentC = new FlagComponentC();
         entity.remove(FlagComponentC.class);
         entity.add(newFlagComponentC);
         engine.update();
         assertEqualsUnordered(
-            Arrays.asList(newFlagComponentA, newFlagComponentC),
-            entity.getComponents());
+                Arrays.asList(newFlagComponentA, newFlagComponentC),
+                entity.getComponents());
     }
 
     @Test

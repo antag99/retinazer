@@ -82,17 +82,17 @@ public class EventTest {
         }
 
         @EventHandler(value = {
-            @WithEntity(name = "entity", with = {
-                FlagComponentA.class
-            })
+                @WithEntity(name = "entity", with = {
+                        FlagComponentA.class
+                })
         }, priority = 3)
         public void handleTestEventWithEntityA(TestEventWithEntity event) {
         }
 
         @EventHandler(value = {
-            @WithEntity(name = "entity", with = {
-                FlagComponentB.class
-            })
+                @WithEntity(name = "entity", with = {
+                        FlagComponentB.class
+                })
         }, priority = 4)
         public void handleTestEventWithEntityB(TestEventWithEntity event) {
         }
@@ -105,14 +105,14 @@ public class EventTest {
     @Test
     public void testEventHandler() {
         Engine engine = EngineConfig.create()
-            .withComponentType(FlagComponentA.class)
-            .withComponentType(FlagComponentB.class)
-            .withEventType(TestEvent.class)
-            .withEventType(TestEventFlag.class)
-            .withEventType(TestEventWithFlag.class)
-            .withEventType(TestEventWithEntity.class)
-            .withEventType(TestEventWithEntityAndFlag.class)
-            .finish();
+                .withComponentType(FlagComponentA.class)
+                .withComponentType(FlagComponentB.class)
+                .withEventType(TestEvent.class)
+                .withEventType(TestEventFlag.class)
+                .withEventType(TestEventWithFlag.class)
+                .withEventType(TestEventWithEntity.class)
+                .withEventType(TestEventWithEntityAndFlag.class)
+                .finish();
         TestEventListener testEventListener = mock(TestEventListener.class);
         InOrder order = inOrder(testEventListener);
         engine.addEventListener(testEventListener);
