@@ -23,8 +23,10 @@ package com.github.antag99.retinazer;
 
 import static java.util.Collections.unmodifiableCollection;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,26 +41,25 @@ import com.github.antag99.retinazer.utils.GuidComponent;
 public final class EngineConfig {
     private static final EngineConfig DEFAULT = new EngineConfig()
             .withComponentType(GuidComponent.class)
-            .withEventType(Event.class);
+            .withEventType(Event.class)
+            .withDependencyProvider(new EngineProvider())
+            .withDependencyProvider(new ComponentMapperProvider())
+            .withDependencyProvider(new EntitySystemProvider());
 
     private EngineConfig() {
     }
 
-    private final Map<Class<?>, Object> dependencies = new LinkedHashMap<Class<?>, Object>();
     private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<Class<?>, EntitySystem>();
     private final Set<Class<? extends Component>> componentTypes = new LinkedHashSet<Class<? extends Component>>();
     private final Set<Class<? extends Event>> eventTypes = new LinkedHashSet<Class<? extends Event>>();
-    private final Iterable<Object> dependenciesView = unmodifiableCollection(dependencies.values());
+    private final List<DependencyProvider> dependencyProviders = new ArrayList<DependencyProvider>();
     private final Iterable<EntitySystem> systemsView = unmodifiableCollection(systems.values());
     private final Iterable<Class<? extends Component>> componentsTypesView = unmodifiableCollection(componentTypes);
     private final Iterable<Class<? extends Event>> eventTypesView = unmodifiableCollection(eventTypes);
+    private final Iterable<DependencyProvider> dependencyProvidersView = unmodifiableCollection(dependencyProviders);
 
     public static EngineConfig create() {
         return DEFAULT;
-    }
-
-    public Iterable<Object> getDependencies() {
-        return dependenciesView;
     }
 
     public EntitySystem getSystem(Class<? extends EntitySystem> systemType) {
@@ -81,17 +82,16 @@ public final class EngineConfig {
         return eventTypesView;
     }
 
+    public Iterable<DependencyProvider> getDependencyProviders() {
+        return dependencyProvidersView;
+    }
+
     /**
-     * Returns a new configuration with the given dependency included.
+     * Returns a new configuration with the given dependency provider included.
      */
-    public <T> EngineConfig withDependency(T dependency) {
+    public EngineConfig withDependencyProvider(DependencyProvider provider) {
         EngineConfig config = clone();
-        Class<?> dependencyClass = dependency.getClass();
-        if (systems.containsKey(dependencyClass)) {
-            throw new IllegalArgumentException(
-                    "Dependency of type " + dependencyClass.getName() + " has already been registered");
-        }
-        config.dependencies.put(dependency.getClass(), dependency);
+        config.dependencyProviders.add(provider);
         return config;
     }
 
@@ -138,7 +138,7 @@ public final class EngineConfig {
     @Override
     protected EngineConfig clone() {
         EngineConfig config = new EngineConfig();
-        config.dependencies.putAll(dependencies);
+        config.dependencyProviders.addAll(dependencyProviders);
         config.systems.putAll(systems);
         config.componentTypes.addAll(componentTypes);
         config.eventTypes.addAll(eventTypes);

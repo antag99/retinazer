@@ -22,8 +22,6 @@
 package com.github.antag99.retinazer;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -127,33 +125,19 @@ public final class Engine {
         initialize();
     }
 
-    // TODO: More flexible dependency injection customization (DependencyProvider?)
-    public void injectDependencies(Object object) {
-        Class<?> type = object.getClass();
+    public void injectDependencies(Object consumer) {
+        Class<?> type = consumer.getClass();
 
         for (Field field : Internal.getAllFields(type)) {
             Inject inject = field.getAnnotation(Inject.class);
 
             if (inject != null) {
-                Class<?> dependencyType = field.getType();
                 Object dependency = null;
 
-                if (dependencyType == Engine.class) {
-                    dependency = this;
-                } else if (dependencyType == ComponentMapper.class) {
-                    Type param = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                    dependency = getSystem(ComponentManager.class)
-                            .getMapper(((Class<?>) param).asSubclass(Component.class));
-                } else if (EntitySystem.class.isAssignableFrom(dependencyType)) {
-                    dependency = getSystem(field.getType().asSubclass(EntitySystem.class));
-                } else if (dependencyType.isPrimitive()) {
-                    throw new IllegalArgumentException("Invalid dependency type: " + dependencyType.getName());
-                } else {
-                    for (Object candidate : config.getDependencies()) {
-                        if (dependencyType.isInstance(candidate)) {
-                            dependency = candidate;
-                            break;
-                        }
+                for (DependencyProvider provider : config.getDependencyProviders()) {
+                    dependency = provider.getDependency(field, consumer, this);
+                    if (dependency != null) {
+                        break;
                     }
                 }
 
@@ -163,7 +147,7 @@ public final class Engine {
 
                 try {
                     field.setAccessible(true);
-                    field.set(object, dependency);
+                    field.set(consumer, dependency);
                 } catch (IllegalAccessException ex) {
                     throw new AssertionError(ex);
                 }
@@ -171,8 +155,8 @@ public final class Engine {
         }
     }
 
-    public void uninjectDependencies(Object object) {
-        Class<?> type = object.getClass();
+    public void uninjectDependencies(Object consumer) {
+        Class<?> type = consumer.getClass();
 
         for (Field field : Internal.getAllFields(type)) {
             Inject inject = field.getAnnotation(Inject.class);
@@ -180,7 +164,7 @@ public final class Engine {
             if (inject != null) {
                 try {
                     field.setAccessible(true);
-                    field.set(object, null);
+                    field.set(consumer, null);
                 } catch (IllegalAccessException ex) {
                     throw new AssertionError(ex);
                 }
