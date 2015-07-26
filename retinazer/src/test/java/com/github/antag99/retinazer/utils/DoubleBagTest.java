@@ -150,6 +150,7 @@ public class DoubleBagTest {
 
         bag = new DoubleBag();
         assertEquals(0, bag.getCapacity());
+        assertEquals(0, bag.getBuffer().length);
         bag.set(0, 1d);
         assertEquals(1, bag.getCapacity());
         bag.set(1, 2d);

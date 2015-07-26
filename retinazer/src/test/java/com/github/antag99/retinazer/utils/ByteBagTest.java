@@ -150,6 +150,7 @@ public class ByteBagTest {
 
         bag = new ByteBag();
         assertEquals(0, bag.getCapacity());
+        assertEquals(0, bag.getBuffer().length);
         bag.set(0, (byte) 1);
         assertEquals(1, bag.getCapacity());
         bag.set(1, (byte) 2);

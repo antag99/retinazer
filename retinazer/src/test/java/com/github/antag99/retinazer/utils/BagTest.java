@@ -159,6 +159,7 @@ public class BagTest {
 
         bag = new Bag<>();
         assertEquals(0, bag.getCapacity());
+        assertEquals(0, bag.getBuffer().length);
         bag.set(0, mock(Object.class));
         assertEquals(1, bag.getCapacity());
         bag.set(1, mock(Object.class));
@@ -189,6 +190,15 @@ public class BagTest {
         }
         bag.set(Integer.MAX_VALUE, null);
         assertEquals(0, bag.getCapacity());
+    }
+
+    @Test
+    public void testNextPowerOfTwo() {
+        assertEquals(1, Bag.nextPowerOfTwo(0));
+        assertEquals(1, Bag.nextPowerOfTwo(1));
+        assertEquals(2, Bag.nextPowerOfTwo(2));
+        assertEquals(4, Bag.nextPowerOfTwo(3));
+        assertEquals(1 << 31, Bag.nextPowerOfTwo((1 << 30) + 1));
     }
 
     /**

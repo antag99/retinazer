@@ -150,6 +150,7 @@ public class FloatBagTest {
 
         bag = new FloatBag();
         assertEquals(0, bag.getCapacity());
+        assertEquals(0, bag.getBuffer().length);
         bag.set(0, 1f);
         assertEquals(1, bag.getCapacity());
         bag.set(1, 2f);
