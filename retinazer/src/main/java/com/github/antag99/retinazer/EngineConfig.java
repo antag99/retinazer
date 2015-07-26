@@ -58,30 +58,78 @@ public final class EngineConfig {
     private final Iterable<Class<? extends Event>> eventTypesView = unmodifiableCollection(eventTypes);
     private final Iterable<DependencyProvider> dependencyProvidersView = unmodifiableCollection(dependencyProviders);
 
+    /**
+     * Creates a new engine configuration with the default values.
+     *
+     * @return The new engine configuration.
+     */
     public static EngineConfig create() {
-        return DEFAULT;
+        return DEFAULT.clone();
     }
 
+    /**
+     * Gets the system of the given type. Note that only one system of a type
+     * can exist in an engine configuration.
+     *
+     * @param systemClass The type of the system
+     * @return The system
+     * @throws IllegalArgumentException If the system does not exist
+     */
     public EntitySystem getSystem(Class<? extends EntitySystem> systemType) {
+        return getSystem(systemType, false);
+    }
+
+    /**
+     * Gets the system of the given type. Note that only one system of a type
+     * can exist in an engine configuration.
+     *
+     * @param systemClass The type of the system
+     * @param optional Whether to return {@code null} if the system does not exist
+     * @return The system, or {@code null} if {@code optional} is {@code true} and
+     *         the system does not exist.
+     * @throws IllegalArgumentException If {@code optional} is {@code false} and
+     *             the system does not exist.
+     */
+    public EntitySystem getSystem(Class<? extends EntitySystem> systemType, boolean optional) {
         EntitySystem system = systems.get(systemType);
-        if (system == null) {
+        if (!optional && system == null) {
             throw new IllegalArgumentException("System not registered: " + systemType);
         }
         return system;
     }
 
+    /**
+     * Gets the registered systems of this engine configuration
+     *
+     * @return The registered systems of this engine configuration
+     */
     public Iterable<EntitySystem> getSystems() {
         return systemsView;
     }
 
+    /**
+     * Gets the registered component types of this engine configuration
+     *
+     * @return The registered component types of this engine configuration
+     */
     public Iterable<Class<? extends Component>> getComponentTypes() {
         return componentsTypesView;
     }
 
+    /**
+     * Gets the registered event types of this engine configuration
+     *
+     * @return The registered event types of this engine configuration.
+     */
     public Iterable<Class<? extends Event>> getEventTypes() {
         return eventTypesView;
     }
 
+    /**
+     * Gets the registered dependency providers of this engine configuration
+     *
+     * @return The registered dependency providers of this engine configuration.
+     */
     public Iterable<DependencyProvider> getDependencyProviders() {
         return dependencyProvidersView;
     }
@@ -145,6 +193,11 @@ public final class EngineConfig {
         return config;
     }
 
+    /**
+     * Creates a new {@link Engine} instance based on this configuration
+     *
+     * @return The new {@link Engine} instance.
+     */
     public Engine finish() {
         return new Engine(this);
     }
