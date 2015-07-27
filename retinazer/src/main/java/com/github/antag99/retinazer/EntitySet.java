@@ -30,32 +30,38 @@ public final class EntitySet implements Iterable<Entity> {
     // Engine the entities belong to
     final Engine engine;
     // Mask updated by FamilyManager
-    final Mask entities;
+    final Mask entities = new Mask();
+    // Entity indices, for faster iteration
+    int[] entityIndices = new int[0];
+    boolean entityIndicesDirty = false;
 
     EntitySet(Engine engine) {
         this.engine = engine;
-        this.entities = new Mask();
+    }
+
+    private int[] getEntityIndices() {
+        if (entityIndicesDirty) {
+            entityIndicesDirty = false;
+            entityIndices = entities.indices();
+        }
+        return entityIndices;
     }
 
     private final class EntityIterator implements Iterator<Entity> {
-        private int index = 0;
+        private int[] entityIndices = getEntityIndices();
+        private int iterationIndex = 0;
         private int previousIndex = -1;
 
         @Override
         public boolean hasNext() {
-            if (index == -1)
-                return false;
-            index = entities.nextSetBit(index);
-            return index != -1;
+            return iterationIndex < entityIndices.length;
         }
 
         @Override
         public Entity next() {
             if (!hasNext())
                 throw new NoSuchElementException();
-            previousIndex = index;
-            index = index + 1;
-            return engine.getEntityForIndex(previousIndex);
+            return engine.getEntityForIndex(entityIndices[previousIndex = iterationIndex++]);
         }
 
         @Override
@@ -74,9 +80,9 @@ public final class EntitySet implements Iterable<Entity> {
 
     public void process(EntityProcessor processor) {
         final Engine engine = this.engine;
-        final Mask entities = this.entities;
-        for (int i = entities.nextSetBit(0); i != -1; i = entities.nextSetBit(i + 1)) {
-            processor.process(engine.getEntityForIndex(i));
+        final int[] entityIndices = getEntityIndices();
+        for (int i = 0, n = entityIndices.length; i < n; i++) {
+            processor.process(engine.getEntityForIndex(entityIndices[i]));
         }
     }
 

@@ -353,12 +353,11 @@ public final class Mask {
      * @return The indices of the set bits in this mask.
      */
     public int[] indices() {
-        int[] result = new int[length()];
-        int outputIndex = 0;
-        for (int i = nextSetBit(0); i != -1; i = nextSetBit(i + 1)) {
-            result[outputIndex++] = i;
+        int[] indices = new int[cardinality()];
+        for (int i = 0, b = nextSetBit(0), n = indices.length; i < n; i++, b = nextSetBit(b + 1)) {
+            indices[i] = b;
         }
-        return result;
+        return indices;
     }
 
     @Override

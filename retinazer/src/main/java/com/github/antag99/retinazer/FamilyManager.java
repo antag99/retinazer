@@ -123,21 +123,22 @@ final class FamilyManager extends EntitySystem {
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
             final Mask listenersMask = this.listenersForFamily.get(i);
-            final Mask familyEntities = this.entitiesForFamily.get(i).entities;
+            final EntitySet familyEntities = entitiesForFamily.get(i);
 
-            boolean belongsToFamily = familyEntities.get(entity.getIndex());
+            boolean belongsToFamily = entityFamilies.get(i);
             boolean matches = families.get(i).matches(entity) && !remove;
 
             if (belongsToFamily != matches) {
                 if (matches) {
                     addListenerBits.or(listenersMask);
-                    familyEntities.set(entity.getIndex());
+                    familyEntities.entities.set(entity.getIndex());
                     entityFamilies.set(i);
                 } else {
                     removeListenerBits.or(listenersMask);
-                    familyEntities.clear(entity.getIndex());
+                    familyEntities.entities.clear(entity.getIndex());
                     entityFamilies.clear(i);
                 }
+                familyEntities.entityIndicesDirty = true;
             }
         }
 
