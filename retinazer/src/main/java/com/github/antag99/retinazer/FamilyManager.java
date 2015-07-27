@@ -30,11 +30,11 @@ import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager extends EntitySystem {
     private EntityListener[] entityListeners = new EntityListener[0];
-    private Bag<Mask> listenersForFamily = new Bag<Mask>();
-    private Map<FamilyConfig, Integer> familyIndexes = new HashMap<FamilyConfig, Integer>();
-    private Bag<FamilyMatcher> families = new Bag<FamilyMatcher>();
+    private Bag<Mask> listenersForFamily = new Bag<>();
+    private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
+    private Bag<FamilyMatcher> families = new Bag<>();
 
-    private Bag<EntitySet> entitiesForFamily = new Bag<EntitySet>();
+    private Bag<EntitySetContent> entitiesForFamily = new Bag<>();
 
     private Engine engine;
 
@@ -47,7 +47,7 @@ final class FamilyManager extends EntitySystem {
     }
 
     public EntitySet getEntitiesFor(FamilyConfig family) {
-        return entitiesForFamily.get(getFamily(family).index);
+        return entitiesForFamily.get(getFamily(family).index).defaultSet;
     }
 
     public FamilyMatcher getFamily(FamilyConfig config) {
@@ -63,7 +63,7 @@ final class FamilyManager extends EntitySystem {
 
             familyIndexes.put(config.clone(), index);
             families.set(index, new FamilyMatcher(components, excludedComponents, index));
-            entitiesForFamily.set(index, new EntitySet(engine));
+            entitiesForFamily.set(index, new EntitySetContent(engine));
             listenersForFamily.set(index, new Mask());
 
             for (int i = engine.entityManager.currentEntities.nextSetBit(0); i != -1; i = engine.entityManager.currentEntities.nextSetBit(i + 1)) {
@@ -123,7 +123,7 @@ final class FamilyManager extends EntitySystem {
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
             final Mask listenersMask = this.listenersForFamily.get(i);
-            final EntitySet familyEntities = entitiesForFamily.get(i);
+            final EntitySetContent familyContent = entitiesForFamily.get(i);
 
             boolean belongsToFamily = entityFamilies.get(i);
             boolean matches = families.get(i).matches(entity) && !remove;
@@ -131,14 +131,14 @@ final class FamilyManager extends EntitySystem {
             if (belongsToFamily != matches) {
                 if (matches) {
                     addListenerBits.or(listenersMask);
-                    familyEntities.entities.set(entity.getIndex());
+                    familyContent.entities.set(entity.getIndex());
                     entityFamilies.set(i);
                 } else {
                     removeListenerBits.or(listenersMask);
-                    familyEntities.entities.clear(entity.getIndex());
+                    familyContent.entities.clear(entity.getIndex());
                     entityFamilies.clear(i);
                 }
-                familyEntities.entityIndicesDirty = true;
+                familyContent.modCount++;
             }
         }
 

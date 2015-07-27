@@ -27,48 +27,49 @@ import java.util.NoSuchElementException;
 import com.github.antag99.retinazer.utils.Mask;
 
 public final class EntitySet implements Iterable<Entity> {
-    // Engine the entities belong to
-    final Engine engine;
-    // Mask updated by FamilyManager
-    final Mask entities = new Mask();
-    // Entity indices, for faster iteration
-    int[] entityIndices = new int[0];
-    boolean entityIndicesDirty = false;
+    private EntitySetContent content;
+    private Entity[] view = new Entity[0];
+    private int viewModCount = 0;
 
-    EntitySet(Engine engine) {
-        this.engine = engine;
+    EntitySet(EntitySetContent content) {
+        this.content = content;
     }
 
-    private int[] getEntityIndices() {
-        if (entityIndicesDirty) {
-            entityIndicesDirty = false;
-            entityIndices = entities.indices();
+    private Entity[] getEntities() {
+        if (viewModCount != content.modCount) {
+            Engine engine = content.engine;
+            Mask m = content.entities;
+            view = new Entity[m.cardinality()];
+            for (int i = 0, b = m.nextSetBit(0), n = view.length; i < n; i++, b = m.nextSetBit(b + 1)) {
+                view[i] = engine.getEntityForIndex(b);
+            }
+            viewModCount = content.modCount;
         }
-        return entityIndices;
+        return view;
     }
 
     private final class EntityIterator implements Iterator<Entity> {
-        private int[] entityIndices = getEntityIndices();
+        private Entity[] entities = getEntities();
         private int iterationIndex = 0;
         private int previousIndex = -1;
 
         @Override
         public boolean hasNext() {
-            return iterationIndex < entityIndices.length;
+            return iterationIndex < entities.length;
         }
 
         @Override
         public Entity next() {
             if (!hasNext())
                 throw new NoSuchElementException();
-            return engine.getEntityForIndex(entityIndices[previousIndex = iterationIndex++]);
+            return entities[previousIndex = iterationIndex++];
         }
 
         @Override
         public void remove() {
             if (previousIndex == -1)
                 throw new IllegalStateException();
-            engine.getEntityForIndex(previousIndex).destroy();
+            content.engine.getEntityForIndex(previousIndex).destroy();
             previousIndex = -1;
         }
     }
@@ -79,16 +80,15 @@ public final class EntitySet implements Iterable<Entity> {
     }
 
     public void process(EntityProcessor processor) {
-        final Engine engine = this.engine;
-        final int[] entityIndices = getEntityIndices();
-        for (int i = 0, n = entityIndices.length; i < n; i++) {
-            processor.process(engine.getEntityForIndex(entityIndices[i]));
+        final Entity[] entities = getEntities();
+        for (int i = 0, n = entities.length; i < n; i++) {
+            processor.process(entities[i]);
         }
     }
 
     public boolean includes(Entity entity) {
-        if (entity.getEngine() != engine)
+        if (entity.getEngine() != content.engine)
             throw new IllegalArgumentException();
-        return entities.get(entity.getIndex());
+        return content.entities.get(entity.getIndex());
     }
 }
