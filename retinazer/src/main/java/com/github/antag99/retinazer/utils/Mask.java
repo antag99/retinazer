@@ -29,6 +29,12 @@ public final class Mask {
     public Mask() {
     }
 
+    /**
+     * Sets this mask to the value of the other mask.
+     *
+     * @param other The value to set.
+     * @return {@code this} mask instance
+     */
     public Mask set(Mask other) {
         if (words.length < other.words.length) {
             words = other.words.clone();
@@ -40,12 +46,20 @@ public final class Mask {
         return this;
     }
 
+    /**
+     * Clears all bits in this mask.
+     */
     public void clear() {
         long[] words = this.words;
         for (int i = 0, n = words.length; i < n; i++)
             words[i] = 0L;
     }
 
+    /**
+     * Sets all bits in this mask that are set in the other mask.
+     *
+     * @param other The other operand.
+     */
     public void or(Mask other) {
         if (words.length < other.words.length)
             words = Arrays.copyOf(words, other.words.length);
@@ -59,6 +73,12 @@ public final class Mask {
         }
     }
 
+    /**
+     * Clears all bits in this mask that are also in the other masks, and sets
+     * all bits in this mask that are in the other mask but not in this mask.
+     *
+     * @param other The other operand.
+     */
     public void xor(Mask other) {
         if (words.length < other.words.length)
             words = Arrays.copyOf(words, other.words.length);
@@ -72,6 +92,11 @@ public final class Mask {
         }
     }
 
+    /**
+     * Clears all bits in this mask that are not in the other mask.
+     *
+     * @param other The other operand.
+     */
     public void and(Mask other) {
         long[] words = this.words;
         long[] otherWords = other.words;
@@ -86,6 +111,11 @@ public final class Mask {
         }
     }
 
+    /**
+     * Clears all the bits in this mask contained in the other mask.
+     *
+     * @param other The other operand.
+     */
     public void andNot(Mask other) {
         long[] words = this.words;
         long[] otherWords = other.words;
@@ -96,6 +126,11 @@ public final class Mask {
         }
     }
 
+    /**
+     * Sets the bit at the given index in this mask.
+     *
+     * @param index The index of the bit.
+     */
     public void set(int index) {
         int wordIndex = index >> 6;
         if (wordIndex >= words.length) {
@@ -105,6 +140,12 @@ public final class Mask {
         words[wordIndex] |= 1L << index;
     }
 
+    /**
+     * Sets the bit at the given index in this mask to the given value.
+     *
+     * @param index The index of the bit.
+     * @param value The value of the bit.
+     */
     public void set(int index, boolean value) {
         if (value)
             set(index);
@@ -112,6 +153,11 @@ public final class Mask {
             clear(index);
     }
 
+    /**
+     * Clears the bit at the given index in this mask.
+     *
+     * @param index The index of the bit.
+     */
     public void clear(int index) {
         int wordIndex = index >> 6;
         if (wordIndex >= words.length) {
@@ -120,6 +166,12 @@ public final class Mask {
         words[wordIndex] &= ~(1L << index);
     }
 
+    /**
+     * Gets the value of the bit at the given index in this mask.
+     *
+     * @param index The index of the bit.
+     * @return The value of the bit.
+     */
     public boolean get(int index) {
         int wordIndex = index >> 6;
         if (wordIndex >= words.length) {
@@ -177,6 +229,13 @@ public final class Mask {
         }
     }
 
+    /**
+     * Returns the index of the set bit that is higher than or equal to the
+     * given index. Returns -1 in case no such bit exists.
+     *
+     * @param index The index to start looking from.
+     * @return The index of the next set bit.
+     */
     public int nextSetBit(int index) {
         long[] words = this.words;
         int wordIndex = index >> 6;
@@ -193,6 +252,13 @@ public final class Mask {
         }
     }
 
+    /**
+     * Returns the index of the clear bit that is higher than or equal to the
+     * given index.
+     *
+     * @param index The index to start looking from.
+     * @return The index of the next clear bit.
+     */
     public int nextClearBit(int index) {
         int wordIndex = index >> 6;
         if (wordIndex >= words.length) {
@@ -208,6 +274,12 @@ public final class Mask {
         }
     }
 
+    /**
+     * Returns whether all bits of the other mask are also contained in this mask.
+     *
+     * @param other The other mask.
+     * @return Whether this mask is a superset of the other mask.
+     */
     public boolean isSupersetOf(Mask other) {
         final long[] words = this.words;
         final long[] otherWords = other.words;
@@ -221,10 +293,22 @@ public final class Mask {
         return true;
     }
 
+    /**
+     * Returns whether all bits of this mask are also contained in the other mask.
+     *
+     * @param other The other mask
+     * @return Whether this mask is a subset of the other mask.
+     */
     public boolean isSubsetOf(Mask other) {
         return other.isSupersetOf(this);
     }
 
+    /**
+     * Returns whether any bits of this mask are also contained in the other mask.
+     *
+     * @param other The other mask.
+     * @return Whether this mask intersects the other mask.
+     */
     public boolean intersects(Mask other) {
         final long[] words = this.words;
         final long[] otherWords = other.words;
@@ -235,6 +319,11 @@ public final class Mask {
         return false;
     }
 
+    /**
+     * Returns the number of set bits in this mask.
+     *
+     * @return The number of set bits in this mask.
+     */
     public int cardinality() {
         final long[] words = this.words;
         int cardinality = 0;
@@ -243,6 +332,11 @@ public final class Mask {
         return cardinality;
     }
 
+    /**
+     * Returns the index of the highest set bit in this mask plus one.
+     *
+     * @return The length of this mask.
+     */
     public int length() {
         final long[] words = this.words;
         for (int i = words.length - 1; i >= 0; i--) {
@@ -251,6 +345,20 @@ public final class Mask {
             }
         }
         return 0;
+    }
+
+    /**
+     * Returns the indices of the set bits in this mask.
+     *
+     * @return The indices of the set bits in this mask.
+     */
+    public int[] indices() {
+        int[] result = new int[length()];
+        int outputIndex = 0;
+        for (int i = nextSetBit(0); i != -1; i = nextSetBit(i + 1)) {
+            result[outputIndex++] = i;
+        }
+        return result;
     }
 
     @Override
