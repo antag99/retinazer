@@ -16,7 +16,7 @@ public abstract class IterationSystem extends EntityProcessingSystem {
     }
 
     @Override
-    public void process(Entity entity) {
+    public final void process(Entity entity) {
         voidness.consume(entity);
     }
 }

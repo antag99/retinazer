@@ -21,7 +21,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 3, time = 10, timeUnit = TimeUnit.SECONDS)
 public class JmhSettings {
-    @Param(value = { "8192", "16384", "32768", "131072" })
+    @Param(value = { "32768", "131072" })
     private int entityCount;
 
     public int getEntityCount() {
