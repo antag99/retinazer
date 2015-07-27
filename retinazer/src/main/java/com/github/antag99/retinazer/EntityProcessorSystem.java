@@ -23,7 +23,8 @@ package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.utils.Inject;
 
-public abstract class EntityProcessorSystem extends EntitySystem implements EntityProcessor {
+public abstract class EntityProcessorSystem extends EntitySystem
+        implements EntityProcessor, EntityListener {
     private @Inject Engine engine;
     private FamilyConfig family;
     private EntitySet entities;
@@ -35,6 +36,7 @@ public abstract class EntityProcessorSystem extends EntitySystem implements Enti
     @Override
     public void initialize() {
         entities = engine.getEntitiesFor(family);
+        engine.addEntityListener(family, this);
     }
 
     @Override
@@ -57,4 +59,12 @@ public abstract class EntityProcessorSystem extends EntitySystem implements Enti
 
     @Override
     public abstract void process(Entity entity);
+
+    @Override
+    public void entityAdd(Entity entity) {
+    }
+
+    @Override
+    public void entityRemove(Entity entity) {
+    }
 }
