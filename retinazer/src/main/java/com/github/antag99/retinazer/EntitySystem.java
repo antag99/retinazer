@@ -22,22 +22,4 @@
 package com.github.antag99.retinazer;
 
 public abstract class EntitySystem implements EventListener {
-    public int getPriority() {
-        return 0;
-    }
-
-    protected void initialize() {
-    }
-
-    protected void destroy() {
-    }
-
-    protected void update() {
-    }
-
-    protected void beforeUpdate() {
-    }
-
-    protected void afterUpdate() {
-    }
 }

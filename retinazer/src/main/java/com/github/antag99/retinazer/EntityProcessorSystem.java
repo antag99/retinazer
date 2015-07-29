@@ -21,7 +21,10 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import com.github.antag99.retinazer.utils.DestroyEvent;
+import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.UpdateEvent;
 
 public abstract class EntityProcessorSystem extends EntitySystem
         implements EntityProcessor, EntityListener {
@@ -33,19 +36,19 @@ public abstract class EntityProcessorSystem extends EntitySystem
         this.family = family;
     }
 
-    @Override
-    public void initialize() {
+    @EventHandler
+    private void initialize(InitializeEvent event) {
         entities = engine.getEntitiesFor(family);
         engine.addEntityListener(family, this);
     }
 
-    @Override
-    public void destroy() {
+    @EventHandler
+    private void destroy(DestroyEvent event) {
         entities = null;
     }
 
-    @Override
-    protected final void update() {
+    @EventHandler
+    private void update(UpdateEvent event) {
         entities.process(this);
     }
 

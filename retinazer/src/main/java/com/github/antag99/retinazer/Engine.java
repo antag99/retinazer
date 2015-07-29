@@ -26,9 +26,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.github.antag99.retinazer.utils.DestroyEvent;
 import com.github.antag99.retinazer.utils.GuidComponent;
+import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.utils.UpdateEvent;
 
 public final class Engine {
     private final EntitySystem[] systems;
@@ -79,18 +82,14 @@ public final class Engine {
             addEventListener(systems[i]);
         }
         familyManager.addEntityListener(Family.with(GuidComponent.class), guidManager);
-        for (int i = 0, n = systems.length; i < n; i++) {
-            systems[i].initialize();
-        }
+        dispatchEvent(new InitializeEvent());
     }
 
     private void destroy() {
         for (Entity entity : getEntities())
             entity.destroy();
         entityManager.applyEntityRemovals();
-        for (int i = 0, n = systems.length; i < n; i++) {
-            systems[i].destroy();
-        }
+        dispatchEvent(new DestroyEvent());
         for (int i = 0, n = systems.length; i < n; i++) {
             removeEventListener(systems[i]);
         }
@@ -176,32 +175,15 @@ public final class Engine {
      * <p>
      * Updates this engine. This does the following:
      * <ul>
-     * <li>Calls {@link EntitySystem#beforeUpdate() beforeUpdate()} for each system</li>
-     * <li>Calls {@link EntitySystem#update() update()} for each system</li>
-     * <li>Calls {@link EntitySystem#afterUpdate() afterUpdate()} for each system</li>
+     * <li>Fires an {@link UpdateEvent} to be handled by interested systems</li>
      * <li>Adds newly created entities</li>
      * <li>Applies pending component operations</li>
      * <li>Removes deleted entities</li>
      * </ul>
      * </p>
-     *
-     * <p>
-     * Most games need some way to track the time between frames, the
-     * <em>delta time</em>. This can be done in multiple ways; retinazer
-     * does not have a built-in way to do this as it adds bloat for cases where
-     * it's not needed. One way is to introduce a <code>DeltaSystem</code>
-     * for the sole purpose of tracking time; then this system can be provided
-     * to other systems using the dependency injection facilities provided by
-     * retinazer.
-     * </p>
      */
     public void update() {
-        for (int i = 0, n = systems.length; i < n; ++i)
-            systems[i].beforeUpdate();
-        for (int i = 0, n = systems.length; i < n; ++i)
-            systems[i].update();
-        for (int i = 0, n = systems.length; i < n; ++i)
-            systems[i].afterUpdate();
+        dispatchEvent(new UpdateEvent());
         entityManager.applyEntityAdditions();
         componentManager.applyComponentChanges();
         entityManager.applyEntityRemovals();
