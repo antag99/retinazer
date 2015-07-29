@@ -192,6 +192,7 @@ final class EventManager extends EntitySystem {
         }
 
         for (Method method : Internal.getAllMethods(listener.getClass())) {
+            method.setAccessible(true);
             EventHandler eventHandler = method.getAnnotation(EventHandler.class);
             if (eventHandler != null) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
