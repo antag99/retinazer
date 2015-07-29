@@ -7,7 +7,10 @@ import com.github.antag99.retinazer.ComponentMapper;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.Entity;
 import com.github.antag99.retinazer.EntityProcessorSystem;
+import com.github.antag99.retinazer.EventHandler;
 import com.github.antag99.retinazer.Family;
+import com.github.antag99.retinazer.utils.DestroyEvent;
+import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Inject;
 
 public abstract class RetrievalSystem extends EntityProcessorSystem {
@@ -22,18 +25,14 @@ public abstract class RetrievalSystem extends EntityProcessorSystem {
         this.componentType = componentType;
     }
 
-    @Override
-    public void initialize() {
+    @EventHandler
+    private void initialize(InitializeEvent event) {
         componentMapper = engine.getMapper(componentType);
-
-        super.initialize();
     }
 
-    @Override
-    public void destroy() {
+    @EventHandler
+    private void destroy(DestroyEvent event) {
         componentMapper = null;
-
-        super.destroy();
     }
 
     @Override
