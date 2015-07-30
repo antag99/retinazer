@@ -24,7 +24,7 @@ so I can provide input.
 [coverage]: https://coveralls.io/github/antag99/retinazer?branch=master
 [coverage_badge]: https://coveralls.io/repos/antag99/retinazer/badge.svg?branch=master&service=github
 [loc]: https://github.com/antag99/retinazer/search?l=java
-[loc_badge]: https://antag99.github.io/retinazer/loc.svg
+[loc_badge]: https://antag99.github.io/loc/retinazer.svg
 [license]: http://choosealicense.com/licenses/mit/
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [gitter]: https://gitter.im/antag99/retinazer
