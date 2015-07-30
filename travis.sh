@@ -14,6 +14,8 @@ LINES_OF_CODE=`git ls-files | grep .java$ | xargs cat | wc -l`
 git clone https://github.com/antag99/antag99.github.io.git ~/build/antag99.github.io
 cd ~/build/antag99.github.io
 
+mkdir loc/
+touch retinazer.txt
 OLD_LINES_OF_CODE=$(cat loc/retinazer.txt)
 
 # Add credentials for Antag99 Robot
@@ -28,7 +30,7 @@ if [ "$LINES_OF_CODE" != "$OLD_LINES_OF_CODE" ]; then
     wget https://img.shields.io/badge/lines_of_code-${LINES_OF_CODE}-orange.svg -O loc/retinazer.svg
     git add loc/retinazer.txt
     git add loc/retinazer.svg
-    git commit -m "Update lines of code for $REVISION"
+    git commit -m "Update lines of code for retinazer/$REVISION"
 fi
 
 git push origin master
