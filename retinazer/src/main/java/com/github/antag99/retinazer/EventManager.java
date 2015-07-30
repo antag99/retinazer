@@ -36,7 +36,7 @@ import java.util.Set;
 import com.github.antag99.retinazer.Event.WithEntity;
 import com.github.antag99.retinazer.utils.Mask;
 
-final class EventManager extends EntitySystem {
+final class EventManager implements EntitySystem {
 
     /*
      * Event constraints are used to mask event handlers based on some criteria.

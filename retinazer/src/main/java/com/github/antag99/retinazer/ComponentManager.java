@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
 
 import com.github.antag99.retinazer.utils.Mask;
 
-final class ComponentManager extends EntitySystem {
+final class ComponentManager implements EntitySystem {
     private ComponentMapper<?>[] componentMappers;
 
     private Engine engine;

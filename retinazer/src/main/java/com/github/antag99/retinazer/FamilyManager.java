@@ -28,7 +28,7 @@ import java.util.Map;
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
-final class FamilyManager extends EntitySystem {
+final class FamilyManager implements EntitySystem {
     private EntityListener[] entityListeners = new EntityListener[0];
     private Bag<Mask> listenersForFamily = new Bag<>();
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();

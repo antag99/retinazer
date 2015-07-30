@@ -211,7 +211,7 @@ public class EngineTest {
         EngineConfig.create().finish().injectDependencies(consumer);
     }
 
-    private static class ExampleSystem extends EntitySystem {
+    private static class ExampleSystem implements EntitySystem {
         public @Inject Engine engine;
         public @Inject FlagSystemA flagSystemA;
         public @Inject FlagSystemB flagSystemB;
@@ -252,10 +252,10 @@ public class EngineTest {
         assertSame(flagSystemC, system.flagSystemC);
     }
 
-    private static class MissingSystem extends EntitySystem {
+    private static class MissingSystem implements EntitySystem {
     }
 
-    private static class MissingSystemConsumer extends EntitySystem {
+    private static class MissingSystemConsumer implements EntitySystem {
         public @Inject MissingSystem system;
     }
 

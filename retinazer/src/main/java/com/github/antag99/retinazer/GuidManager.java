@@ -24,7 +24,7 @@ package com.github.antag99.retinazer;
 import java.util.HashMap;
 import java.util.Map;
 
-final class GuidManager extends EntitySystem implements EntityListener {
+final class GuidManager implements EntitySystem, EntityListener {
     private Map<Long, Entity> entitiesById = new HashMap<Long, Entity>();
 
     public GuidManager(Engine engine) {
