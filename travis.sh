@@ -15,7 +15,7 @@ cd ..
 git clone https://github.com/antag99/antag99.github.io.git
 cd antag99.github.io
 
-if [ ! -d loc; then
+if [ ! -d loc ]; then
     mkdir loc;
 fi
 
