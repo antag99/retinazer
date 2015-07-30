@@ -11,8 +11,8 @@ REVISION=`git rev-parse HEAD`
 LINES_OF_CODE=`git ls-files | grep .java$ | xargs cat | wc -l`
 
 # Clone the antag99.github.io repo
-git clone https://github.com/antag99/antag99.github.io.git ~/build/antag99.github.io
-cd ~/build/antag99.github.io
+git clone https://github.com/antag99/antag99.github.io.git ~/antag99/antag99.github.io
+cd ~/antag99/antag99.github.io
 
 mkdir loc/
 touch retinazer.txt
@@ -36,4 +36,4 @@ fi
 git push origin master
 rm .git/credentials
 
-cd ~/build/retinazer
+cd ~/antag99/retinazer
