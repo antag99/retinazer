@@ -25,7 +25,7 @@ import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 import com.github.antag99.retinazer.utils.GuidComponent;
 
-final class EntityManager implements EntitySystem {
+final class EntityManager extends EntitySystem {
     // The entity bag; stores all current entities
     Bag<Entity> entities = new Bag<Entity>();
     // Indices of entities that are currently active
