@@ -5,6 +5,12 @@
 .metadata
 .recommenders
 
+## Intellij IDEA
+.idea
+*.ipr
+*.iws
+*.iml
+
 ## Maven
 target/
 pom.xml.tag
