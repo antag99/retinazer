@@ -118,7 +118,7 @@ final class ComponentManager extends EntitySystem {
 
         for (int i = 0, n = conflictingTypes.size(); i < n; i++) {
             stashTypes[i] = conflictingTypes.get(i);
-            stashTable[i] = new ComponentStorage<>(stashTypes[i], nextIndex++);
+            stashTable[i] = new ComponentStorage(stashTypes[i], nextIndex++);
             array[stashTable[i].index] = stashTable[i];
         }
     }
