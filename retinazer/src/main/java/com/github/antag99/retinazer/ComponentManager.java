@@ -165,11 +165,14 @@ final class ComponentManager extends EntitySystem {
         int slot = componentType.hashCode() & hashMask;
         ComponentStorage storage = table[slot];
         if (storage != null) {
-            return storage;
-        }
-        for (int i = 0, n = stashTypes.length; i < n; i++) {
-            if (stashTypes[i] == componentType) {
-                return (ComponentStorage<T>) stashTable[i];
+            if (storage.componentType == componentType) {
+                return storage;
+            }
+        } else {
+            for (int i = 0, n = stashTypes.length; i < n; i++) {
+                if (stashTypes[i] == componentType) {
+                    return (ComponentStorage<T>) stashTable[i];
+                }
             }
         }
         throw new IllegalArgumentException(

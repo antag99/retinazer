@@ -44,10 +44,6 @@ final class ComponentStorage<T extends Component> {
         this.index = index;
     }
 
-    Class<T> getType() {
-        return componentType;
-    }
-
     T get(Entity entity) {
         return components.get(entity.getIndex());
     }
