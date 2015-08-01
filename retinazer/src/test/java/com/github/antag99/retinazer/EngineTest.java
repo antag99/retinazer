@@ -216,9 +216,6 @@ public class EngineTest {
         public @Inject FlagSystemA flagSystemA;
         public @Inject FlagSystemB flagSystemB;
         public @Inject FlagSystemC flagSystemC;
-        public @Inject ComponentMapper<FlagComponentA> flagMapperA;
-        public @Inject ComponentMapper<FlagComponentB> flagMapperB;
-        public @Inject ComponentMapper<FlagComponentC> flagMapperC;
     }
 
     @Test
@@ -236,17 +233,11 @@ public class EngineTest {
                 .withSystem(flagSystemB)
                 .withSystem(flagSystemC).finish();
         assertSame(engine, system.engine);
-        assertSame(engine.getMapper(FlagComponentA.class), system.flagMapperA);
-        assertSame(engine.getMapper(FlagComponentB.class), system.flagMapperB);
-        assertSame(engine.getMapper(FlagComponentC.class), system.flagMapperC);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
         engine.reset();
         assertSame(engine, system.engine);
-        assertSame(engine.getMapper(FlagComponentA.class), system.flagMapperA);
-        assertSame(engine.getMapper(FlagComponentB.class), system.flagMapperB);
-        assertSame(engine.getMapper(FlagComponentC.class), system.flagMapperC);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);

@@ -50,7 +50,7 @@ final class EntityManager extends EntitySystem {
 
     public Entity createEntity(long guid) {
         Entity entity = createEntity();
-        engine.guidMapper.add(entity, new GuidComponent(guid));
+        engine.guidStorage.add(entity, new GuidComponent(guid));
         return entity;
     }
 

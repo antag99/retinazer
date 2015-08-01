@@ -49,7 +49,6 @@ public final class EngineConfig {
             .withEventType(DestroyEvent.class)
             .withEventType(UpdateEvent.class)
             .withDependencyProvider(new EngineProvider())
-            .withDependencyProvider(new ComponentMapperProvider())
             .withDependencyProvider(new EntitySystemProvider());
 
     private EngineConfig() {

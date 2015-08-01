@@ -54,7 +54,7 @@ public final class Engine {
     FamilyManager familyManager;
     EventManager eventManager;
     GuidManager guidManager;
-    ComponentMapper<GuidComponent> guidMapper;
+    ComponentStorage<GuidComponent> guidStorage;
 
     Engine(EngineConfig config) {
         this.config = config;
@@ -66,7 +66,7 @@ public final class Engine {
         systems.add(guidManager = new GuidManager(this));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
-        guidMapper = componentManager.getMapper(GuidComponent.class);
+        guidStorage = componentManager.getStorage(GuidComponent.class);
         initialize();
     }
 
@@ -187,22 +187,6 @@ public final class Engine {
         entityManager.applyEntityAdditions();
         componentManager.applyComponentChanges();
         entityManager.applyEntityRemovals();
-    }
-
-    /**
-     * Retrieves the {@link ComponentMapper} for the given type. This will
-     * throw an exception if the component type has not been registered with
-     * the engine configuration.
-     *
-     * @param componentType
-     *            The component type to retrieve a mapper for
-     * @throws IllegalArgumentException
-     *             If the given component type has not been registered
-     * @return The mapper for the given component type
-     * @see ComponentMapper
-     */
-    public <T extends Component> ComponentMapper<T> getMapper(Class<T> componentType) {
-        return componentManager.getMapper(componentType);
     }
 
     /**

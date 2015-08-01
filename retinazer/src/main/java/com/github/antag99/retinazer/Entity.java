@@ -72,9 +72,9 @@ public final class Entity {
      * to this entity.
      */
     public long getGuid() {
-        GuidComponent component = engine.guidMapper.get(this);
+        GuidComponent component = engine.guidStorage.get(this);
         if (component == null)
-            throw new IllegalArgumentException("This entity has no id");
+            throw new IllegalArgumentException("This entity has no guid");
         return component.getGuid();
     }
 
@@ -85,32 +85,29 @@ public final class Entity {
      */
     @SuppressWarnings("unchecked")
     public void add(Component component) {
-        engine.componentManager.getMapper((Class<Component>) component.getClass()).add(this, component);
+        engine.componentManager.getStorage((Class<Component>) component.getClass()).add(this, component);
     }
 
     /**
      * Removes the component of the given type from this entity.
      */
     public void remove(Class<? extends Component> componentType) {
-        engine.componentManager.getMapper(componentType).remove(this);
+        engine.componentManager.getStorage(componentType).remove(this);
     }
 
     /**
      * Gets the component of the given type from this entity. This returns
-     * <code>null</code> if the component does not exist. Note that the
-     * preferred way for retrieving components frequently is using an
-     * {@link ComponentMapper} instance, which can be obtained using
-     * {@link Engine#getMapper(Class)}.
+     * <code>null</code> if the component does not exist.
      */
     public <T extends Component> T get(Class<T> componentType) {
-        return engine.componentManager.getMapper(componentType).get(this);
+        return engine.componentManager.getStorage(componentType).get(this);
     }
 
     /**
      * Gets whether this entity has the component of the given type.
      */
     public boolean has(Class<? extends Component> componentType) {
-        return engine.componentManager.getMapper(componentType).has(this);
+        return engine.componentManager.getStorage(componentType).has(this);
     }
 
     /**

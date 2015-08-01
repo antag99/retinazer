@@ -21,13 +21,13 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.Objects;
-
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
-public final class ComponentMapper<T extends Component> {
+final class ComponentStorage<T extends Component> {
     Class<T> componentType;
+    // Index of the component type
+    int index;
     // Current components of this type
     Bag<T> components = new Bag<T>();
     // Next components of this type
@@ -39,32 +39,24 @@ public final class ComponentMapper<T extends Component> {
     // Whether any component has been modified
     boolean dirty = false;
 
-    ComponentMapper(Class<T> componentType) {
+    ComponentStorage(Class<T> componentType, int index) {
         this.componentType = componentType;
+        this.index = index;
     }
 
-    public Class<T> getType() {
+    Class<T> getType() {
         return componentType;
     }
 
-    public T get(Entity entity) {
+    T get(Entity entity) {
         return components.get(entity.getIndex());
     }
 
-    public boolean has(Entity entity) {
+    boolean has(Entity entity) {
         return components.get(entity.getIndex()) != null;
     }
 
-    public void add(Entity entity, T instance) {
-        Objects.requireNonNull(entity, "entity must not be null");
-        Objects.requireNonNull(instance, "instance must not be null");
-
-        if (instance.getClass() != componentType) {
-            throw new IllegalArgumentException("Invalid component type: expected " +
-                    componentType.getSimpleName() +
-                    ", got: " + instance.getClass().getSimpleName());
-        }
-
+    void add(Entity entity, T instance) {
         if (has(entity)) {
             remove(entity);
         }
@@ -74,7 +66,7 @@ public final class ComponentMapper<T extends Component> {
         dirty = true;
     }
 
-    public void remove(Entity entity) {
+    void remove(Entity entity) {
         final int index = entity.getIndex();
         if (nextComponents.get(index) == null)
             return;
