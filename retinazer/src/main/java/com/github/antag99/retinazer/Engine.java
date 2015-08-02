@@ -178,14 +178,29 @@ public final class Engine {
      * Updates this engine. This does the following:
      * <ul>
      * <li>Fires an {@link UpdateEvent} to be handled by interested systems</li>
-     * <li>Adds newly created entities</li>
-     * <li>Applies pending component operations</li>
-     * <li>Removes deleted entities</li>
+     * <li>Calls {@link #flush()} to apply pending operations</li>
      * </ul>
      * </p>
      */
     public void update() {
         dispatchEvent(new UpdateEvent());
+        flush();
+    }
+
+    /**
+     * Applies pending entity component operations in the following order:
+     * <ul>
+     * <li>Inserts created entities</li>
+     * <li>Removes components</li>
+     * <li>Inserts components</li>
+     * <li>Removes destroyed entities</li>
+     * </ul>
+     * This should be done with caution, as systems implementations do not
+     * expect that the entities they are iterating over will change during
+     * iteration. Usually, it's not valid to execute it during an update.
+     */
+    @Experimental
+    public void flush() {
         entityManager.applyEntityAdditions();
         componentManager.applyComponentChanges();
         entityManager.applyEntityRemovals();

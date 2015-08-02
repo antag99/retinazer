@@ -37,7 +37,7 @@ public class EntityListenerTest {
         engine.addEntityListener(listener);
         Entity entity = engine.createEntity();
         verifyNoMoreInteractions(listener);
-        engine.update();
+        engine.flush();
         verify(listener).entityAdd(entity);
         verifyNoMoreInteractions(listener);
         entity.destroy();
@@ -64,7 +64,7 @@ public class EntityListenerTest {
         order.verifyNoMoreInteractions();
         entity.add(new FlagComponentA());
         order.verifyNoMoreInteractions();
-        engine.update();
+        engine.flush();
         order.verify(listenerA).entityAdd(entity);
         order.verifyNoMoreInteractions();
         entity.remove(FlagComponentA.class);

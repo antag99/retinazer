@@ -83,7 +83,7 @@ public class EngineTest {
         entity7.add(new FlagComponentB());
         entity7.add(new FlagComponentC());
 
-        engine.update();
+        engine.flush();
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
