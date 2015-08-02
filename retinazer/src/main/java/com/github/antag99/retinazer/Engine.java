@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.DestroyEvent;
+import com.github.antag99.retinazer.utils.Experimental;
 import com.github.antag99.retinazer.utils.GuidComponent;
 import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Inject;
@@ -334,6 +336,17 @@ public final class Engine {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Gets the {@link Bag} storing the components of the given type.
+     *
+     * @param componentType The component type.
+     * @return The components of the given type.
+     */
+    @Experimental
+    public <T extends Component> Bag<T> getComponentsAsBag(Class<T> componentType) {
+        return componentManager.getStorage(componentType).components;
     }
 
     /**
