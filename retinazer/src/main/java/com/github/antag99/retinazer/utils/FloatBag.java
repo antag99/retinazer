@@ -59,10 +59,12 @@ public final class FloatBag {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public float[] getBuffer() {
         return buffer;
     }

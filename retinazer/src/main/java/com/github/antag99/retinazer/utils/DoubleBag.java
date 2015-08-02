@@ -59,10 +59,12 @@ public final class DoubleBag {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public double[] getBuffer() {
         return buffer;
     }

@@ -59,10 +59,12 @@ public final class LongBag {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public long[] getBuffer() {
         return buffer;
     }

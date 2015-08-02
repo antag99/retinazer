@@ -59,10 +59,12 @@ public final class ByteBag {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public byte[] getBuffer() {
         return buffer;
     }

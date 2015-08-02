@@ -73,10 +73,12 @@ public final class Bag<E> {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public Object[] getBuffer() {
         return buffer;
     }

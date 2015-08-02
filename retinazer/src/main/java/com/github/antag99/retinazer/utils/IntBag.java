@@ -59,10 +59,12 @@ public final class IntBag {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public int[] getBuffer() {
         return buffer;
     }

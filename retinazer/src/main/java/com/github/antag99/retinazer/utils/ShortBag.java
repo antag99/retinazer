@@ -59,10 +59,12 @@ public final class ShortBag {
         }
     }
 
+    @Experimental
     public int getCapacity() {
         return buffer.length;
     }
 
+    @Experimental
     public short[] getBuffer() {
         return buffer;
     }
