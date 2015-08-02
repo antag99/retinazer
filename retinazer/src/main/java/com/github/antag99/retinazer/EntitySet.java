@@ -24,28 +24,69 @@ package com.github.antag99.retinazer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import com.github.antag99.retinazer.utils.Experimental;
 import com.github.antag99.retinazer.utils.Mask;
 
 public final class EntitySet implements Iterable<Entity> {
     private EntitySetContent content;
-    private Entity[] view = new Entity[0];
-    private int viewModCount = 0;
+
+    private Entity[] entities = new Entity[0];
+    private int entitiesModCount = 0;
+
+    private int[] indices = new int[0];
+    private int indicesModCount = 0;
 
     EntitySet(EntitySetContent content) {
         this.content = content;
     }
 
-    private Entity[] getEntities() {
-        if (viewModCount != content.modCount) {
+    /**
+     * <p>
+     * Returns an array containing all entities in this set. Note that whenever
+     * the entity set changes, this array must be reconstructed. For maximum
+     * performance, {@link #getIndices()} should be used.
+     * </p>
+     *
+     * <p>
+     * <b>WARNING:</b> Modifying this array leads to undefined behavior.
+     * </p>
+     *
+     * @return All entities in this set.
+     */
+    @Experimental
+    public Entity[] getEntities() {
+        if (entitiesModCount != content.modCount) {
             Engine engine = content.engine;
             Mask m = content.entities;
-            view = new Entity[m.cardinality()];
-            for (int i = 0, b = m.nextSetBit(0), n = view.length; i < n; i++, b = m.nextSetBit(b + 1)) {
-                view[i] = engine.getEntityForIndex(b);
+            entities = new Entity[m.cardinality()];
+            for (int i = 0, b = m.nextSetBit(0), n = entities.length; i < n; i++, b = m.nextSetBit(b + 1)) {
+                entities[i] = engine.getEntityForIndex(b);
             }
-            viewModCount = content.modCount;
+            entitiesModCount = content.modCount;
         }
-        return view;
+        return entities;
+    }
+
+    /**
+     * <p>
+     * Returns an array containing the indices of all entities in this set.
+     * Note that whenever the entity set changes, this array must be
+     * reconstructed.
+     * </p>
+     *
+     * <p>
+     * <b>WARNING:</b> Modifying this array leads to undefined behavior.
+     * </p>
+     *
+     * @return The indices of all entities in this set.
+     */
+    @Experimental
+    public int[] getIndices() {
+        if (indicesModCount != content.modCount) {
+            indices = content.entities.indices();
+            indicesModCount = content.modCount;
+        }
+        return indices;
     }
 
     private final class EntityIterator implements Iterator<Entity> {
