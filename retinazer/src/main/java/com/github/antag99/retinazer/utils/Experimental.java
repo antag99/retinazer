@@ -10,5 +10,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.SOURCE)
 @Documented
+@Experimental
 public @interface Experimental {
 }
