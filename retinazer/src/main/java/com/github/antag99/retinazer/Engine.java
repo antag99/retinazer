@@ -339,6 +339,16 @@ public final class Engine {
     }
 
     /**
+     * Gets the {@link Bag} storing the active entities.
+     *
+     * @return The active entities.
+     */
+    @Experimental
+    public Bag<Entity> getEntitiesAsBag() {
+        return entityManager.entities;
+    }
+
+    /**
      * Gets the {@link Bag} storing the components of the given type.
      *
      * @param componentType The component type.
