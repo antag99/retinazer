@@ -115,12 +115,12 @@ final class EventManager extends EntitySystem {
     }
 
     private static final class EventHandlerData {
-        public final EventListener listener;
+        public final EntitySystem system;
         public final int priority;
         public final Method method;
 
-        public EventHandlerData(EventListener listener, int priority, Method method) {
-            this.listener = listener;
+        public EventHandlerData(EntitySystem system, int priority, Method method) {
+            this.system = system;
             this.priority = priority;
             this.method = method;
         }
@@ -135,6 +135,9 @@ final class EventManager extends EntitySystem {
         this.engine = engine;
         for (Class<? extends Event> eventType : engine.config.getEventTypes()) {
             eventTypes.add(eventType);
+        }
+        for (EntitySystem system : engine.config.getSystems()) {
+            register(system);
         }
     }
 
@@ -169,7 +172,7 @@ final class EventManager extends EntitySystem {
         EventHandlerData[] handlers = this.handlers;
         for (int i = excluded.nextClearBit(0); i != -1 && i < handlers.length; i = excluded.nextClearBit(i + 1)) {
             try {
-                handlers[i].method.invoke(handlers[i].listener, event);
+                handlers[i].method.invoke(handlers[i].system, event);
             } catch (IllegalAccessException ex) {
                 // Shouldn't happen as methods are marked as accessible
                 throw new AssertionError(ex);
@@ -180,18 +183,8 @@ final class EventManager extends EntitySystem {
         }
     }
 
-    public void addEventListener(EventListener listener) {
-        if (listener == null)
-            throw new NullPointerException("listener must not be null");
-
-        for (int i = 0, n = handlers.length; i < n; i++) {
-            if (handlers[i].listener == listener) {
-                throw new IllegalArgumentException(
-                        "The given listener has already been added");
-            }
-        }
-
-        for (Method method : Internal.getAllMethods(listener.getClass())) {
+    private void register(EntitySystem system) {
+        for (Method method : Internal.getAllMethods(system.getClass())) {
             method.setAccessible(true);
             EventHandler eventHandler = method.getAnnotation(EventHandler.class);
             if (eventHandler != null) {
@@ -258,7 +251,7 @@ final class EventManager extends EntitySystem {
                 }
 
                 EventHandlerData eventHandlerData = new EventHandlerData(
-                        listener, priority, method);
+                        system, priority, method);
 
                 EventHandlerData[] newHandlers = new EventHandlerData[handlers.length + 1];
                 System.arraycopy(handlers, 0, newHandlers, 0, insertionIndex);
@@ -267,27 +260,6 @@ final class EventManager extends EntitySystem {
                         handlers.length - insertionIndex);
                 newHandlers[insertionIndex] = eventHandlerData;
                 handlers = newHandlers;
-            }
-        }
-    }
-
-    public void removeEventListener(EventListener listener) {
-        if (listener == null)
-            throw new NullPointerException("listener must not be null");
-        for (int i = 0, n = handlers.length; i < n; i++) {
-            EventHandlerData eventHandler = handlers[i];
-            if (eventHandler.listener == listener) {
-                for (Mask handlerMask : constraints.values()) {
-                    handlerMask.pop(i);
-                }
-
-                EventHandlerData[] newHandlers = new EventHandlerData[handlers.length - 1];
-                System.arraycopy(handlers, 0, newHandlers, 0, i);
-                System.arraycopy(handlers, i + 1, newHandlers, i, newHandlers.length - i);
-                handlers = newHandlers;
-
-                i--;
-                n--;
             }
         }
     }

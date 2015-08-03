@@ -21,5 +21,5 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public abstract class EntitySystem implements EventListener {
+public abstract class EntitySystem {
 }

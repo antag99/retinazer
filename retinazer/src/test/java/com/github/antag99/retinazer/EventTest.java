@@ -68,7 +68,7 @@ public class EventTest {
         }
     }
 
-    private class TestEventListener implements EventListener {
+    private class TestEventListener extends EntitySystem {
         @EventHandler(priority = 1)
         public void handleTestEvent(TestEvent event) {
         }
@@ -104,6 +104,7 @@ public class EventTest {
 
     @Test
     public void testEventHandler() {
+        TestEventListener testEventListener = mock(TestEventListener.class);
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
                 .withComponentType(FlagComponentB.class)
@@ -112,10 +113,9 @@ public class EventTest {
                 .withEventType(TestEventWithFlag.class)
                 .withEventType(TestEventWithEntity.class)
                 .withEventType(TestEventWithEntityAndFlag.class)
+                .withSystem(testEventListener)
                 .finish();
-        TestEventListener testEventListener = mock(TestEventListener.class);
         InOrder order = inOrder(testEventListener);
-        engine.addEventListener(testEventListener);
         Entity theEntity = engine.createEntity();
         Entity theEntityA = engine.createEntity();
         theEntityA.add(new FlagComponentA());
@@ -159,6 +159,5 @@ public class EventTest {
         order.verify(testEventListener).handleTestEventFlag(testEventWithEntityAndFlag);
         order.verify(testEventListener).handleTestEventWithEntityAndFlag(testEventWithEntityAndFlag);
         order.verifyNoMoreInteractions();
-        engine.removeEventListener(testEventListener);
     }
 }

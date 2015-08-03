@@ -80,9 +80,6 @@ public final class Engine {
         for (int i = 0, n = systems.length; i < n; i++) {
             injectDependencies(systems[i]);
         }
-        for (int i = 0, n = systems.length; i < n; i++) {
-            addEventListener(systems[i]);
-        }
         familyManager.addEntityListener(Family.with(GuidComponent.class), guidManager);
         dispatchEvent(new InitializeEvent());
     }
@@ -92,9 +89,6 @@ public final class Engine {
             entity.destroy();
         flush();
         dispatchEvent(new DestroyEvent());
-        for (int i = 0, n = systems.length; i < n; i++) {
-            removeEventListener(systems[i]);
-        }
         for (int i = 0, n = systems.length; i < n; i++) {
             uninjectDependencies(systems[i]);
         }
@@ -109,11 +103,9 @@ public final class Engine {
      * <ul>
      * <li>Destroys and removes all entities</li>
      * <li>Calls {@link EntitySystem#destroy()} for each system</li>
-     * <li>Removes all event listeners</li>
      * <li>Calls {@link #uninjectDependencies(Object)} with each system</li>
      * <li>Removes all remaining entities (no notifications here)</li>
      * <li>Calls {@link #injectDependencies(Object)} with each system</li>
-     * <li>Adds all systems as event listeners</li>
      * <li>Calls {@link EntitySystem#initialize()} for each system</li>
      * </ul>
      *
@@ -430,32 +422,12 @@ public final class Engine {
     }
 
     /**
-     * Dispatches the given event to all registered listeners.
+     * Dispatches the given event to all registered systems.
      *
      * @param event
      *            The event to dispatch.
      */
     public void dispatchEvent(Event event) {
         eventManager.dispatchEvent(event);
-    }
-
-    /**
-     * Adds the given event listener and registers all it's handlers
-     *
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(EventListener listener) {
-        eventManager.addEventListener(listener);
-    }
-
-    /**
-     * Removes the given event listeners and unregisters all it's handlers
-     *
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(EventListener listener) {
-        eventManager.removeEventListener(listener);
     }
 }
