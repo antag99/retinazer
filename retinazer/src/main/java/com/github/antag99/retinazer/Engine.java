@@ -90,7 +90,7 @@ public final class Engine {
     private void destroy() {
         for (Entity entity : getEntities())
             entity.destroy();
-        entityManager.applyEntityRemovals();
+        flush();
         dispatchEvent(new DestroyEvent());
         for (int i = 0, n = systems.length; i < n; i++) {
             removeEventListener(systems[i]);
