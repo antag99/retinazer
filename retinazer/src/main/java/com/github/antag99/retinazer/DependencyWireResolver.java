@@ -23,11 +23,25 @@ package com.github.antag99.retinazer;
 
 import java.lang.reflect.Field;
 
-public final class EntitySystemProvider implements DependencyProvider {
+public final class DependencyWireResolver implements WireResolver {
     @Override
-    public Object getDependency(Field field, Object consumer, Engine engine) {
-        if (!EntitySystem.class.isAssignableFrom(field.getType()))
-            return null;
-        return engine.getSystem(field.getType().asSubclass(EntitySystem.class), true);
+    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
+        Object dependency = engine.getConfig().getDependencies().get(field.getType());
+        if (dependency != null) {
+            field.set(object, dependency);
+            return true;
+        }
+        return false;
     }
+
+    @Override
+    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
+        Object dependency = engine.getConfig().getDependencies().get(field.getType());
+        if (dependency != null) {
+            field.set(object, null);
+            return true;
+        }
+        return false;
+    }
+
 }

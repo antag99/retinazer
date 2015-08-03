@@ -23,20 +23,35 @@ package com.github.antag99.retinazer;
 
 import java.lang.reflect.Field;
 
-import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Wire;
 
 /**
- * DependencyProvider is used for providing dependencies via the {@link Inject} annotation.
+ * WireResolver is used for wiring/un-wiring fields marked with {@link Wire}.
+ * Multiple resolvers can be registered to an {@link EngineConfig}.
+ *
+ * @see Wire
  */
-public interface DependencyProvider {
+public interface WireResolver {
 
     /**
-     * Retrieves the dependency for the given consumer.
+     * Wires the field of the given object.
      *
-     * @param field The field holding the dependency
-     * @param consumer The owner of the field
-     * @param engine The current engine instance
-     * @return The dependency, or {@code null} if not found.
+     * @param engine The engine instance.
+     * @param object The object to wire.
+     * @param field The field of the object.
+     * @return Whether this resolver handled the given field.
+     * @throws Throwable If an unexpected error occurred.
      */
-    public Object getDependency(Field field, Object consumer, Engine engine);
+    public boolean wire(Engine engine, Object object, Field field) throws Throwable;
+
+    /**
+     * Un-wires the field of the given object.
+     *
+     * @param engine The engine instance.
+     * @param object The object to wire.
+     * @param field The field of the object.
+     * @return Whether this resolver handled the given field.
+     * @throws Throwable If an unexpected error occurred.
+     */
+    public boolean unwire(Engine engine, Object object, Field field) throws Throwable;
 }

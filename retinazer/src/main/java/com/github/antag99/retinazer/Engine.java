@@ -21,7 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +30,6 @@ import com.github.antag99.retinazer.utils.DestroyEvent;
 import com.github.antag99.retinazer.utils.Experimental;
 import com.github.antag99.retinazer.utils.GuidComponent;
 import com.github.antag99.retinazer.utils.InitializeEvent;
-import com.github.antag99.retinazer.utils.Inject;
 import com.github.antag99.retinazer.utils.Mask;
 import com.github.antag99.retinazer.utils.UpdateEvent;
 
@@ -56,6 +54,7 @@ public final class Engine {
     FamilyManager familyManager;
     EventManager eventManager;
     GuidManager guidManager;
+    WireManager wireManager;
     ComponentStorage<GuidComponent> guidStorage;
 
     Engine(EngineConfig config) {
@@ -66,6 +65,7 @@ public final class Engine {
         systems.add(familyManager = new FamilyManager(this));
         systems.add(eventManager = new EventManager(this));
         systems.add(guidManager = new GuidManager(this));
+        systems.add(wireManager = new WireManager(this));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
         guidStorage = componentManager.getStorage(GuidComponent.class);
@@ -78,7 +78,7 @@ public final class Engine {
 
     private void initialize() {
         for (int i = 0, n = systems.length; i < n; i++) {
-            injectDependencies(systems[i]);
+            wire(systems[i]);
         }
         familyManager.addEntityListener(Family.with(GuidComponent.class), guidManager);
         dispatchEvent(new InitializeEvent());
@@ -90,7 +90,7 @@ public final class Engine {
         flush();
         dispatchEvent(new DestroyEvent());
         for (int i = 0, n = systems.length; i < n; i++) {
-            uninjectDependencies(systems[i]);
+            unwire(systems[i]);
         }
         entityManager.reset();
         guidManager.reset();
@@ -103,9 +103,9 @@ public final class Engine {
      * <ul>
      * <li>Destroys and removes all entities</li>
      * <li>Calls {@link EntitySystem#destroy()} for each system</li>
-     * <li>Calls {@link #uninjectDependencies(Object)} with each system</li>
+     * <li>Calls {@link #unwire(Object)} with each system</li>
      * <li>Removes all remaining entities (no notifications here)</li>
-     * <li>Calls {@link #injectDependencies(Object)} with each system</li>
+     * <li>Calls {@link #wire(Object)} with each system</li>
      * <li>Calls {@link EntitySystem#initialize()} for each system</li>
      * </ul>
      *
@@ -118,51 +118,12 @@ public final class Engine {
         initialize();
     }
 
-    public void injectDependencies(Object consumer) {
-        Class<?> type = consumer.getClass();
-
-        for (Field field : Internal.getAllFields(type)) {
-            Inject inject = field.getAnnotation(Inject.class);
-
-            if (inject != null) {
-                Object dependency = null;
-
-                for (DependencyProvider provider : config.getDependencyProviders()) {
-                    dependency = provider.getDependency(field, consumer, this);
-                    if (dependency != null) {
-                        break;
-                    }
-                }
-
-                if (dependency == null) {
-                    throw new IllegalArgumentException("Missing dependency for field " + field.getName());
-                }
-
-                try {
-                    field.setAccessible(true);
-                    field.set(consumer, dependency);
-                } catch (IllegalAccessException ex) {
-                    throw new AssertionError(ex);
-                }
-            }
-        }
+    public void wire(Object object) {
+        wireManager.wire(object);
     }
 
-    public void uninjectDependencies(Object consumer) {
-        Class<?> type = consumer.getClass();
-
-        for (Field field : Internal.getAllFields(type)) {
-            Inject inject = field.getAnnotation(Inject.class);
-
-            if (inject != null) {
-                try {
-                    field.setAccessible(true);
-                    field.set(consumer, null);
-                } catch (IllegalAccessException ex) {
-                    throw new AssertionError(ex);
-                }
-            }
-        }
+    public void unwire(Object object) {
+        wireManager.unwire(object);
     }
 
     /**

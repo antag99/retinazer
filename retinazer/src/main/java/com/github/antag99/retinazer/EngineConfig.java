@@ -22,8 +22,10 @@
 package com.github.antag99.retinazer;
 
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -48,8 +50,8 @@ public final class EngineConfig {
             .withEventType(InitializeEvent.class)
             .withEventType(DestroyEvent.class)
             .withEventType(UpdateEvent.class)
-            .withDependencyProvider(new EngineProvider())
-            .withDependencyProvider(new EntitySystemProvider());
+            .withWireResolver(new DefaultWireResolver())
+            .withWireResolver(new DependencyWireResolver());
 
     private EngineConfig() {
     }
@@ -57,11 +59,13 @@ public final class EngineConfig {
     private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<Class<?>, EntitySystem>();
     private final Set<Class<? extends Component>> componentTypes = new LinkedHashSet<Class<? extends Component>>();
     private final Set<Class<? extends Event>> eventTypes = new LinkedHashSet<Class<? extends Event>>();
-    private final List<DependencyProvider> dependencyProviders = new ArrayList<DependencyProvider>();
+    private final List<WireResolver> wireResolvers = new ArrayList<>();
+    private final Map<Class<?>, Object> dependencies = new HashMap<>();
     private final Iterable<EntitySystem> systemsView = unmodifiableCollection(systems.values());
     private final Iterable<Class<? extends Component>> componentsTypesView = unmodifiableCollection(componentTypes);
     private final Iterable<Class<? extends Event>> eventTypesView = unmodifiableCollection(eventTypes);
-    private final Iterable<DependencyProvider> dependencyProvidersView = unmodifiableCollection(dependencyProviders);
+    private final Iterable<WireResolver> wireResolversView = unmodifiableCollection(wireResolvers);
+    private final Map<Class<?>, Object> dependenciesView = unmodifiableMap(dependencies);
 
     /**
      * Creates a new engine configuration with the default values.
@@ -131,25 +135,28 @@ public final class EngineConfig {
     }
 
     /**
-     * Gets the registered dependency providers of this engine configuration
+     * Gets the registered wire resolvers of this engine configuration.
      *
-     * @return The registered dependency providers of this engine configuration.
+     * @return The registered wire resolvers of this engine configuration.
      */
-    public Iterable<DependencyProvider> getDependencyProviders() {
-        return dependencyProvidersView;
+    public Iterable<WireResolver> getWireResolvers() {
+        return wireResolversView;
     }
 
     /**
-     * Returns a new configuration with the given dependency provider included.
+     * Gets the registered dependencies of this engine configuration.
+     *
+     * @return The registered dependencies of this engine configuration.
      */
-    public EngineConfig withDependencyProvider(DependencyProvider provider) {
-        EngineConfig config = clone();
-        config.dependencyProviders.add(provider);
-        return config;
+    public Map<Class<?>, Object> getDependencies() {
+        return dependenciesView;
     }
 
     /**
-     * Returns a new configuration with the given system included.
+     * Registers a system.
+     *
+     * @param system The system to register.
+     * @return A new configuration with the system.
      */
     public EngineConfig withSystem(EntitySystem system) {
         Class<? extends EntitySystem> systemType = system.getClass();
@@ -163,7 +170,10 @@ public final class EngineConfig {
     }
 
     /**
-     * Returns a new configuration with the given component type included
+     * Registers a component type.
+     *
+     * @param componentType The component type to register.
+     * @return A new configuration with the component type.
      */
     public EngineConfig withComponentType(Class<? extends Component> componentType) {
         if (componentTypes.contains(componentType)) {
@@ -176,7 +186,10 @@ public final class EngineConfig {
     }
 
     /**
-     * Returns a new configuration with the given event type included
+     * Registers an event type.
+     *
+     * @param eventType The event type to register.
+     * @return A new configuration with the event type.
      */
     public EngineConfig withEventType(Class<? extends Event> eventType) {
         if (eventTypes.contains(eventType)) {
@@ -188,13 +201,51 @@ public final class EngineConfig {
         return config;
     }
 
+    /**
+     * Registers a wire resolver.
+     *
+     * @param resolver The resolver to register.
+     * @return A new configuration with the wire resolver.
+     */
+    public EngineConfig withWireResolver(WireResolver resolver) {
+        EngineConfig config = clone();
+        config.wireResolvers.add(resolver);
+        return config;
+    }
+
+    /**
+     * Registers a dependency, with the concrete type of the object.
+     *
+     * @param dependency The dependency to register.
+     * @return New configuration with the dependency.
+     */
+    public EngineConfig withDependency(Object dependency) {
+        EngineConfig config = clone();
+        config.dependencies.put(dependency.getClass(), dependency);
+        return config;
+    }
+
+    /**
+     * Registers a dependency of the given type.
+     *
+     * @param type Type of the dependency.
+     * @param dependency The dependency.
+     * @return New configuration with the given dependency.
+     */
+    public <T> EngineConfig withDependency(Class<T> type, T dependency) {
+        EngineConfig config = clone();
+        config.dependencies.put(type, type.cast(dependency));
+        return config;
+    }
+
     @Override
     protected EngineConfig clone() {
         EngineConfig config = new EngineConfig();
-        config.dependencyProviders.addAll(dependencyProviders);
         config.systems.putAll(systems);
         config.componentTypes.addAll(componentTypes);
         config.eventTypes.addAll(eventTypes);
+        config.wireResolvers.addAll(wireResolvers);
+        config.dependencies.putAll(dependencies);
         return config;
     }
 

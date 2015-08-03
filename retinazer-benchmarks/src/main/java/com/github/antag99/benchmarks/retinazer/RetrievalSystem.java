@@ -7,10 +7,10 @@ import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.Entity;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
-import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Wire;
 
 public abstract class RetrievalSystem extends EntityProcessorSystem {
-    private @Inject Engine engine;
+    private @Wire Engine engine;
     private Blackhole voidness = new Blackhole();
     private Class<? extends Component> componentType;
 

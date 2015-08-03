@@ -23,12 +23,12 @@ package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.utils.DestroyEvent;
 import com.github.antag99.retinazer.utils.InitializeEvent;
-import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Wire;
 import com.github.antag99.retinazer.utils.UpdateEvent;
 
 public abstract class EntityProcessorSystem extends EntitySystem
         implements EntityProcessor, EntityListener {
-    private @Inject Engine engine;
+    private @Wire Engine engine;
     private FamilyConfig family;
     private EntitySet entities;
 

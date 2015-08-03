@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.github.antag99.retinazer.utils.Inject;
+import com.github.antag99.retinazer.utils.Wire;
 
 public class EngineTest {
     @Test
@@ -202,20 +202,20 @@ public class EngineTest {
     }
 
     private static class MissingServiceConsumer {
-        private @Inject MissingService service;
+        private @Wire MissingService service;
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testMissingDependencyInjection() {
         MissingServiceConsumer consumer = new MissingServiceConsumer();
-        EngineConfig.create().finish().injectDependencies(consumer);
+        EngineConfig.create().finish().wire(consumer);
     }
 
     private static class ExampleSystem extends EntitySystem {
-        public @Inject Engine engine;
-        public @Inject FlagSystemA flagSystemA;
-        public @Inject FlagSystemB flagSystemB;
-        public @Inject FlagSystemC flagSystemC;
+        public @Wire Engine engine;
+        public @Wire FlagSystemA flagSystemA;
+        public @Wire FlagSystemB flagSystemB;
+        public @Wire FlagSystemC flagSystemC;
     }
 
     @Test
@@ -247,7 +247,7 @@ public class EngineTest {
     }
 
     private static class MissingSystemConsumer extends EntitySystem {
-        public @Inject MissingSystem system;
+        public @Wire MissingSystem system;
     }
 
     @Test(expected = IllegalArgumentException.class)

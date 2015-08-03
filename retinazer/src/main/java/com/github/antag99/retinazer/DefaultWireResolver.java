@@ -19,17 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
-/**
- * Annotation used to mark fields for dependency injection.
- */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Inject {
+public final class DefaultWireResolver implements WireResolver {
+    @Override
+    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
+        Class<?> type = field.getType();
+        if (type == Engine.class) {
+            field.set(object, engine);
+        } else if (EntitySystem.class.isAssignableFrom(type)) {
+            field.set(object, engine.getSystem(type.asSubclass(EntitySystem.class)));
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
+        Class<?> type = field.getType();
+        if (type == Engine.class || EntitySystem.class.isAssignableFrom(type)) {
+            field.set(object, null);
+        } else {
+            return false;
+        }
+        return true;
+    }
 }
