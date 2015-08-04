@@ -48,6 +48,10 @@ public final class Engine {
         }
     };
 
+    InitializeEvent initializeEvent = new InitializeEvent();
+    DestroyEvent destroyEvent = new DestroyEvent();
+    UpdateEvent updateEvent = new UpdateEvent();
+
     EngineConfig config;
     EntityManager entityManager;
     ComponentManager componentManager;
@@ -81,14 +85,14 @@ public final class Engine {
             wire(systems[i]);
         }
         familyManager.addEntityListener(Family.with(GuidComponent.class), guidManager);
-        dispatchEvent(new InitializeEvent());
+        dispatchEvent(initializeEvent);
     }
 
     private void destroy() {
         for (Entity entity : getEntities())
             entity.destroy();
         flush();
-        dispatchEvent(new DestroyEvent());
+        dispatchEvent(destroyEvent);
         for (int i = 0, n = systems.length; i < n; i++) {
             unwire(systems[i]);
         }
@@ -136,7 +140,7 @@ public final class Engine {
      * </p>
      */
     public void update() {
-        dispatchEvent(new UpdateEvent());
+        dispatchEvent(updateEvent);
         flush();
     }
 
