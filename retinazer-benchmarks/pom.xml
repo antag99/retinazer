@@ -13,6 +13,15 @@
     <description>An entity-component-system implementation for Java</description>
     <url>https://github.com/antag99/retinazer</url>
 
+    <properties>
+        <ashley.version>1.6.0</ashley.version>
+        <artemis.version>0.10.2</artemis.version>
+        <artemis.optimizeEntitySystems>false</artemis.optimizeEntitySystems>
+        <artemis.enablePackedWeaving>false</artemis.enablePackedWeaving>
+        <artemis.enablePooledWeaving>false</artemis.enablePooledWeaving>
+        <jmh.version>1.1.1</jmh.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.github.antag99.retinazer</groupId>
@@ -22,28 +31,45 @@
         <dependency>
             <groupId>net.onedaybeard.artemis</groupId>
             <artifactId>artemis-odb</artifactId>
-            <version>0.10.2</version>
+            <version>${artemis.version}</version>
         </dependency>
         <dependency>
             <groupId>com.badlogicgames.ashley</groupId>
             <artifactId>ashley</artifactId>
-            <version>1.6.0</version>
+            <version>${ashley.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>1.1.1</version>
+            <version>${jmh.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>1.1.1</version>
+            <version>${jmh.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>net.onedaybeard.artemis</groupId>
+                <artifactId>artemis-odb-maven-plugin</artifactId>
+                <version>${artemis.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>artemis</goal>
+                        </goals>
+                        <configuration>
+                            <optimizeEntitySystems>${artemis.optimizeEntitySystems}</optimizeEntitySystems>
+                            <enablePackedWeaving>${artemis.enablePackedWeaving}</enablePackedWeaving>
+                            <enablePooledWeaving>${artemis.enablePooledWeaving}</enablePooledWeaving>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>

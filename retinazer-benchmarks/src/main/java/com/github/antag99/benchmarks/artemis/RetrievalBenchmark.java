@@ -15,14 +15,14 @@ public class RetrievalBenchmark extends ArtemisBenchmark {
     public void setup() {
         // @off
         world = new World(new WorldConfiguration()
-                .setSystem(new RetrievalSystem(ComponentA.class) {})
-                .setSystem(new RetrievalSystem(ComponentB.class) {})
-                .setSystem(new RetrievalSystem(ComponentC.class) {})
-                .setSystem(new RetrievalSystem(ComponentD.class) {})
-                .setSystem(new RetrievalSystem(ComponentE.class) {})
-                .setSystem(new RetrievalSystem(ComponentF.class) {})
-                .setSystem(new RetrievalSystem(ComponentG.class) {})
-                .setSystem(new RetrievalSystem(ComponentH.class) {})
+                .setSystem(new RetrievalSystemA())
+                .setSystem(new RetrievalSystemB())
+                .setSystem(new RetrievalSystemC())
+                .setSystem(new RetrievalSystemD())
+                .setSystem(new RetrievalSystemE())
+                .setSystem(new RetrievalSystemF())
+                .setSystem(new RetrievalSystemG())
+                .setSystem(new RetrievalSystemH())
         );
         // @on
 
@@ -33,7 +33,7 @@ public class RetrievalBenchmark extends ArtemisBenchmark {
             int mask = i & ((1 << componentTypes.length) - 1);
             for (int ii = 0, nn = componentTypes.length; ii < nn; ++ii) {
                 if (((mask >> ii) & 1) == 1) {
-                    entity.edit().add(newInstance(componentTypes[ii]));
+                    entity.edit().create(componentTypes[ii]);
                 }
             }
         }

@@ -15,14 +15,14 @@ public class IterationBenchmark extends ArtemisBenchmark {
     public void setup() {
         // @off
         world = new World(new WorldConfiguration()
-                .setSystem(new IterationSystem(ComponentA.class) {})
-                .setSystem(new IterationSystem(ComponentB.class) {})
-                .setSystem(new IterationSystem(ComponentC.class) {})
-                .setSystem(new IterationSystem(ComponentD.class) {})
-                .setSystem(new IterationSystem(ComponentE.class) {})
-                .setSystem(new IterationSystem(ComponentF.class) {})
-                .setSystem(new IterationSystem(ComponentG.class) {})
-                .setSystem(new IterationSystem(ComponentH.class) {})
+                .setSystem(new IterationSystemA())
+                .setSystem(new IterationSystemB())
+                .setSystem(new IterationSystemC())
+                .setSystem(new IterationSystemD())
+                .setSystem(new IterationSystemE())
+                .setSystem(new IterationSystemF())
+                .setSystem(new IterationSystemG())
+                .setSystem(new IterationSystemH())
         );
         // @on
 
@@ -33,7 +33,7 @@ public class IterationBenchmark extends ArtemisBenchmark {
             int mask = i & ((1 << componentTypes.length) - 1);
             for (int ii = 0, nn = componentTypes.length; ii < nn; ++ii) {
                 if (((mask >> ii) & 1) == 1) {
-                    entity.edit().add(newInstance(componentTypes[ii]));
+                    entity.edit().create(componentTypes[ii]);
                 }
             }
         }
