@@ -7,4 +7,5 @@ import com.artemis.annotations.PooledWeaver;
 @PooledWeaver
 @PackedWeaver
 public final class ComponentC extends Component {
+    public float a, b, c, d, e, f, g, h;
 }

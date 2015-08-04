@@ -1,5 +1,11 @@
 if [ "$1" = "--debug" ]; then
     PARAMS="-i 1 -wi 1 -r 1 -p entityCount=4096"
+elif [ "$1" == "--dev" ]; then
+    mvn install -DskipTests=true
+    java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.retinazer\\..* \
+      -rf json -rff retinazer-benchmarks/target/results-dev.json $PARAMS | \
+      tee retinazer-benchmarks/target/results-dev.log
+    exit 0
 else
     echo "Running all benchmarks; this will take some time. Use the --debug switch for testing."
 fi
