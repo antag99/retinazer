@@ -16,6 +16,7 @@
     <properties>
         <ashley.version>1.6.0</ashley.version>
         <artemis.version>0.10.2</artemis.version>
+        <entreri.version>1.7.0</entreri.version>
         <artemis.optimizeEntitySystems>false</artemis.optimizeEntitySystems>
         <artemis.enablePackedWeaving>false</artemis.enablePackedWeaving>
         <artemis.enablePooledWeaving>false</artemis.enablePooledWeaving>
@@ -37,6 +38,11 @@
             <groupId>com.badlogicgames.ashley</groupId>
             <artifactId>ashley</artifactId>
             <version>${ashley.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lhkbob.entreri</groupId>
+            <artifactId>entreri</artifactId>
+            <version>${entreri.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

@@ -14,6 +14,7 @@ local frameworks = {
   { name = "retinazer"  , package = "com.github.antag99.benchmarks.retinazer" },
   { name = "artemis-odb", package = "com.github.antag99.benchmarks.artemis" },
   { name = "ashley"     , package = "com.github.antag99.benchmarks.ashley" },
+  { name = "entreri"    , package = "com.github.antag99.benchmarks.entreri" }
 }
 
 local configurations = {
