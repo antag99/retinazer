@@ -10,6 +10,7 @@ else
     echo "Running all benchmarks; this will take some time. Use the --debug switch for testing."
 fi
 
+start_time=`date +%s`
 mvn clean
 mkdir retinazer-benchmarks/target
 # Run all benchmarks, write results in json format to results.json,
@@ -50,3 +51,8 @@ mvn install -DskipTests=true -Dartemis.optimizeSystems=true -Dartemis.enablePack
 java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.artemis\\..* \
   -rf json -rff retinazer-benchmarks/target/results-packed-fast.json $PARAMS | \
   tee retinazer-benchmarks/target/results-packed-fast.log
+
+end_time=`date +%s`
+total_time=$((end_time-start_time))
+
+echo "Done! Took $total_time seconds."

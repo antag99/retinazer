@@ -20,7 +20,7 @@
         <artemis.optimizeEntitySystems>false</artemis.optimizeEntitySystems>
         <artemis.enablePackedWeaving>false</artemis.enablePackedWeaving>
         <artemis.enablePooledWeaving>false</artemis.enablePooledWeaving>
-        <jmh.version>1.1.1</jmh.version>
+        <jmh.version>1.10.3</jmh.version>
     </properties>
 
     <dependencies>
