@@ -23,7 +23,6 @@ package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
-import com.github.antag99.retinazer.utils.GuidComponent;
 
 final class EntityManager extends EntitySystem {
     // The entity bag; stores all current entities
@@ -45,12 +44,6 @@ final class EntityManager extends EntitySystem {
         Entity entity = new Entity(engine, index);
         entities.set(index, entity);
         nextEntities.set(index);
-        return entity;
-    }
-
-    public Entity createEntity(long guid) {
-        Entity entity = createEntity();
-        engine.guidStorage.add(entity, new GuidComponent(guid));
         return entity;
     }
 

@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.antag99.retinazer.utils.DestroyEvent;
-import com.github.antag99.retinazer.utils.GuidComponent;
 import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.UpdateEvent;
 
@@ -45,7 +44,6 @@ import com.github.antag99.retinazer.utils.UpdateEvent;
  */
 public final class EngineConfig {
     private static final EngineConfig DEFAULT = new EngineConfig()
-            .withComponentType(GuidComponent.class)
             .withEventType(Event.class)
             .withEventType(InitializeEvent.class)
             .withEventType(DestroyEvent.class)

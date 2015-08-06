@@ -22,7 +22,6 @@
 package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.utils.Mask;
-import com.github.antag99.retinazer.utils.GuidComponent;
 
 /**
  * Entity provides a handle for accessing the components of an entity.
@@ -64,18 +63,6 @@ public final class Entity {
      */
     public int getIndex() {
         return index;
-    }
-
-    /**
-     * Gets the unique id of this entity, which can be assigned when it's added
-     * to an {@link Engine}. Throws an exception if an ID has not been assigned
-     * to this entity.
-     */
-    public long getGuid() {
-        GuidComponent component = engine.guidStorage.get(this);
-        if (component == null)
-            throw new IllegalArgumentException("This entity has no guid");
-        return component.getGuid();
     }
 
     /**

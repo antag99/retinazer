@@ -153,30 +153,6 @@ public class EntityTest {
     }
 
     @Test
-    public void testEntityGuid() {
-        Engine engine = EngineConfig.create().finish();
-        Entity entity = engine.createEntity(5L);
-        engine.update();
-        assertEquals(5L, entity.getGuid());
-        assertSame(entity, engine.getEntityForGuid(5L));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testEntityNoGuid() {
-        Engine engine = EngineConfig.create().finish();
-        Entity entity = engine.createEntity();
-        engine.update();
-        entity.getGuid();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testEntityDelayGuid() {
-        Engine engine = EngineConfig.create().finish();
-        Entity entity = engine.createEntity(5L);
-        entity.getGuid();
-    }
-
-    @Test
     public void testEntityIndex() {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity();

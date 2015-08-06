@@ -28,7 +28,6 @@ import java.util.List;
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.DestroyEvent;
 import com.github.antag99.retinazer.utils.Experimental;
-import com.github.antag99.retinazer.utils.GuidComponent;
 import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Mask;
 import com.github.antag99.retinazer.utils.UpdateEvent;
@@ -57,9 +56,7 @@ public final class Engine {
     ComponentManager componentManager;
     FamilyManager familyManager;
     EventManager eventManager;
-    GuidManager guidManager;
     WireManager wireManager;
-    ComponentStorage<GuidComponent> guidStorage;
 
     Engine(EngineConfig config) {
         this.config = config;
@@ -68,11 +65,9 @@ public final class Engine {
         systems.add(componentManager = new ComponentManager(this));
         systems.add(familyManager = new FamilyManager(this));
         systems.add(eventManager = new EventManager(this));
-        systems.add(guidManager = new GuidManager(this));
         systems.add(wireManager = new WireManager(this));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
-        guidStorage = componentManager.getStorage(GuidComponent.class);
         initialize();
     }
 
@@ -84,7 +79,6 @@ public final class Engine {
         for (int i = 0, n = systems.length; i < n; i++) {
             wire(systems[i]);
         }
-        familyManager.addEntityListener(Family.with(GuidComponent.class), guidManager);
         dispatchEvent(initializeEvent);
     }
 
@@ -97,7 +91,6 @@ public final class Engine {
             unwire(systems[i]);
         }
         entityManager.reset();
-        guidManager.reset();
         eventManager.reset();
         familyManager.reset();
     }
@@ -166,10 +159,8 @@ public final class Engine {
     /**
      * <p>
      * Creates a new entity. This entity will be assigned a index, which is not
-     * shared with any existing entity. Note that no guid is assigned to this
-     * entity; the {@link #createEntity(long)} method should be used if a guid
-     * is needed (typically, networked entities have a guid whereas local entities
-     * have not).
+     * shared with any existing entity. Note that indices are reused once the
+     * entity is no longer active.
      * </p>
      *
      * <p>
@@ -186,28 +177,6 @@ public final class Engine {
 
     /**
      * <p>
-     * Creates a new entity. This entity will be assigned a index, which is not
-     * shared with any existing entity. An {@link GuidComponent} will be added
-     * to the entity containing the passed guid; the guid-related operations
-     * can then be used with the entity.
-     * </p>
-     *
-     * <p>
-     * All created entities are not added until the end of the current
-     * {@link #update()} call. This is done to avoid issues with modifying
-     * entities while iterating over them.
-     * </p>
-     *
-     * @param guid
-     *            The guid to set for the entity
-     * @return The new entity instance
-     */
-    public Entity createEntity(long guid) {
-        return entityManager.createEntity(guid);
-    }
-
-    /**
-     * <p>
      * Gets the entity with the given index.
      * </p>
      *
@@ -219,21 +188,6 @@ public final class Engine {
      */
     public Entity getEntityForIndex(int index) {
         return entityManager.getEntityForIndex(index);
-    }
-
-    /**
-     * <p>
-     * Gets the entity with the given guid. Returns <code>null</code> if there
-     * is no entity with the given guid, if it has not been added yet, or it's
-     * {@link GuidComponent} has not been added yet.
-     * </p>
-     *
-     * @param guid
-     *            The guid of the entity
-     * @return The entity with the given guid.
-     */
-    public Entity getEntityForGuid(long guid) {
-        return guidManager.getEntityForGuid(guid);
     }
 
     /**
