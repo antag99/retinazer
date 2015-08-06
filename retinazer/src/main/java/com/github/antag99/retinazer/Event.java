@@ -21,84 +21,82 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.github.antag99.retinazer.utils.Experimental;
+
 /**
- * Events are used for communication between systems. They can be parameterized
- * with entities, and then filtered on the handler side using the {@link WithEntity}
- * annotation. All that needs to be done is adding public getters for the entities.
- *
- * @see WithEntity
+ * Events are used for communication between systems.
  */
 public interface Event {
 
     /**
-     * <p>
-     * WithEntity is used for filtering events based on entities
-     * </p>
-     * <h5>Collision system example</h5>
-     *
-     * <pre>
-     * <code>
-     * public final class CollisionEvent implements Event {
-     *     private Entity collider;
-     *     private Entity collidee;
-     *
-     *     public CollisionEvent(Entity collider, Entity collidee) {
-     *         this.collider = collider;
-     *         this.collidee = collidee;
-     *     }
-     *
-     *     public Entity getCollider() {
-     *         return collider;
-     *     }
-     *
-     *     public Entity getCollidee() {
-     *         return collidee;
-     *     }
-     * }
-     * </code>
-     * </pre>
-     *
-     * <pre>
-     * <code>
-     * public final class PlayerSystem extends EntitySystem {
-     *     // ...
-     *
-     *     &#64;EventHandler({
-     *         &#64;WithEntity(name = "collider", with = {
-     *             PlayerComponent.class
-     *         }),
-     *         &#64;WithEntity(name = "collidee", with = {
-     *             EnemyComponent.class
-     *         })
-     *     })
-     *     private void handlePlayerCollision(CollisionEvent event) {
-     *         // ...
-     *     }
-     * }
-     * </code>
-     * </pre>
+     * Specifies the {@link EventConstraintHandler} implementation handling a constraint.
      */
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({})
+    @Target(ElementType.ANNOTATION_TYPE)
+    @Experimental
+    public @interface UseConstraintHandler {
+        public Class<? extends EventConstraintHandler>value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
     public @interface WithEntity {
+
         /**
-         * Name of the property in the event returning the entity
+         * Name of the property in the event returning the entity.
+         *
+         * @return Property name
          */
         public String name();
 
         /**
          * The entity must have <b>all</b> of these components in order for the
          * handler to receive the event.
+         *
+         * @return Required components
          */
         public Class<? extends Component>[]with() default {};
 
         /**
          * The entity must have <b>none</b> of these components in order for the
          * handler to receive the event.
+         *
+         * @return Excluded components
+         */
+        public Class<? extends Component>[]exclude() default {};
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @UseConstraintHandler(EntityConstraintHandler.class)
+    public @interface WithEntities {
+        public WithEntity[]value() default {};
+    }
+
+    /**
+     * <p>
+     * WithFamily is used for filtering events based on what families they are
+     * referring to. This is denoted by the {@code with()} and {@code exclude()}
+     * methods of the event.
+     * </p>
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @UseConstraintHandler(FamilyConstraintHandler.class)
+    public @interface WithFamily {
+
+        /**
+         * @return What the {@code with()} method of the event must return.
+         */
+        public Class<? extends Component>[]with() default {};
+
+        /**
+         * @return What the {@code exclude()} method of the event must return.
          */
         public Class<? extends Component>[]exclude() default {};
     }

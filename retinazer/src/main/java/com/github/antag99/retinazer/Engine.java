@@ -303,40 +303,6 @@ public final class Engine {
     }
 
     /**
-     * Adds the given entity listener, which will be invoked every time an
-     * entity is added or removed to/from the engine.
-     *
-     * @param listener The listener to add
-     */
-    public void addEntityListener(EntityListener listener) {
-        familyManager.addEntityListener(listener);
-    }
-
-    /**
-     * Adds the given entity listener, which will be invoked every time an
-     * entity is added/removed to/from the set of entities matched by the
-     * given family; this happens both when an entity's components are changed
-     * and when it's destroyed.
-     *
-     * @param family The family
-     * @param listener The listener
-     */
-    // TODO: Does this belong to EntitySet?
-    public void addEntityListener(FamilyConfig family, EntityListener listener) {
-        familyManager.addEntityListener(family, listener);
-    }
-
-    /**
-     * Removes the given entity listener added using {@link #addEntityListener(EntityListener)}
-     * or {@link #addEntityListener(FamilyConfig, EntityListener)}.
-     *
-     * @param listener The listener to remove
-     */
-    public void removeEntityListener(EntityListener listener) {
-        familyManager.removeEntityListener(listener);
-    }
-
-    /**
      * Dispatches the given event to all registered systems.
      *
      * @param event

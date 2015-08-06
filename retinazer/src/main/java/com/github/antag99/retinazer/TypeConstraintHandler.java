@@ -21,17 +21,40 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-final class Internal {
-    private Internal() {
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.github.antag99.retinazer.utils.Mask;
+
+final class TypeConstraintHandler extends EventConstraintHandler {
+    private Map<Class<? extends Event>, Mask> receiversForType = new HashMap<>();
+
+    public TypeConstraintHandler(Engine engine, Iterable<EventReceiver> receivers) {
+        super(engine, receivers);
+
+        for (Class<? extends Event> eventType : engine.getEventTypes()) {
+            if (!Modifier.isAbstract(eventType.getModifiers())) {
+                receiversForType.put(eventType, new Mask());
+            }
+        }
+
+        for (EventReceiver receiver : receivers) {
+            for (Map.Entry<Class<? extends Event>, Mask> entry : receiversForType.entrySet()) {
+                if (receiver.getMethod().getParameterTypes()[0].isAssignableFrom(entry.getKey())) {
+                    entry.getValue().set(receiver.getIndex());
+                }
+            }
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T extends Throwable> void doSneakyThrow(Throwable ex) throws T {
-        throw (T) ex;
-    }
-
-    public static RuntimeException sneakyThrow(Throwable ex) {
-        Internal.<RuntimeException> doSneakyThrow(ex);
-        return null;
+    @Override
+    public void filter(Event event, Mask receivers) {
+        Mask allowed = receiversForType.get(event.getClass());
+        if (allowed == null) {
+            throw new IllegalArgumentException("Event type not registered: "
+                    + event.getClass().getName());
+        }
+        receivers.and(allowed);
     }
 }

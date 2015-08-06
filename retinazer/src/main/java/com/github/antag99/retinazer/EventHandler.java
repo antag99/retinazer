@@ -26,14 +26,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.github.antag99.retinazer.Event.WithEntity;
+import com.github.antag99.retinazer.Event.UseConstraintHandler;
 
 /**
- * Annotation used to mark event handlers in an {@link EventListener}.
+ * Annotation used to mark event handlers in an {@link EntitySystem}.
  *
  * <pre>
  * <code>
- * public final class DeathListener implements EventListener {
+ * public final class DeathListener extends EntitySystem {
  *     &#64;EventHandler
  *     private void handleDeathEvent(DeathEvent event) {
  *         // ...
@@ -44,12 +44,8 @@ import com.github.antag99.retinazer.Event.WithEntity;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@UseConstraintHandler(TypeConstraintHandler.class)
 public @interface EventHandler {
-
-    /**
-     * Constraints for entities
-     */
-    public WithEntity[]value() default {};
 
     /**
      * Priority of this event handler; lower value means it will be executed first.

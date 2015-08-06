@@ -21,24 +21,34 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-/**
- * Entity listeners are invoked when an entity gets added or removed from the
- * members of a family. This happens both when the entity is added or destroyed
- * and when any of it's components are changed.
- */
-public interface EntityListener {
+public final class EntityRemoveEvent implements Event {
+    Entity entity;
+    Class<? extends Component>[] with;
+    Class<? extends Component>[] exclude;
+
+    EntityRemoveEvent() {
+    }
 
     /**
-     * Called when the given entity has been added
-     *
-     * @param entity The entity that was added
+     * @return The entity that was removed.
      */
-    public void entityAdd(Entity entity);
+    public Entity getEntity() {
+        return entity;
+    }
 
     /**
-     * Called before the given entity is removed
-     *
-     * @param entity The entity that is to be removed
+     * @return The required components of the family this entity was removed from.
+     *         Modifying the returned array leads to undefined behavior.
      */
-    public void entityRemove(Entity entity);
+    public Class<? extends Component>[] with() {
+        return with;
+    }
+
+    /**
+     * @return The excluded components of the family this entity was removed from.
+     *         Modifying the returned array leads to undefined behavior.
+     */
+    public Class<? extends Component>[] exclude() {
+        return exclude;
+    }
 }

@@ -21,17 +21,50 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-final class Internal {
-    private Internal() {
+import java.util.Objects;
+
+import com.github.antag99.retinazer.utils.Experimental;
+import com.github.antag99.retinazer.utils.Mask;
+
+@Experimental
+public abstract class EventConstraintHandler {
+    private final Engine engine;
+    private final Iterable<EventReceiver> receivers;
+
+    /**
+     * @param engine The engine instance.
+     * @param receivers Receivers handled by this constraint.
+     */
+    public EventConstraintHandler(Engine engine, Iterable<EventReceiver> receivers) {
+        this.engine = Objects.requireNonNull(engine, "engine must not be null");
+        this.receivers = Objects.requireNonNull(receivers, "receivers must not be null");
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T extends Throwable> void doSneakyThrow(Throwable ex) throws T {
-        throw (T) ex;
+    /**
+     * Gets the engine instance.
+     *
+     * @return The engine instance.
+     */
+    public final Engine getEngine() {
+        return engine;
     }
 
-    public static RuntimeException sneakyThrow(Throwable ex) {
-        Internal.<RuntimeException> doSneakyThrow(ex);
-        return null;
+    /**
+     * Gets the event receivers.
+     *
+     * @return The event receivers.
+     */
+    public Iterable<EventReceiver> getReceivers() {
+        return receivers;
     }
+
+    /**
+     * Filters event receivers based on index.
+     *
+     * @param event
+     *            The event to filter receivers for.
+     * @param receivers
+     *            Mask containing all receivers that will be invoked.
+     */
+    public abstract void filter(Event event, Mask receivers);
 }

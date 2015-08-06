@@ -21,7 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,17 +28,46 @@ import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager extends EntitySystem {
-    private EntityListener[] entityListeners = new EntityListener[0];
-    private Bag<Mask> listenersForFamily = new Bag<>();
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
     private Bag<FamilyMatcher> families = new Bag<>();
-
     private Bag<EntitySetContent> entitiesForFamily = new Bag<>();
 
     private Engine engine;
 
+    private Pool<EntityAddEvent> entityAddEventPool = new Pool<EntityAddEvent>() {
+        @Override
+        protected EntityAddEvent create() {
+            return new EntityAddEvent();
+        }
+
+        @Override
+        protected void destroy(EntityAddEvent object) {
+            object.entity = null;
+            object.with = null;
+            object.exclude = null;
+        }
+    };
+
+    private Pool<EntityRemoveEvent> entityRemoveEventPool = new Pool<EntityRemoveEvent>() {
+        @Override
+        protected EntityRemoveEvent create() {
+            return new EntityRemoveEvent();
+        }
+
+        @Override
+        protected void destroy(EntityRemoveEvent object) {
+            object.entity = null;
+            object.with = null;
+            object.exclude = null;
+        }
+    };
+
     public FamilyManager(Engine engine) {
         this.engine = engine;
+
+        // Ensure the empty family is created, in order to correctly notify
+        // interested listeners.
+        this.getFamily(Family.EMPTY);
     }
 
     public EntitySet getEntities() {
@@ -55,16 +83,19 @@ final class FamilyManager extends EntitySystem {
         if (index == familyIndexes.size()) {
             Mask components = new Mask();
             Mask excludedComponents = new Mask();
-
-            for (Class<? extends Component> componentType : config.getComponents())
+            @SuppressWarnings("unchecked")
+            Class<? extends Component>[] componentsArray = config.getComponents().toArray(new Class[0]);
+            @SuppressWarnings("unchecked")
+            Class<? extends Component>[] excludedComponentsArray = config.getExcludedComponents().toArray(new Class[0]);
+            for (Class<? extends Component> componentType : componentsArray)
                 components.set(engine.componentManager.getIndex(componentType));
-            for (Class<? extends Component> componentType : config.getExcludedComponents())
+            for (Class<? extends Component> componentType : excludedComponentsArray)
                 excludedComponents.set(engine.componentManager.getIndex(componentType));
 
             familyIndexes.put(config.clone(), index);
-            families.set(index, new FamilyMatcher(components, excludedComponents, index));
+            families.set(index, new FamilyMatcher(components, excludedComponents,
+                    componentsArray, excludedComponentsArray, index));
             entitiesForFamily.set(index, new EntitySetContent(engine));
-            listenersForFamily.set(index, new Mask());
 
             for (int i = engine.entityManager.currentEntities.nextSetBit(0); i != -1; i = engine.entityManager.currentEntities.nextSetBit(i + 1)) {
                 updateFamilyMembership(engine.entityManager.getEntityForIndex(i), false);
@@ -74,90 +105,44 @@ final class FamilyManager extends EntitySystem {
         return families.get(index);
     }
 
-    public void addEntityListener(EntityListener listener) {
-        addEntityListener(Family.EMPTY, listener);
-    }
-
-    public void addEntityListener(FamilyConfig family, EntityListener listener) {
-        int index = -1;
-        for (int i = 0, n = entityListeners.length; i < n; ++i)
-            if (entityListeners[i] == listener)
-                index = i;
-
-        if (index == -1) {
-            index = entityListeners.length;
-            entityListeners = Arrays.copyOf(entityListeners, index + 1);
-            entityListeners[index] = listener;
-        }
-
-        listenersForFamily.get(getFamily(family).index).set(index);
-    }
-
-    public void removeEntityListener(EntityListener listener) {
-        for (int index = 0; index < entityListeners.length; ++index) {
-            if (entityListeners[index] == listener) {
-                int lastIndex = entityListeners.length - 1;
-                EntityListener last = entityListeners[lastIndex];
-                entityListeners = Arrays.copyOf(entityListeners, lastIndex);
-                entityListeners[index] = last;
-
-                for (int i = 0, n = familyIndexes.size(); i < n; ++i) {
-                    Mask listeners = listenersForFamily.get(i);
-                    if (listeners.get(lastIndex)) {
-                        listeners.set(index);
-                        listeners.clear(lastIndex);
-                    } else {
-                        listeners.clear(index);
-                    }
-                }
-            }
-        }
-    }
-
     public void updateFamilyMembership(Entity entity, boolean remove) {
         final Mask entityFamilies = entity.families;
-        // Find families that the entity was added to/removed from, and fill
-        // the bit sets with corresponding listener bits.
-        Mask addListenerBits = new Mask();
-        Mask removeListenerBits = new Mask();
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
-            final Mask listenersMask = this.listenersForFamily.get(i);
+            final FamilyMatcher matcher = families.get(i);
             final EntitySetContent familyContent = entitiesForFamily.get(i);
 
             boolean belongsToFamily = entityFamilies.get(i);
-            boolean matches = families.get(i).matches(entity) && !remove;
+            boolean matches = matcher.matches(entity) && !remove;
 
             if (belongsToFamily != matches) {
                 if (matches) {
-                    addListenerBits.or(listenersMask);
                     familyContent.entities.set(entity.getIndex());
                     entityFamilies.set(i);
+
+                    EntityAddEvent event = entityAddEventPool.obtain();
+                    event.entity = entity;
+                    event.with = matcher.componentsArray;
+                    event.exclude = matcher.excludedComponentsArray;
+                    engine.dispatchEvent(event);
+                    entityAddEventPool.free(event);
                 } else {
-                    removeListenerBits.or(listenersMask);
                     familyContent.entities.clear(entity.getIndex());
                     entityFamilies.clear(i);
+
+                    EntityRemoveEvent event = entityRemoveEventPool.obtain();
+                    event.entity = entity;
+                    event.with = matcher.componentsArray;
+                    event.exclude = matcher.excludedComponentsArray;
+                    engine.dispatchEvent(event);
+                    entityRemoveEventPool.free(event);
                 }
                 familyContent.modCount++;
             }
         }
-
-        // Store the current listeners in a local variable, so they
-        // can't be changed (the backing array is copied before modification)
-        EntityListener[] items = this.entityListeners;
-
-        for (int i = removeListenerBits.nextSetBit(0); i != -1; i = removeListenerBits.nextSetBit(i + 1)) {
-            items[i].entityRemove(entity);
-        }
-
-        for (int i = addListenerBits.nextSetBit(0); i != -1; i = addListenerBits.nextSetBit(i + 1)) {
-            items[i].entityAdd(entity);
-        }
     }
 
     public void reset() {
-        entityListeners = new EntityListener[0];
-        listenersForFamily.clear();
         familyIndexes.clear();
         families.clear();
         entitiesForFamily.clear();

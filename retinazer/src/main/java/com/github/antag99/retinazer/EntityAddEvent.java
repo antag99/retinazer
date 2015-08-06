@@ -21,17 +21,34 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-final class Internal {
-    private Internal() {
+public final class EntityAddEvent implements Event {
+    Entity entity;
+    Class<? extends Component>[] with;
+    Class<? extends Component>[] exclude;
+
+    EntityAddEvent() {
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T extends Throwable> void doSneakyThrow(Throwable ex) throws T {
-        throw (T) ex;
+    /**
+     * @return The entity that was added.
+     */
+    public Entity getEntity() {
+        return entity;
     }
 
-    public static RuntimeException sneakyThrow(Throwable ex) {
-        Internal.<RuntimeException> doSneakyThrow(ex);
-        return null;
+    /**
+     * @return The required components of the family this entity was added to.
+     *         Modifying the returned array leads to undefined behavior.
+     */
+    public Class<? extends Component>[] with() {
+        return with;
+    }
+
+    /**
+     * @return The excluded components of the family this entity was added to.
+     *         Modifying the returned array leads to undefined behavior.
+     */
+    public Class<? extends Component>[] exclude() {
+        return exclude;
     }
 }

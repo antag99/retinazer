@@ -21,12 +21,12 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 import org.mockito.InOrder;
 
+import com.github.antag99.retinazer.Event.WithEntities;
 import com.github.antag99.retinazer.Event.WithEntity;
 
 public class EventTest {
@@ -81,19 +81,21 @@ public class EventTest {
         public void handleTestEventWithEntity(TestEventWithEntity event) {
         }
 
-        @EventHandler(value = {
+        @EventHandler(priority = 3)
+        @WithEntities({
                 @WithEntity(name = "entity", with = {
                         FlagComponentA.class
                 })
-        }, priority = 3)
+        })
         public void handleTestEventWithEntityA(TestEventWithEntity event) {
         }
 
-        @EventHandler(value = {
+        @EventHandler(priority = 4)
+        @WithEntities({
                 @WithEntity(name = "entity", with = {
                         FlagComponentB.class
                 })
-        }, priority = 4)
+        })
         public void handleTestEventWithEntityB(TestEventWithEntity event) {
         }
 
@@ -104,7 +106,7 @@ public class EventTest {
 
     @Test
     public void testEventHandler() {
-        TestEventListener testEventListener = mock(TestEventListener.class);
+        TestEventListener testEventListener = spy(new TestEventListener());
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
                 .withComponentType(FlagComponentB.class)

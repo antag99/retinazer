@@ -21,63 +21,99 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.Test;
 import org.mockito.InOrder;
 
+import com.github.antag99.retinazer.Event.WithFamily;
+
 public class EntityListenerTest {
+    private static class EntitySystemA extends EntitySystem {
+        @EventHandler
+        public void entityAdd(EntityAddEvent event) {
+        }
+
+        @EventHandler
+        public void entityRemove(EntityRemoveEvent event) {
+        }
+    }
+
+    private static class EntitySystemB extends EntitySystem {
+        @EventHandler
+        @WithFamily(with = FlagComponentB.class)
+        public void entityAdd(EntityAddEvent event) {
+        }
+
+        @EventHandler
+        @WithFamily(with = FlagComponentB.class)
+        public void entityRemove(EntityRemoveEvent event) {
+        }
+    }
+
+    private static class EntitySystemC extends EntitySystem {
+        @EventHandler
+        @WithFamily(with = FlagComponentC.class)
+        public void entityAdd(EntityAddEvent event) {
+        }
+
+        @EventHandler
+        @WithFamily(with = FlagComponentC.class)
+        public void entityRemove(EntityRemoveEvent event) {
+        }
+    }
+
     @Test
     public void testEntityListener() {
-        EntityListener listener = mock(EntityListener.class);
-        Engine engine = EngineConfig.create().finish();
-        engine.addEntityListener(listener);
+        EntitySystemA listener = spy(new EntitySystemA());
+        Engine engine = EngineConfig.create().withSystem(listener).finish();
         Entity entity = engine.createEntity();
         verifyNoMoreInteractions(listener);
         engine.flush();
-        verify(listener).entityAdd(entity);
+        verify(listener).entityAdd(any(EntityAddEvent.class));
         verifyNoMoreInteractions(listener);
         entity.destroy();
         verifyNoMoreInteractions(listener);
         engine.update();
-        verify(listener).entityRemove(entity);
+        verify(listener).entityRemove(any(EntityRemoveEvent.class));
         verifyNoMoreInteractions(listener);
     }
 
     @Test
     public void testFamilyListener() {
-        EntityListener listenerA = mock(EntityListener.class);
-        EntityListener listenerB = mock(EntityListener.class);
-        InOrder order = inOrder(listenerA, listenerB);
+        EntitySystemB listenerB = spy(new EntitySystemB());
+        EntitySystemC listenerC = spy(new EntitySystemC());
+        InOrder order = inOrder(listenerB, listenerC);
         Engine engine = EngineConfig.create()
+                .withSystem(listenerB)
+                .withSystem(listenerC)
                 .withComponentType(FlagComponentA.class)
                 .withComponentType(FlagComponentB.class)
                 .withComponentType(FlagComponentC.class)
                 .finish();
-        engine.addEntityListener(Family.with(FlagComponentA.class), listenerA);
-        engine.addEntityListener(Family.with(FlagComponentB.class), listenerB);
         Entity entity = engine.createEntity();
         engine.update();
         order.verifyNoMoreInteractions();
-        entity.add(new FlagComponentA());
+        entity.add(new FlagComponentB());
         order.verifyNoMoreInteractions();
         engine.flush();
-        order.verify(listenerA).entityAdd(entity);
+        order.verify(listenerB).entityAdd(any(EntityAddEvent.class));
         order.verifyNoMoreInteractions();
-        entity.remove(FlagComponentA.class);
+        entity.remove(FlagComponentB.class);
         engine.update();
-        order.verify(listenerA).entityRemove(entity);
+        order.verify(listenerB).entityRemove(any(EntityRemoveEvent.class));
         order.verifyNoMoreInteractions();
-        entity.add(new FlagComponentB());
+        entity.add(new FlagComponentC());
         engine.update();
-        order.verify(listenerB).entityAdd(entity);
+        order.verify(listenerC).entityAdd(any(EntityAddEvent.class));
         order.verifyNoMoreInteractions();
         entity.destroy();
         engine.update();
-        order.verify(listenerB).entityRemove(entity);
+        order.verify(listenerC).entityRemove(any(EntityRemoveEvent.class));
         order.verifyNoMoreInteractions();
     }
 }

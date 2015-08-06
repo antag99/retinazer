@@ -21,246 +21,209 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static java.lang.String.format;
-
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import com.github.antag99.retinazer.Event.WithEntity;
+import com.github.antag99.retinazer.Event.UseConstraintHandler;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class EventManager extends EntitySystem {
-
-    /*
-     * Event constraints are used to mask event handlers based on some criteria.
-     *
-     * TODO: Event constraints could be made public API in the future
-     */
-    private interface EventConstraint {
-
-        public boolean accept(Event event);
-    }
-
-    private static final class TypeConstraint implements EventConstraint {
-        private Class<? extends Event> type;
-
-        public TypeConstraint(Class<? extends Event> type) {
-            this.type = type;
-        }
-
-        @Override
-        public boolean accept(Event event) {
-            return type.isInstance(event);
-        }
-
-        @Override
-        public int hashCode() {
-            return type.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof TypeConstraint))
-                return false;
-            return ((TypeConstraint) obj).type.equals(type);
-        }
-    }
-
-    private static final class FamilyConstraint implements EventConstraint {
-        private Class<?> type;
-        private Method getter;
-        private int family;
-
-        public FamilyConstraint(Method getter, FamilyMatcher family) {
-            this.type = getter.getDeclaringClass();
-            this.getter = getter;
-            this.family = family.index;
-        }
-
-        @Override
-        public boolean accept(Event event) {
-            try {
-                return type.isInstance(event) &&
-                        ((Entity) getter.invoke(event)).families.get(family);
-            } catch (IllegalAccessException ex) {
-                // Shouldn't happen as methods are marked as accessible
-                throw new AssertionError(ex);
-            } catch (InvocationTargetException ex) {
-                // Avoid wrapping checked exceptions by bypassing the java compiler
-                throw Internal.sneakyThrow(ex.getCause());
-            }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof FamilyConstraint))
-                return false;
-            FamilyConstraint other = (FamilyConstraint) obj;
-            return other.type.equals(type) &&
-                    other.getter.equals(getter) &&
-                    other.family == family;
-        }
-
-        @Override
-        public int hashCode() {
-            return (type.hashCode() * 31 + getter.hashCode()) * 31 + family;
-        }
-    }
-
-    private static final class EventHandlerData {
-        public final EntitySystem system;
-        public final int priority;
-        public final Method method;
-
-        public EventHandlerData(EntitySystem system, int priority, Method method) {
-            this.system = system;
-            this.priority = priority;
-            this.method = method;
-        }
-    }
-
     private Engine engine;
-    private Set<Class<? extends Event>> eventTypes = new HashSet<>();
-    private Map<EventConstraint, Mask> constraints = new HashMap<>();
-    private EventHandlerData[] handlers = new EventHandlerData[0];
+    private final Mask filledMask = new Mask();
+    private final EventReceiver[] eventReceivers;
+    private final EventConstraintHandler[] constraintHandlers;
+    private final Pool<Object[]> arrayPool = new Pool<Object[]>() {
+        @Override
+        protected Object[] create() {
+            return new Object[1];
+        }
+
+        @Override
+        protected void destroy(Object[] object) {
+            object[0] = null;
+        }
+    };
 
     public EventManager(Engine engine) {
         this.engine = engine;
-        for (Class<? extends Event> eventType : engine.config.getEventTypes()) {
-            eventTypes.add(eventType);
-        }
-        for (EntitySystem system : engine.config.getSystems()) {
-            register(system);
-        }
-    }
 
-    private Mask getHandlers(EventConstraint constraint) {
-        Mask handlerMask = constraints.get(constraint);
-        if (handlerMask == null) {
-            constraints.put(constraint, handlerMask = new Mask());
+        List<EventReceiver> receivers = new ArrayList<>();
+
+        for (EntitySystem system : engine.getSystems()) {
+            // Receivers registered for this system, to reduce complexity of
+            // checking whether a method is overridden.
+            List<EventReceiver> systemReceivers = new ArrayList<>();
+
+            Class<?> current = system.getClass();
+            while (current != null) {
+                iterate: for (Method method : current.getDeclaredMethods()) {
+                    method.setAccessible(true);
+                    EventHandler handler = method.getAnnotation(EventHandler.class);
+                    if (handler == null)
+                        continue;
+
+                    // Validate the signature of the event handler
+                    if (method.getReturnType() != Void.TYPE)
+                        throw new IllegalArgumentException(method.getName() + " must return void");
+
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    if (parameterTypes.length != 1 || !Event.class.isAssignableFrom(parameterTypes[0]))
+                        throw new IllegalArgumentException(method.getName() + " must take an Event as argument");
+
+                    // Static methods may not be event handlers
+                    if (Modifier.isStatic(method.getModifiers()))
+                        throw new IllegalArgumentException(method.getName() + " must not be static methods");
+
+                    // Default methods may not be event handlers
+                    if (method.getDeclaringClass().isInterface())
+                        throw new IllegalArgumentException(method.getName() + " must not be default methods");
+
+                    // Check if the method is overridden in a subclass... this
+                    // is tricky business, as overriding semantics are complex.
+
+                    // Note that abstract methods are registered when they are
+                    // encountered with an EventHandler annotation, unless the
+                    // subclass also annotates the method with EventHandler.
+                    for (int i = 0, n = systemReceivers.size(); i < n; i++) {
+                        Method registeredMethod = systemReceivers.get(i).getMethod();
+
+                        // For a method to be overridden, it must have the same name
+                        // and an equal or assignable signature - e.g. may return
+                        // subclass and accept superclass.
+                        if (!method.getName().equals(registeredMethod.getName()) ||
+                                !method.getParameterTypes()[0].isAssignableFrom(
+                                        registeredMethod.getParameterTypes()[0])) {
+                            continue;
+                        }
+
+                        // Private methods are never overridden.
+                        int mod = method.getModifiers();
+                        if (Modifier.isPrivate(mod)) {
+                            continue;
+                        }
+
+                        // Package-private methods do not get overridden unless
+                        // they are in the same package.
+                        if (!Modifier.isPublic(mod)) {
+                            Class<?> class0 = method.getDeclaringClass();
+                            Class<?> class1 = registeredMethod.getDeclaringClass();
+                            if (class0.getPackage() != class1.getPackage()) {
+                                continue;
+                            }
+                        }
+
+                        // Otherwise, the method has been overridden; don't
+                        // register it twice.
+                        continue iterate;
+                    }
+
+                    systemReceivers.add(new EventReceiver(system, method));
+                }
+
+                current = current.getSuperclass();
+            }
+
+            receivers.addAll(systemReceivers);
         }
-        return handlerMask;
+
+        // Sort the receivers based on priority; lower means first
+        Collections.sort(receivers, new Comparator<EventReceiver>() {
+            @Override
+            public int compare(EventReceiver o1, EventReceiver o2) {
+                int p1 = o1.getHandler().priority();
+                int p2 = o2.getHandler().priority();
+                return p1 > p2 ? 1 : p2 > p1 ? -1 : 0;
+            }
+        });
+
+        // Assign indices to all receivers
+        for (int i = 0, n = receivers.size(); i < n; i++) {
+            receivers.get(i).index = i;
+            filledMask.set(i);
+        }
+
+        EventReceiver[] receieversAsArray = receivers.toArray(new EventReceiver[0]);
+
+        Map<Class<? extends Annotation>, List<EventReceiver>> eventReceievers = new LinkedHashMap<>();
+        for (EventReceiver receiver : receivers) {
+            Method method = receiver.getMethod();
+            for (Annotation annotation : method.getAnnotations()) {
+                if (annotation.annotationType().getAnnotation(UseConstraintHandler.class) == null)
+                    continue;
+
+                List<EventReceiver> list = eventReceievers.get(annotation.annotationType());
+                if (list == null) {
+                    eventReceievers.put(annotation.annotationType(), list = new ArrayList<EventReceiver>());
+                }
+                list.add(receiver);
+            }
+        }
+
+        List<EventConstraintHandler> handlers = new ArrayList<>();
+
+        for (Map.Entry<Class<? extends Annotation>, List<EventReceiver>> eventReceiver : eventReceievers.entrySet()) {
+            Class<? extends EventConstraintHandler> handlerType = eventReceiver.getKey()
+                    .getAnnotation(UseConstraintHandler.class).value();
+            try {
+                Constructor<? extends EventConstraintHandler> constructor =
+                        handlerType.getConstructor(Engine.class, Iterable.class);
+                constructor.setAccessible(true);
+                handlers.add(constructor.newInstance(engine,
+                        Collections.unmodifiableCollection(eventReceiver.getValue())));
+            } catch (InstantiationException ex) {
+                throw new IllegalArgumentException(handlerType.getName()
+                        + " is not instantiable");
+            } catch (IllegalAccessException ex) {
+                throw new AssertionError("This should not happen as the"
+                        + " constructor has been marked as accessible", ex);
+            } catch (InvocationTargetException ex) {
+                throw Internal.sneakyThrow(ex.getCause());
+            } catch (NoSuchMethodException ex) {
+                throw new IllegalArgumentException(handlerType.getName()
+                        + " must have a constructor accepting Engine and EventReceiver[]");
+            }
+        }
+
+        this.eventReceivers = receieversAsArray;
+        this.constraintHandlers = handlers.toArray(new EventConstraintHandler[0]);
     }
 
     public void reset() {
-        constraints.clear();
-        handlers = new EventHandlerData[0];
     }
 
     public void dispatchEvent(Event event) {
-        // Waste speed by checking for consistency
-        if (!eventTypes.contains(event.getClass())) {
-            throw new IllegalArgumentException("Event type "
-                    + event.getClass().getName() + " has not been registered");
+        Object[] array = arrayPool.obtain();
+        array[0] = event;
+
+        Mask receivers = engine.maskPool.obtain().set(filledMask);
+        for (EventConstraintHandler constraintHandler : constraintHandlers) {
+            Mask oldReceivers = new Mask().set(receivers);
+            constraintHandler.filter(event, receivers);
+            if (!oldReceivers.isSupersetOf(receivers))
+                throw new IllegalStateException(constraintHandler.getClass().getName());
         }
 
-        Mask excluded = engine.maskPool.obtain();
-        Iterator<Entry<EventConstraint, Mask>> iterator = constraints.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Entry<EventConstraint, Mask> constraint = iterator.next();
-            if (!constraint.getKey().accept(event)) {
-                excluded.or(constraint.getValue());
+        try {
+            for (int i = receivers.nextSetBit(0); i != -1; i = receivers.nextSetBit(i + 1)) {
+                EventReceiver eventReceiver = eventReceivers[i];
+                eventReceiver.getMethod().invoke(eventReceiver.getOwner(), array);
             }
+        } catch (IllegalAccessException ex) {
+            // Accuse the user of having changed the accessible flag
+            throw new IllegalStateException("Handler method is not marked as accessible", ex);
+        } catch (InvocationTargetException ex) {
+            throw Internal.sneakyThrow(ex.getCause());
         }
-        EventHandlerData[] handlers = this.handlers;
-        for (int i = excluded.nextClearBit(0); i != -1 && i < handlers.length; i = excluded.nextClearBit(i + 1)) {
-            try {
-                handlers[i].method.invoke(handlers[i].system, event);
-            } catch (IllegalAccessException ex) {
-                // Shouldn't happen as methods are marked as accessible
-                throw new AssertionError(ex);
-            } catch (InvocationTargetException ex) {
-                // Avoid wrapping checked exceptions by bypassing the java compiler
-                throw Internal.sneakyThrow(ex.getCause());
-            }
-        }
-    }
 
-    private void register(EntitySystem system) {
-        for (Method method : Internal.getAllMethods(system.getClass())) {
-            method.setAccessible(true);
-            EventHandler eventHandler = method.getAnnotation(EventHandler.class);
-            if (eventHandler != null) {
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes.length != 1) {
-                    throw new IllegalArgumentException("Invalid @EventHandler:"
-                            + " Expected event argument");
-                }
-                if (!Event.class.isAssignableFrom(parameterTypes[0])) {
-                    throw new IllegalArgumentException("Invalid @EventHandler:"
-                            + " Argument must be a subclass of Event");
-                }
-                Class<? extends Event> handlerType = parameterTypes[0].asSubclass(Event.class);
-
-                if (!eventTypes.contains(handlerType)) {
-                    throw new IllegalArgumentException("Event type "
-                            + handlerType.getName() + " has not been registered");
-                }
-
-                int priority = eventHandler.priority();
-                int insertionIndex = 0;
-                while (insertionIndex < handlers.length) {
-                    if (handlers[insertionIndex].priority > priority) {
-                        break;
-                    }
-                    insertionIndex++;
-                }
-
-                for (Mask handlerMask : constraints.values()) {
-                    handlerMask.push(insertionIndex);
-                }
-
-                TypeConstraint typeConstraint = new TypeConstraint(handlerType);
-                getHandlers(typeConstraint).set(insertionIndex);
-
-                // Replace defaults based on @WithEntity annotations
-                for (WithEntity withEntity : eventHandler.value()) {
-                    FamilyMatcher family = engine.getMatcher(Family
-                            .with(withEntity.with())
-                            .exclude(withEntity.exclude()));
-                    String propertyName = withEntity.name();
-                    String getterName = format("get%s%s",
-                            Character.toUpperCase(propertyName.charAt(0)),
-                            propertyName.substring(1));
-                    Method getter;
-                    try {
-                        getter = handlerType.getMethod(getterName);
-                        getter.setAccessible(true);
-                    } catch (NoSuchMethodException ex) {
-                        throw new IllegalArgumentException(
-                                "No getter for property " + propertyName
-                                        + " was found on " + handlerType.getName());
-                    }
-                    if (Modifier.isStatic(getter.getModifiers())) {
-                        throw new IllegalArgumentException(
-                                "Property " + propertyName + " cannot be static");
-                    }
-                    if (getter.getReturnType() != Entity.class) {
-                        throw new IllegalArgumentException(
-                                "Property " + propertyName + " must be an Entity");
-                    }
-                    FamilyConstraint constraint = new FamilyConstraint(getter, family);
-                    getHandlers(constraint).set(insertionIndex);
-                }
-
-                EventHandlerData eventHandlerData = new EventHandlerData(
-                        system, priority, method);
-
-                EventHandlerData[] newHandlers = new EventHandlerData[handlers.length + 1];
-                System.arraycopy(handlers, 0, newHandlers, 0, insertionIndex);
-                System.arraycopy(handlers, insertionIndex,
-                        newHandlers, insertionIndex + 1,
-                        handlers.length - insertionIndex);
-                newHandlers[insertionIndex] = eventHandlerData;
-                handlers = newHandlers;
-            }
-        }
+        arrayPool.free(array);
     }
 }

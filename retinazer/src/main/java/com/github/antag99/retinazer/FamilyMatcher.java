@@ -24,13 +24,22 @@ package com.github.antag99.retinazer;
 import com.github.antag99.retinazer.utils.Mask;
 
 public final class FamilyMatcher {
-    private final Mask components;
-    private final Mask excludedComponents;
+    final Mask components;
+    final Mask excludedComponents;
+    final Class<? extends Component>[] componentsArray;
+    final Class<? extends Component>[] excludedComponentsArray;
     final int index;
 
-    FamilyMatcher(Mask components, Mask excludedComponents, int index) {
+    FamilyMatcher(
+            Mask components,
+            Mask excludedComponents,
+            Class<? extends Component>[] componentsArray,
+            Class<? extends Component>[] excludedComponentsArray,
+            int index) {
         this.components = components;
         this.excludedComponents = excludedComponents;
+        this.componentsArray = componentsArray;
+        this.excludedComponentsArray = excludedComponentsArray;
         this.index = index;
     }
 

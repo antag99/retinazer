@@ -26,8 +26,7 @@ import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Wire;
 import com.github.antag99.retinazer.utils.UpdateEvent;
 
-public abstract class EntityProcessorSystem extends EntitySystem
-        implements EntityProcessor, EntityListener {
+public abstract class EntityProcessorSystem extends EntitySystem implements EntityProcessor {
     private @Wire Engine engine;
     private FamilyConfig family;
     private EntitySet entities;
@@ -39,7 +38,6 @@ public abstract class EntityProcessorSystem extends EntitySystem
     @EventHandler
     private void initialize(InitializeEvent event) {
         entities = engine.getEntitiesFor(family);
-        engine.addEntityListener(family, this);
     }
 
     @EventHandler
@@ -64,12 +62,4 @@ public abstract class EntityProcessorSystem extends EntitySystem
 
     @Override
     public abstract void process(Entity entity);
-
-    @Override
-    public void entityAdd(Entity entity) {
-    }
-
-    @Override
-    public void entityRemove(Entity entity) {
-    }
 }
