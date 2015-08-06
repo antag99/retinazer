@@ -99,16 +99,12 @@ public final class Engine {
      * Resets this engine. This does the following:
      * <ul>
      * <li>Destroys and removes all entities</li>
-     * <li>Calls {@link EntitySystem#destroy()} for each system</li>
+     * <li>Fires a {@link DestroyEvent}</li>
      * <li>Calls {@link #unwire(Object)} with each system</li>
      * <li>Removes all remaining entities (no notifications here)</li>
      * <li>Calls {@link #wire(Object)} with each system</li>
-     * <li>Calls {@link EntitySystem#initialize()} for each system</li>
+     * <li>Fires an {@link InitializeEvent}</li>
      * </ul>
-     *
-     * After this method has been called, the engine should be in it's initial
-     * state, same as right after it was created. (This can, however, be
-     * affected by improper implementations of registered systems.)
      */
     public void reset() {
         destroy();
