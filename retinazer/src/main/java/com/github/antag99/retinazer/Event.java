@@ -45,6 +45,7 @@ public interface Event {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
+    @UseConstraintHandler(EntityConstraintHandler.class)
     public @interface WithEntity {
 
         /**

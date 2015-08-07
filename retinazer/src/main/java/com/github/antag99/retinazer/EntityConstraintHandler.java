@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,18 +108,24 @@ final class EntityConstraintHandler extends EventConstraintHandler {
 
         // Add indices of event receivers to the caches
         for (EventReceiver receiver : receivers) {
-            // WithEntities store the WithEntity annotations
-            WithEntities withEntities = receiver.getMethod()
-                    .getAnnotation(WithEntities.class);
-
+            Method method = receiver.getMethod();
             // Event handlers take the event as only parameter
             Class<? extends Event> eventType = receiver.getMethod()
                     .getParameterTypes()[0].asSubclass(Event.class);
 
-            for (WithEntity withEntity : withEntities.value()) {
-                String property = withEntity.name();
-                int index = getEngine().getMatcher(Family.with(withEntity.with())
-                        .exclude(withEntity.exclude())).index;
+            WithEntities withEntities = method.getAnnotation(WithEntities.class);
+            WithEntity withEntity = method.getAnnotation(WithEntity.class);
+            List<WithEntity> constraints = new ArrayList<>();
+            if (withEntities != null) {
+                constraints.addAll(Arrays.asList(withEntities.value()));
+            }
+            if (withEntity != null) {
+                constraints.add(withEntity);
+            }
+            for (WithEntity constraint : constraints) {
+                String property = constraint.name();
+                int index = getEngine().getMatcher(Family.with(constraint.with())
+                        .exclude(constraint.exclude())).index;
                 for (Entry<Class<? extends Event>, EventCache> entry : eventCaches.entrySet()) {
                     if (eventType.isAssignableFrom(entry.getKey())) {
                         EventCache eventCache = entry.getValue();
