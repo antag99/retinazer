@@ -53,7 +53,7 @@ public interface Event {
          *
          * @return Property name
          */
-        public String name();
+        public String name() default "entity";
 
         /**
          * The entity must have <b>all</b> of these components in order for the
