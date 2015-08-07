@@ -108,7 +108,7 @@ final class FamilyConstraintHandler extends EventConstraintHandler {
                 throw new IllegalArgumentException(receiver.getType().getName()
                         + " does not define both with() and exclude() methods");
             WithFamily withFamily = receiver.getMethod().getAnnotation(WithFamily.class);
-            int index = engine.getMatcher(Family.with(withFamily.with())
+            int index = engine.getFamily(Family.with(withFamily.with())
                     .exclude(withFamily.exclude())).index;
             forFamily(index).set(receiver.getIndex());
             relevantReceivers.set(receiver.getIndex());
@@ -128,7 +128,7 @@ final class FamilyConstraintHandler extends EventConstraintHandler {
             Class<? extends Component>[] exclude = (Class<? extends Component>[]) eventCache.excludeMethod.invoke(event, ARRAY);
 
             // TODO: Optimize family retrieval; avoid creating sets and stuff
-            int index = getEngine().getMatcher(Family.with(with).exclude(exclude)).index;
+            int index = getEngine().getFamily(Family.with(with).exclude(exclude)).index;
             Mask mask = getEngine().maskPool.obtain();
             mask.or(receivers);
             mask.and(relevantReceivers);

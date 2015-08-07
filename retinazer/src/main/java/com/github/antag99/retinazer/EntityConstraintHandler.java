@@ -124,7 +124,7 @@ final class EntityConstraintHandler extends EventConstraintHandler {
             }
             for (WithEntity constraint : constraints) {
                 String property = constraint.name();
-                int index = getEngine().getMatcher(Family.with(constraint.with())
+                int index = getEngine().getFamily(Family.with(constraint.with())
                         .exclude(constraint.exclude())).index;
                 for (Entry<Class<? extends Event>, EventCache> entry : eventCaches.entrySet()) {
                     if (eventType.isAssignableFrom(entry.getKey())) {

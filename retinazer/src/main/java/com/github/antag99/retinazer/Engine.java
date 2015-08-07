@@ -214,14 +214,14 @@ public final class Engine {
 
     /**
      * <p>
-     * Gets or creates a matcher for the given family configuration
+     * Gets or creates a family for the given configuration
      * </p>
      *
      * @param config
-     *            Configuration for the family to match
-     * @return Matcher for the given family configuration
+     *            Configuration for the family
+     * @return Family for the given configuration
      */
-    public FamilyMatcher getMatcher(FamilyConfig config) {
+    public Family getFamily(FamilyConfig config) {
         return familyManager.getFamily(config);
     }
 

@@ -29,7 +29,7 @@ import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager extends EntitySystem {
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
-    private Bag<FamilyMatcher> families = new Bag<>();
+    private Bag<Family> families = new Bag<>();
     private Bag<EntitySetContent> entitiesForFamily = new Bag<>();
 
     private Engine engine;
@@ -78,7 +78,7 @@ final class FamilyManager extends EntitySystem {
         return entitiesForFamily.get(getFamily(family).index).defaultSet;
     }
 
-    public FamilyMatcher getFamily(FamilyConfig config) {
+    public Family getFamily(FamilyConfig config) {
         int index = familyIndexes.containsKey(config) ? familyIndexes.get(config) : familyIndexes.size();
         if (index == familyIndexes.size()) {
             Mask components = new Mask();
@@ -93,7 +93,7 @@ final class FamilyManager extends EntitySystem {
                 excludedComponents.set(engine.componentManager.getIndex(componentType));
 
             familyIndexes.put(config.clone(), index);
-            families.set(index, new FamilyMatcher(components, excludedComponents,
+            families.set(index, new Family(components, excludedComponents,
                     componentsArray, excludedComponentsArray, index));
             entitiesForFamily.set(index, new EntitySetContent(engine));
 
@@ -109,11 +109,11 @@ final class FamilyManager extends EntitySystem {
         final Mask entityFamilies = entity.families;
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
-            final FamilyMatcher matcher = families.get(i);
+            final Family family = families.get(i);
             final EntitySetContent familyContent = entitiesForFamily.get(i);
 
             boolean belongsToFamily = entityFamilies.get(i);
-            boolean matches = matcher.matches(entity) && !remove;
+            boolean matches = family.matches(entity) && !remove;
 
             if (belongsToFamily != matches) {
                 if (matches) {
@@ -122,8 +122,8 @@ final class FamilyManager extends EntitySystem {
 
                     EntityAddEvent event = entityAddEventPool.obtain();
                     event.entity = entity;
-                    event.with = matcher.componentsArray;
-                    event.exclude = matcher.excludedComponentsArray;
+                    event.with = family.componentsArray;
+                    event.exclude = family.excludedComponentsArray;
                     engine.dispatchEvent(event);
                     entityAddEventPool.free(event);
                 } else {
@@ -132,8 +132,8 @@ final class FamilyManager extends EntitySystem {
 
                     EntityRemoveEvent event = entityRemoveEventPool.obtain();
                     event.entity = entity;
-                    event.with = matcher.componentsArray;
-                    event.exclude = matcher.excludedComponentsArray;
+                    event.with = family.componentsArray;
+                    event.exclude = family.excludedComponentsArray;
                     engine.dispatchEvent(event);
                     entityRemoveEventPool.free(event);
                 }

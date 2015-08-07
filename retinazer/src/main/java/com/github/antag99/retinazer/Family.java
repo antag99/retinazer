@@ -21,11 +21,50 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import com.github.antag99.retinazer.utils.Mask;
+
 public final class Family {
     public static final FamilyConfig EMPTY = new FamilyConfig();
 
-    private Family() {
-        throw new AssertionError();
+    final Mask components;
+    final Mask excludedComponents;
+    final Class<? extends Component>[] componentsArray;
+    final Class<? extends Component>[] excludedComponentsArray;
+    final int index;
+
+    Family(
+            Mask components,
+            Mask excludedComponents,
+            Class<? extends Component>[] componentsArray,
+            Class<? extends Component>[] excludedComponentsArray,
+            int index) {
+        this.components = components;
+        this.excludedComponents = excludedComponents;
+        this.componentsArray = componentsArray;
+        this.excludedComponentsArray = excludedComponentsArray;
+        this.index = index;
+    }
+
+    public boolean matches(Entity entity) {
+        if (!components.isSubsetOf(entity.components)) {
+            return false;
+        }
+
+        if (excludedComponents.intersects(entity.components)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return index;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
     }
 
     public static final FamilyConfig create() {
