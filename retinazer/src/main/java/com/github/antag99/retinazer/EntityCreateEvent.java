@@ -21,34 +21,13 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public final class EntityRemoveEvent implements Event {
+public final class EntityCreateEvent implements Event {
     Entity entity;
-    Class<? extends Component>[] with;
-    Class<? extends Component>[] exclude;
 
-    EntityRemoveEvent() {
+    EntityCreateEvent() {
     }
 
-    /**
-     * @return The entity that was removed.
-     */
     public Entity getEntity() {
         return entity;
-    }
-
-    /**
-     * @return The required components of the family this entity was removed from.
-     *         Modifying the returned array leads to undefined behavior.
-     */
-    public Class<? extends Component>[] with() {
-        return with;
-    }
-
-    /**
-     * @return The excluded components of the family this entity was removed from.
-     *         Modifying the returned array leads to undefined behavior.
-     */
-    public Class<? extends Component>[] exclude() {
-        return exclude;
     }
 }

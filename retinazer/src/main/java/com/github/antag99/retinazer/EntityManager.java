@@ -33,6 +33,9 @@ final class EntityManager extends EntitySystem {
     Mask nextEntities = new Mask();
     Mask tmpMask = new Mask();
 
+    EntityCreateEvent entityCreateEvent = new EntityCreateEvent();
+    EntityDestroyEvent entityDestroyEvent = new EntityDestroyEvent();
+
     private Engine engine;
 
     public EntityManager(Engine engine) {
@@ -74,6 +77,8 @@ final class EntityManager extends EntitySystem {
 
         for (int i = addedEntities.nextSetBit(0); i != -1; i = addedEntities.nextSetBit(i + 1)) {
             Entity entity = entities.get(i);
+            entityCreateEvent.entity = entity;
+            engine.dispatchEvent(entityCreateEvent);
             engine.familyManager.updateFamilyMembership(entity, false);
         }
     }
@@ -86,6 +91,8 @@ final class EntityManager extends EntitySystem {
 
         for (int i = removedEntities.nextSetBit(0); i != -1; i = removedEntities.nextSetBit(i + 1)) {
             Entity entity = entities.get(i);
+            entityDestroyEvent.entity = entity;
+            engine.dispatchEvent(entityDestroyEvent);
             engine.familyManager.updateFamilyMembership(entity, true);
             entities.set(i, null);
         }

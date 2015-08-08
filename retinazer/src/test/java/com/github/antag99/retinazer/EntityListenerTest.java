@@ -35,35 +35,35 @@ import com.github.antag99.retinazer.Event.WithFamily;
 public class EntityListenerTest {
     private static class EntitySystemA extends EntitySystem {
         @EventHandler
-        public void entityAdd(EntityAddEvent event) {
+        public void entityAdd(EntityCreateEvent event) {
         }
 
         @EventHandler
-        public void entityRemove(EntityRemoveEvent event) {
+        public void entityRemove(EntityDestroyEvent event) {
         }
     }
 
     private static class EntitySystemB extends EntitySystem {
         @EventHandler
         @WithFamily(with = FlagComponentB.class)
-        public void entityAdd(EntityAddEvent event) {
+        public void entityAdd(EntityMatchEvent event) {
         }
 
         @EventHandler
         @WithFamily(with = FlagComponentB.class)
-        public void entityRemove(EntityRemoveEvent event) {
+        public void entityRemove(EntityUnmatchEvent event) {
         }
     }
 
     private static class EntitySystemC extends EntitySystem {
         @EventHandler
         @WithFamily(with = FlagComponentC.class)
-        public void entityAdd(EntityAddEvent event) {
+        public void entityAdd(EntityMatchEvent event) {
         }
 
         @EventHandler
         @WithFamily(with = FlagComponentC.class)
-        public void entityRemove(EntityRemoveEvent event) {
+        public void entityRemove(EntityUnmatchEvent event) {
         }
     }
 
@@ -74,12 +74,12 @@ public class EntityListenerTest {
         Entity entity = engine.createEntity();
         verifyNoMoreInteractions(listener);
         engine.flush();
-        verify(listener).entityAdd(any(EntityAddEvent.class));
+        verify(listener).entityAdd(any(EntityCreateEvent.class));
         verifyNoMoreInteractions(listener);
         entity.destroy();
         verifyNoMoreInteractions(listener);
         engine.update();
-        verify(listener).entityRemove(any(EntityRemoveEvent.class));
+        verify(listener).entityRemove(any(EntityDestroyEvent.class));
         verifyNoMoreInteractions(listener);
     }
 
@@ -101,19 +101,19 @@ public class EntityListenerTest {
         entity.add(new FlagComponentB());
         order.verifyNoMoreInteractions();
         engine.flush();
-        order.verify(listenerB).entityAdd(any(EntityAddEvent.class));
+        order.verify(listenerB).entityAdd(any(EntityMatchEvent.class));
         order.verifyNoMoreInteractions();
         entity.remove(FlagComponentB.class);
         engine.update();
-        order.verify(listenerB).entityRemove(any(EntityRemoveEvent.class));
+        order.verify(listenerB).entityRemove(any(EntityUnmatchEvent.class));
         order.verifyNoMoreInteractions();
         entity.add(new FlagComponentC());
         engine.update();
-        order.verify(listenerC).entityAdd(any(EntityAddEvent.class));
+        order.verify(listenerC).entityAdd(any(EntityMatchEvent.class));
         order.verifyNoMoreInteractions();
         entity.destroy();
         engine.update();
-        order.verify(listenerC).entityRemove(any(EntityRemoveEvent.class));
+        order.verify(listenerC).entityRemove(any(EntityUnmatchEvent.class));
         order.verifyNoMoreInteractions();
     }
 }

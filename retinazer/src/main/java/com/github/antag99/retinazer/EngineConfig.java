@@ -48,8 +48,10 @@ public final class EngineConfig {
             .withEventType(InitializeEvent.class)
             .withEventType(DestroyEvent.class)
             .withEventType(UpdateEvent.class)
-            .withEventType(EntityAddEvent.class)
-            .withEventType(EntityRemoveEvent.class)
+            .withEventType(EntityCreateEvent.class)
+            .withEventType(EntityDestroyEvent.class)
+            .withEventType(EntityMatchEvent.class)
+            .withEventType(EntityUnmatchEvent.class)
             .withWireResolver(new DefaultWireResolver())
             .withWireResolver(new DependencyWireResolver());
 

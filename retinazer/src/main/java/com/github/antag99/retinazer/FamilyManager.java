@@ -34,28 +34,28 @@ final class FamilyManager extends EntitySystem {
 
     private Engine engine;
 
-    private Pool<EntityAddEvent> entityAddEventPool = new Pool<EntityAddEvent>() {
+    private Pool<EntityMatchEvent> entityAddEventPool = new Pool<EntityMatchEvent>() {
         @Override
-        protected EntityAddEvent create() {
-            return new EntityAddEvent();
+        protected EntityMatchEvent create() {
+            return new EntityMatchEvent();
         }
 
         @Override
-        protected void destroy(EntityAddEvent object) {
+        protected void destroy(EntityMatchEvent object) {
             object.entity = null;
             object.with = null;
             object.exclude = null;
         }
     };
 
-    private Pool<EntityRemoveEvent> entityRemoveEventPool = new Pool<EntityRemoveEvent>() {
+    private Pool<EntityUnmatchEvent> entityRemoveEventPool = new Pool<EntityUnmatchEvent>() {
         @Override
-        protected EntityRemoveEvent create() {
-            return new EntityRemoveEvent();
+        protected EntityUnmatchEvent create() {
+            return new EntityUnmatchEvent();
         }
 
         @Override
-        protected void destroy(EntityRemoveEvent object) {
+        protected void destroy(EntityUnmatchEvent object) {
             object.entity = null;
             object.with = null;
             object.exclude = null;
@@ -120,7 +120,7 @@ final class FamilyManager extends EntitySystem {
                     familyContent.entities.set(entity.getIndex());
                     entityFamilies.set(i);
 
-                    EntityAddEvent event = entityAddEventPool.obtain();
+                    EntityMatchEvent event = entityAddEventPool.obtain();
                     event.entity = entity;
                     event.with = family.componentsArray;
                     event.exclude = family.excludedComponentsArray;
@@ -130,7 +130,7 @@ final class FamilyManager extends EntitySystem {
                     familyContent.entities.clear(entity.getIndex());
                     entityFamilies.clear(i);
 
-                    EntityRemoveEvent event = entityRemoveEventPool.obtain();
+                    EntityUnmatchEvent event = entityRemoveEventPool.obtain();
                     event.entity = entity;
                     event.with = family.componentsArray;
                     event.exclude = family.excludedComponentsArray;

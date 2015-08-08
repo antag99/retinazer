@@ -21,23 +21,23 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-public final class EntityAddEvent implements Event {
+public final class EntityUnmatchEvent implements Event {
     Entity entity;
     Class<? extends Component>[] with;
     Class<? extends Component>[] exclude;
 
-    EntityAddEvent() {
+    EntityUnmatchEvent() {
     }
 
     /**
-     * @return The entity that was added.
+     * @return The entity that was removed.
      */
     public Entity getEntity() {
         return entity;
     }
 
     /**
-     * @return The required components of the family this entity was added to.
+     * @return The required components of the family this entity was removed from.
      *         Modifying the returned array leads to undefined behavior.
      */
     public Class<? extends Component>[] with() {
@@ -45,7 +45,7 @@ public final class EntityAddEvent implements Event {
     }
 
     /**
-     * @return The excluded components of the family this entity was added to.
+     * @return The excluded components of the family this entity was removed from.
      *         Modifying the returned array leads to undefined behavior.
      */
     public Class<? extends Component>[] exclude() {
