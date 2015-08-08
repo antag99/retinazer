@@ -35,6 +35,14 @@ public abstract class EntityProcessorSystem extends EntitySystem {
         this.family = family;
     }
 
+    public EntitySet getEntities() {
+        return entities;
+    }
+
+    public FamilyConfig getFamily() {
+        return family;
+    }
+
     @EventHandler
     private void initialize(InitializeEvent event) {
         entities = engine.getEntitiesFor(family);
@@ -47,17 +55,13 @@ public abstract class EntityProcessorSystem extends EntitySystem {
 
     @EventHandler
     protected void update(UpdateEvent event) {
+        processEntities();
+    }
+
+    protected void processEntities() {
         for (Entity entity : getEntities().getEntities()) {
             process(entity);
         }
-    }
-
-    public EntitySet getEntities() {
-        return entities;
-    }
-
-    public FamilyConfig getFamily() {
-        return family;
     }
 
     protected abstract void process(Entity entity);
