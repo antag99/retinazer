@@ -26,7 +26,7 @@ import com.github.antag99.retinazer.utils.InitializeEvent;
 import com.github.antag99.retinazer.utils.Wire;
 import com.github.antag99.retinazer.utils.UpdateEvent;
 
-public abstract class EntityProcessorSystem extends EntitySystem implements EntityProcessor {
+public abstract class EntityProcessorSystem extends EntitySystem {
     private @Wire Engine engine;
     private FamilyConfig family;
     private EntitySet entities;
@@ -60,6 +60,5 @@ public abstract class EntityProcessorSystem extends EntitySystem implements Enti
         return family;
     }
 
-    @Override
-    public abstract void process(Entity entity);
+    protected abstract void process(Entity entity);
 }

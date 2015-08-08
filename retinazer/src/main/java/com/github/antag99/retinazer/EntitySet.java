@@ -120,13 +120,6 @@ public final class EntitySet implements Iterable<Entity> {
         return new EntityIterator();
     }
 
-    public void process(EntityProcessor processor) {
-        final Entity[] entities = getEntities();
-        for (int i = 0, n = entities.length; i < n; i++) {
-            processor.process(entities[i]);
-        }
-    }
-
     public boolean includes(Entity entity) {
         if (entity.getEngine() != content.engine)
             throw new IllegalArgumentException();
