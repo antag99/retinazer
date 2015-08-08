@@ -46,7 +46,7 @@ public abstract class EntityProcessorSystem extends EntitySystem {
     }
 
     @EventHandler
-    private void update(UpdateEvent event) {
+    protected void update(UpdateEvent event) {
         for (Entity entity : getEntities().getEntities()) {
             process(entity);
         }
