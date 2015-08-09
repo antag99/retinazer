@@ -28,8 +28,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.github.antag99.retinazer.utils.Wire;
-
 public class EngineTest {
     @Test
     public void testEngine() {

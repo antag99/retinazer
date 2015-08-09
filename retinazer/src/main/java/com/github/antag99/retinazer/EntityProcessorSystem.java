@@ -21,11 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.DestroyEvent;
-import com.github.antag99.retinazer.utils.InitializeEvent;
-import com.github.antag99.retinazer.utils.Wire;
-import com.github.antag99.retinazer.utils.UpdateEvent;
-
 public abstract class EntityProcessorSystem extends EntitySystem {
     private @Wire Engine engine;
     private FamilyConfig family;

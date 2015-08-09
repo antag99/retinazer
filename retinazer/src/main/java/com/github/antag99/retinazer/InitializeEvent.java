@@ -19,10 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
-
-import com.github.antag99.retinazer.Engine;
-import com.github.antag99.retinazer.Event;
+package com.github.antag99.retinazer;
 
 /**
  * Event fired by {@link Engine} when the engine is initializing.

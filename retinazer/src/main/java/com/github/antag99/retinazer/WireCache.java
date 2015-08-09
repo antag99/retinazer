@@ -25,9 +25,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.antag99.retinazer.Wire.Ignore;
 import com.github.antag99.retinazer.utils.Mask;
-import com.github.antag99.retinazer.utils.Wire;
-import com.github.antag99.retinazer.utils.Wire.Ignore;
 
 final class WireCache {
     private final Engine engine;

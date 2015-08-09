@@ -32,10 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.antag99.retinazer.utils.DestroyEvent;
-import com.github.antag99.retinazer.utils.InitializeEvent;
-import com.github.antag99.retinazer.utils.UpdateEvent;
-
 /**
  * Immutable copy-on-write engine configuration. This is used to setup static
  * properties of the engine, such as the systems to be processed, and additional

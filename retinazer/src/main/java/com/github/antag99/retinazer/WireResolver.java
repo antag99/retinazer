@@ -23,8 +23,6 @@ package com.github.antag99.retinazer;
 
 import java.lang.reflect.Field;
 
-import com.github.antag99.retinazer.utils.Wire;
-
 /**
  * WireResolver is used for wiring/un-wiring fields marked with {@link Wire}.
  * Multiple resolvers can be registered to an {@link EngineConfig}.

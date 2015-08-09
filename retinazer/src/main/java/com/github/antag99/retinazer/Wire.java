@@ -19,13 +19,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.Engine;
-import com.github.antag99.retinazer.Event;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Event fired by {@link Engine} every time it's updated.
+ * Annotation that makes fields eligible for wiring. This can be applied either
+ * to a whole class or to a single field. The {@link Ignore} annotation can be
+ * used to revert the effect of {@link Wire}. If a field annotated with {@link Wire}
+ * is not handled by a {@link WireResolver}, an exception is thrown. Fields not
+ * handled when a class is annotated with {@link Wire} are ignored.
+ *
+ * @see WireResolver
  */
-public final class UpdateEvent implements Event {
+@Target({ ElementType.TYPE, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Wire {
+
+    /**
+     * Annotation that reverts the effect of {@link Wire}.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Ignore {
+    }
 }

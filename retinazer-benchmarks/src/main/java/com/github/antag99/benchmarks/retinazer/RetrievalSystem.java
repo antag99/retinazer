@@ -7,7 +7,7 @@ import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.Entity;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
-import com.github.antag99.retinazer.utils.Wire;
+import com.github.antag99.retinazer.Wire;
 
 public abstract class RetrievalSystem extends EntityProcessorSystem {
     private @Wire Engine engine;
