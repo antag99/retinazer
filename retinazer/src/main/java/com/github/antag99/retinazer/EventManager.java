@@ -206,10 +206,7 @@ final class EventManager extends EntitySystem {
 
         Mask receivers = engine.maskPool.obtain().set(filledMask);
         for (EventConstraintHandler constraintHandler : constraintHandlers) {
-            Mask oldReceivers = new Mask().set(receivers);
             constraintHandler.filter(event, receivers);
-            if (!oldReceivers.isSupersetOf(receivers))
-                throw new IllegalStateException(constraintHandler.getClass().getName());
         }
 
         try {
