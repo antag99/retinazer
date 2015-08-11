@@ -14,14 +14,14 @@ public class RetrievalBenchmark extends RetinazerBenchmark {
     public void setup() {
         // @off
         engine = getConfig()
-                .withSystem(new RetrievalSystem(ComponentA.class) {})
-                .withSystem(new RetrievalSystem(ComponentB.class) {})
-                .withSystem(new RetrievalSystem(ComponentC.class) {})
-                .withSystem(new RetrievalSystem(ComponentD.class) {})
-                .withSystem(new RetrievalSystem(ComponentE.class) {})
-                .withSystem(new RetrievalSystem(ComponentF.class) {})
-                .withSystem(new RetrievalSystem(ComponentG.class) {})
-                .withSystem(new RetrievalSystem(ComponentH.class) {})
+                .withSystem(new RetrievalSystemA())
+                .withSystem(new RetrievalSystemB())
+                .withSystem(new RetrievalSystemC())
+                .withSystem(new RetrievalSystemD())
+                .withSystem(new RetrievalSystemE())
+                .withSystem(new RetrievalSystemF())
+                .withSystem(new RetrievalSystemG())
+                .withSystem(new RetrievalSystemH())
                 .finish();
         // @on
 

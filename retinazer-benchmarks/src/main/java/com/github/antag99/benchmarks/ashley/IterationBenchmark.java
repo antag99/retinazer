@@ -14,14 +14,14 @@ public class IterationBenchmark extends AshleyBenchmark {
     public void setup() {
         engine = new Engine();
         // @off
-        engine.addSystem(new IterationSystem(ComponentA.class) {});
-        engine.addSystem(new IterationSystem(ComponentB.class) {});
-        engine.addSystem(new IterationSystem(ComponentC.class) {});
-        engine.addSystem(new IterationSystem(ComponentD.class) {});
-        engine.addSystem(new IterationSystem(ComponentE.class) {});
-        engine.addSystem(new IterationSystem(ComponentF.class) {});
-        engine.addSystem(new IterationSystem(ComponentG.class) {});
-        engine.addSystem(new IterationSystem(ComponentH.class) {});
+        engine.addSystem(new IterationSystemA());
+        engine.addSystem(new IterationSystemB());
+        engine.addSystem(new IterationSystemC());
+        engine.addSystem(new IterationSystemD());
+        engine.addSystem(new IterationSystemE());
+        engine.addSystem(new IterationSystemF());
+        engine.addSystem(new IterationSystemG());
+        engine.addSystem(new IterationSystemH());
         // @on
 
         Class<? extends Component>[] componentTypes = getComponentTypes();

@@ -14,14 +14,14 @@ public class IterationBenchmark extends RetinazerBenchmark {
     public void setup() {
         // @off
         engine = getConfig()
-                .withSystem(new IterationSystem(ComponentA.class) {})
-                .withSystem(new IterationSystem(ComponentB.class) {})
-                .withSystem(new IterationSystem(ComponentC.class) {})
-                .withSystem(new IterationSystem(ComponentD.class) {})
-                .withSystem(new IterationSystem(ComponentE.class) {})
-                .withSystem(new IterationSystem(ComponentF.class) {})
-                .withSystem(new IterationSystem(ComponentG.class) {})
-                .withSystem(new IterationSystem(ComponentH.class) {})
+                .withSystem(new IterationSystemA())
+                .withSystem(new IterationSystemB())
+                .withSystem(new IterationSystemC())
+                .withSystem(new IterationSystemD())
+                .withSystem(new IterationSystemE())
+                .withSystem(new IterationSystemF())
+                .withSystem(new IterationSystemG())
+                .withSystem(new IterationSystemH())
                 .finish();
         // @on
 

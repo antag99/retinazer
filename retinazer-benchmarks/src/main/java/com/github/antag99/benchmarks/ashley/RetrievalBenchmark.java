@@ -14,14 +14,14 @@ public class RetrievalBenchmark extends AshleyBenchmark {
     public void setup() {
         engine = new Engine();
         // @off
-        engine.addSystem(new RetrievalSystem(ComponentA.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentB.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentC.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentD.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentE.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentF.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentG.class) {});
-        engine.addSystem(new RetrievalSystem(ComponentH.class) {});
+        engine.addSystem(new RetrievalSystemA());
+        engine.addSystem(new RetrievalSystemB());
+        engine.addSystem(new RetrievalSystemC());
+        engine.addSystem(new RetrievalSystemD());
+        engine.addSystem(new RetrievalSystemE());
+        engine.addSystem(new RetrievalSystemF());
+        engine.addSystem(new RetrievalSystemG());
+        engine.addSystem(new RetrievalSystemH());
         // @on
 
         Class<? extends Component>[] componentTypes = getComponentTypes();

@@ -15,47 +15,15 @@ mvn clean
 mkdir retinazer-benchmarks/target
 # Run all benchmarks, write results in json format to results.json,
 # and write the full log to results.log.
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true | \
-  tee retinazer-benchmarks/target/build-plain.log
+mvn install -DskipTests=true \
+  -Dmaven.javadoc.skip=true \
+  -Dartemis.optimizeEntitySystems=true \
+  -Dartemis.enablePooledWeaving=true \
+  -Dartemis.enablePackedWeaving=true | \
+  tee retinazer-benchmarks/target/build.log
 java -jar retinazer-benchmarks/target/microbenchmarks.jar .* \
-  -rf json -rff retinazer-benchmarks/target/results-plain.json $PARAMS | \
-  tee retinazer-benchmarks/target/results-plain.log
-
-# Run artemis-odb benchmarks with various weaving configurations
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true \
-  -Dartemis.optimizeEntitySystems=true | \
-  tee retinazer-benchmarks/target/build-plain-fast.log
-java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.artemis\\..* \
-  -rf json -rff retinazer-benchmarks/target/results-plain-fast.json $PARAMS | \
-  tee retinazer-benchmarks/target/results-plain-fast.log
-
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true \
-  -Dartemis.optimizeEntitySystems=false -Dartemis.enablePooledWeaving=true | \
-  tee retinazer-benchmarks/target/build-pooled.log
-java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.artemis\\..* \
-  -rf json -rff retinazer-benchmarks/target/results-pooled.json $PARAMS | \
-  tee retinazer-benchmarks/target/results-pooled.log
-
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true \
-  -Dartemis.optimizeEntitySystems=false -Dartemis.enablePackedWeaving=true | \
-  tee retinazer-benchmarks/target/build-packed.log
-java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.artemis\\..* \
-  -rf json -rff retinazer-benchmarks/target/results-packed.json $PARAMS | \
-  tee retinazer-benchmarks/target/results-packed.log
-
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true \
-  -Dartemis.optimizeEntitySystems=true -Dartemis.enablePooledWeaving=true | \
-  tee retinazer-benchmarks/target/build-pooled-fast.log
-java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.artemis\\..* \
-  -rf json -rff retinazer-benchmarks/target/results-pooled-fast.json $PARAMS | \
-  tee retinazer-benchmarks/target/results-pooled-fast.log
-
-mvn install -DskipTests=true -Dmaven.javadoc.skip=true \
-  -Dartemis.optimizeEntitySystems=true -Dartemis.enablePackedWeaving=true | \
-  tee retinazer-benchmarks/target/build-packed-fast.log
-java -jar retinazer-benchmarks/target/microbenchmarks.jar .*\\.artemis\\..* \
-  -rf json -rff retinazer-benchmarks/target/results-packed-fast.json $PARAMS | \
-  tee retinazer-benchmarks/target/results-packed-fast.log
+  -rf json -rff retinazer-benchmarks/target/results.json $PARAMS | \
+  tee retinazer-benchmarks/target/results.log
 
 end_time=`date +%s`
 total_time=$((end_time-start_time))

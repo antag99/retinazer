@@ -20,7 +20,16 @@ public final class RetrievalSystemD extends EntityProcessingSystem {
 
     @Override
     public final void process(Entity entity) {
+        ComponentD component = mapper.get(entity);
         voidness.consume(entity);
-        voidness.consume(mapper.get(entity));
+        voidness.consume(component);
+        voidness.consume(component.a);
+        voidness.consume(component.b);
+        voidness.consume(component.c);
+        voidness.consume(component.d);
+        voidness.consume(component.e);
+        voidness.consume(component.f);
+        voidness.consume(component.g);
+        voidness.consume(component.h);
     }
 }
