@@ -21,5 +21,36 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+/**
+ * Base class for system implementations.
+ */
 public abstract class EntitySystem {
+    protected Engine engine;
+
+    /**
+     * Sets the engine instance tied to this system.
+     *
+     * @param engine The engine instance tied to this system.
+     */
+    protected void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    /**
+     * Updates this system. If you override this method, mark it {@code final}.
+     */
+    protected void update() {
+    }
+
+    /**
+     * Initializes this system. If you override this method, mark it {@code final}.
+     */
+    protected void initialize() {
+    }
+
+    /**
+     * Destroys this system. If you override this method, mark it {@code final}.
+     */
+    protected void destroy() {
+    }
 }

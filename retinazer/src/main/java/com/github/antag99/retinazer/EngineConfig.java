@@ -40,14 +40,6 @@ import java.util.Set;
  */
 public final class EngineConfig {
     private static final EngineConfig DEFAULT = new EngineConfig()
-            .withEventType(Event.class)
-            .withEventType(InitializeEvent.class)
-            .withEventType(DestroyEvent.class)
-            .withEventType(UpdateEvent.class)
-            .withEventType(EntityCreateEvent.class)
-            .withEventType(EntityDestroyEvent.class)
-            .withEventType(EntityMatchEvent.class)
-            .withEventType(EntityUnmatchEvent.class)
             .withWireResolver(new DefaultWireResolver())
             .withWireResolver(new DependencyWireResolver());
 
@@ -56,12 +48,10 @@ public final class EngineConfig {
 
     private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<Class<?>, EntitySystem>();
     private final Set<Class<? extends Component>> componentTypes = new LinkedHashSet<Class<? extends Component>>();
-    private final Set<Class<? extends Event>> eventTypes = new LinkedHashSet<Class<? extends Event>>();
     private final List<WireResolver> wireResolvers = new ArrayList<>();
     private final Map<Class<?>, Object> dependencies = new HashMap<>();
     private final Iterable<EntitySystem> systemsView = unmodifiableCollection(systems.values());
     private final Iterable<Class<? extends Component>> componentsTypesView = unmodifiableCollection(componentTypes);
-    private final Iterable<Class<? extends Event>> eventTypesView = unmodifiableCollection(eventTypes);
     private final Iterable<WireResolver> wireResolversView = unmodifiableCollection(wireResolvers);
     private final Map<Class<?>, Object> dependenciesView = unmodifiableMap(dependencies);
 
@@ -124,15 +114,6 @@ public final class EngineConfig {
     }
 
     /**
-     * Gets the registered event types of this engine configuration
-     *
-     * @return The registered event types of this engine configuration.
-     */
-    public Iterable<Class<? extends Event>> getEventTypes() {
-        return eventTypesView;
-    }
-
-    /**
      * Gets the registered wire resolvers of this engine configuration.
      *
      * @return The registered wire resolvers of this engine configuration.
@@ -184,22 +165,6 @@ public final class EngineConfig {
     }
 
     /**
-     * Registers an event type.
-     *
-     * @param eventType The event type to register.
-     * @return A new configuration with the event type.
-     */
-    public EngineConfig withEventType(Class<? extends Event> eventType) {
-        if (eventTypes.contains(eventType)) {
-            throw new IllegalArgumentException(
-                    "Event of type " + eventType.getName() + " has already been registered");
-        }
-        EngineConfig config = clone();
-        config.eventTypes.add(eventType);
-        return config;
-    }
-
-    /**
      * Registers a wire resolver.
      *
      * @param resolver The resolver to register.
@@ -241,7 +206,6 @@ public final class EngineConfig {
         EngineConfig config = new EngineConfig();
         config.systems.putAll(systems);
         config.componentTypes.addAll(componentTypes);
-        config.eventTypes.addAll(eventTypes);
         config.wireResolvers.addAll(wireResolvers);
         config.dependencies.putAll(dependencies);
         return config;

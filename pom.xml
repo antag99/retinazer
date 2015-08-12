@@ -12,6 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gdx.version>1.6.4</gdx.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <site.path>maven/</site.path>
@@ -37,6 +38,11 @@
     </issueManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -30,6 +30,13 @@ public abstract class EntityProcessorSystem extends EntitySystem {
         this.family = family;
     }
 
+    @Override
+    public void setEngine(Engine engine) {
+        super.setEngine(engine);
+
+        entities = engine.getEntitiesFor(family);
+    }
+
     public EntitySet getEntities() {
         return entities;
     }
@@ -38,18 +45,8 @@ public abstract class EntityProcessorSystem extends EntitySystem {
         return family;
     }
 
-    @EventHandler
-    private void initialize(InitializeEvent event) {
-        entities = engine.getEntitiesFor(family);
-    }
-
-    @EventHandler
-    private void destroy(DestroyEvent event) {
-        entities = null;
-    }
-
-    @EventHandler
-    protected void update(UpdateEvent event) {
+    @Override
+    public final void update() {
         processEntities();
     }
 

@@ -36,10 +36,7 @@ public class EngineTest {
         engine.update();
         engine.update();
         engine.update();
-        engine.reset();
         engine.update();
-        engine.reset();
-        engine.reset();
         engine.update();
         engine.update();
         engine.update();
@@ -85,115 +82,115 @@ public class EngineTest {
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                engine.getEntities());
+                Arrays.asList(engine.getEntities().getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                engine.getEntitiesFor(Family.with()));
+                Arrays.asList(engine.getEntitiesFor(Family.with()).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                engine.getEntitiesFor(Family.exclude()));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude()).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                engine.getEntitiesFor(Family.with().exclude()));
+                Arrays.asList(engine.getEntitiesFor(Family.with().exclude()).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity1, entity4, entity6, entity7),
-                engine.getEntitiesFor(Family.with(FlagComponentA.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentA.class)).getEntities()));
 
         assertEqualsUnordered(
-                engine.getEntitiesFor(Family.with(FlagComponentB.class)),
-                Arrays.asList(entity2, entity4, entity5, entity7));
+                Arrays.asList(entity2, entity4, entity5, entity7),
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentB.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity3, entity5, entity6, entity7),
-                engine.getEntitiesFor(Family.with(FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity4, entity7),
-                engine.getEntitiesFor(Family.with(FlagComponentA.class, FlagComponentB.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentA.class, FlagComponentB.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity6, entity7),
-                engine.getEntitiesFor(Family.with(FlagComponentA.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentA.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity5, entity7),
-                engine.getEntitiesFor(Family.with(FlagComponentB.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity7),
-                engine.getEntitiesFor(Family.with(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity2, entity3, entity5),
-                engine.getEntitiesFor(Family.exclude(FlagComponentA.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude(FlagComponentA.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity3, entity6),
-                engine.getEntitiesFor(Family.exclude(FlagComponentB.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude(FlagComponentB.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1, entity2, entity4),
-                engine.getEntitiesFor(Family.exclude(FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude(FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity3),
-                engine.getEntitiesFor(Family.exclude(FlagComponentA.class, FlagComponentB.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity2),
-                engine.getEntitiesFor(Family.exclude(FlagComponentA.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude(FlagComponentA.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0, entity1),
-                engine.getEntitiesFor(Family.exclude(FlagComponentB.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.exclude(FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity0),
-                engine.getEntitiesFor(
-                        Family.exclude(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(
+                        Family.exclude(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity1, entity6),
-                engine.getEntitiesFor(Family.with(FlagComponentA.class).exclude(FlagComponentB.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentA.class).exclude(FlagComponentB.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity1, entity4),
-                engine.getEntitiesFor(Family.with(FlagComponentA.class).exclude(FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentA.class).exclude(FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity2, entity5),
-                engine.getEntitiesFor(Family.with(FlagComponentB.class).exclude(FlagComponentA.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentB.class).exclude(FlagComponentA.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity2, entity4),
-                engine.getEntitiesFor(Family.with(FlagComponentB.class).exclude(FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentB.class).exclude(FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity3, entity5),
-                engine.getEntitiesFor(Family.with(FlagComponentC.class).exclude(FlagComponentA.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentC.class).exclude(FlagComponentA.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity3, entity6),
-                engine.getEntitiesFor(Family.with(FlagComponentC.class).exclude(FlagComponentB.class)));
+                Arrays.asList(engine.getEntitiesFor(Family.with(FlagComponentC.class).exclude(FlagComponentB.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity1),
-                engine.getEntitiesFor(
-                        Family.with(FlagComponentA.class).exclude(FlagComponentB.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(
+                        Family.with(FlagComponentA.class).exclude(FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity2),
-                engine.getEntitiesFor(
-                        Family.with(FlagComponentB.class).exclude(FlagComponentA.class, FlagComponentC.class)));
+                Arrays.asList(engine.getEntitiesFor(
+                        Family.with(FlagComponentB.class).exclude(FlagComponentA.class, FlagComponentC.class)).getEntities()));
 
         assertEqualsUnordered(
                 Arrays.asList(entity3),
-                engine.getEntitiesFor(
-                        Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)));
+                Arrays.asList(engine.getEntitiesFor(
+                        Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
     }
 
     private static class MissingService {
@@ -234,7 +231,8 @@ public class EngineTest {
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
-        engine.reset();
+        engine.unwire(system);
+        engine.wire(system);
         assertSame(engine, system.engine);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);

@@ -22,7 +22,21 @@
 package com.github.antag99.retinazer;
 
 /**
- * Event fired by {@link Engine} every time the engine is destroying.
+ * Listener for {@link EntitySet}.
  */
-public final class DestroyEvent implements Event {
+public interface EntitySetListener {
+
+    /**
+     * Called when an entity is inserted into the {@link EntitySet}.
+     *
+     * @param entity The entity that was inserted.
+     */
+    public void inserted(Entity entity);
+
+    /**
+     * Called when an entity is removed from the {@link EntitySet}.
+     *
+     * @param entity The entity that was removed.
+     */
+    public void removed(Entity entity);
 }

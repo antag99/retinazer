@@ -44,68 +44,32 @@ public final class Engine {
         }
     };
 
-    InitializeEvent initializeEvent = new InitializeEvent();
-    DestroyEvent destroyEvent = new DestroyEvent();
-    UpdateEvent updateEvent = new UpdateEvent();
-
     EngineConfig config;
     EntityManager entityManager;
     ComponentManager componentManager;
     FamilyManager familyManager;
-    EventManager eventManager;
     WireManager wireManager;
 
     Engine(EngineConfig config) {
         this.config = config;
+
         List<EntitySystem> systems = new ArrayList<EntitySystem>();
         systems.add(entityManager = new EntityManager(this));
         systems.add(componentManager = new ComponentManager(this));
         systems.add(familyManager = new FamilyManager(this));
-        systems.add(eventManager = new EventManager(this));
         systems.add(wireManager = new WireManager(this));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
-        initialize();
+
+        for (EntitySystem system : this.systems)
+            wire(system);
+
+        for (EntitySystem system : systems)
+            system.initialize();
     }
 
     public EngineConfig getConfig() {
         return config;
-    }
-
-    private void initialize() {
-        for (int i = 0, n = systems.length; i < n; i++) {
-            wire(systems[i]);
-        }
-        dispatchEvent(initializeEvent);
-    }
-
-    private void destroy() {
-        for (Entity entity : getEntities())
-            entity.destroy();
-        flush();
-        dispatchEvent(destroyEvent);
-        for (int i = 0, n = systems.length; i < n; i++) {
-            unwire(systems[i]);
-        }
-        entityManager.reset();
-        eventManager.reset();
-        familyManager.reset();
-    }
-
-    /**
-     * Resets this engine. This does the following:
-     * <ul>
-     * <li>Destroys and removes all entities</li>
-     * <li>Fires a {@link DestroyEvent}</li>
-     * <li>Calls {@link #unwire(Object)} with each system</li>
-     * <li>Removes all remaining entities (no notifications here)</li>
-     * <li>Calls {@link #wire(Object)} with each system</li>
-     * <li>Fires an {@link InitializeEvent}</li>
-     * </ul>
-     */
-    public void reset() {
-        destroy();
-        initialize();
     }
 
     public void wire(Object object) {
@@ -116,17 +80,9 @@ public final class Engine {
         wireManager.unwire(object);
     }
 
-    /**
-     * <p>
-     * Updates this engine. This does the following:
-     * <ul>
-     * <li>Fires an {@link UpdateEvent} to be handled by interested systems</li>
-     * <li>Calls {@link #flush()} to apply pending operations</li>
-     * </ul>
-     * </p>
-     */
     public void update() {
-        dispatchEvent(updateEvent);
+        for (EntitySystem system : systems)
+            system.update();
         flush();
     }
 
@@ -290,22 +246,5 @@ public final class Engine {
      */
     public Iterable<Class<? extends Component>> getComponentTypes() {
         return config.getComponentTypes();
-    }
-
-    /**
-     * Gets the event types registered during configuration of the engine
-     */
-    public Iterable<Class<? extends Event>> getEventTypes() {
-        return config.getEventTypes();
-    }
-
-    /**
-     * Dispatches the given event to all registered systems.
-     *
-     * @param event
-     *            The event to dispatch.
-     */
-    public void dispatchEvent(Event event) {
-        eventManager.dispatchEvent(event);
     }
 }

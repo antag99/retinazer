@@ -21,14 +21,26 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import com.github.antag99.retinazer.utils.Experimental;
 import com.github.antag99.retinazer.utils.Mask;
 
-public final class EntitySet implements Iterable<Entity> {
-    private EntitySetContent content;
+public final class EntitySet {
+    private static class Content {
+        Engine engine;
+        Mask entities = new Mask();
+        int modCount = 0;
+        EntitySetListener[] listeners = new EntitySetListener[0];
+
+        Content(Engine engine) {
+            this.engine = engine;
+        }
+    }
+
+    private Content content;
+
+    // Unmodifiable view of this entity set. If the value is *this* object,
+    // indicates that this set may not be modified.
+    private EntitySet view = null;
 
     private Entity[] entities = new Entity[0];
     private int entitiesModCount = 0;
@@ -36,8 +48,114 @@ public final class EntitySet implements Iterable<Entity> {
     private int[] indices = new int[0];
     private int indicesModCount = 0;
 
-    EntitySet(EntitySetContent content) {
-        this.content = content;
+    private EntitySet(EntitySet source) {
+        this.content = source.content;
+        this.view = this;
+    }
+
+    EntitySet(Engine engine) {
+        this.content = new Content(engine);
+    }
+
+    /**
+     * Returns an unmodifiable view of this entity set.
+     *
+     * @return Unmodifiable view of this entity set.
+     */
+    public EntitySet unmodifiable() {
+        return view != null ? view : (view = new EntitySet(this));
+    }
+
+    /**
+     * Adds a listener to this entity set.
+     *
+     * @param listener The listener to add.
+     */
+    public void addListener(EntitySetListener listener) {
+        EntitySetListener[] listeners = content.listeners;
+        for (int i = 0, n = listeners.length; i < n; i++) {
+            if (listeners[i] == listener) {
+                System.arraycopy(listeners, 0, listeners, 1, i);
+                listeners[0] = listener;
+                return;
+            }
+        }
+        EntitySetListener[] newListeners = new EntitySetListener[listeners.length + 1];
+        System.arraycopy(listeners, 0, newListeners, 1, listeners.length);
+        newListeners[0] = listener;
+        content.listeners = newListeners;
+    }
+
+    /**
+     * Removes a listener from this entity set.
+     *
+     * @param listener The listener to remove.
+     */
+    public void removeListener(EntitySetListener listener) {
+        EntitySetListener[] listeners = content.listeners;
+        for (int i = 0, n = listeners.length; i < n; i++) {
+            if (listeners[i] == listener) {
+                EntitySetListener[] newListeners = new EntitySetListener[listeners.length - 1];
+                System.arraycopy(listeners, 0, newListeners, 0, i);
+                System.arraycopy(listeners, i + 1, newListeners, i, listeners.length - i);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Adds the given entity to this set. Throws an exception if this set cannot be modified.
+     *
+     * @param entity The entity to add.
+     */
+    public void addEntity(Entity entity) {
+        if (entity.getEngine() != content.engine) {
+            throw new IllegalArgumentException("Cannot add an entity from another engine");
+        }
+        if (view == this) {
+            throw new IllegalArgumentException("Cannot modify the entities of this set");
+        }
+
+        content.entities.set(entity.getIndex());
+        content.modCount++;
+
+        for (EntitySetListener listener : content.listeners) {
+            listener.inserted(entity);
+        }
+    }
+
+    /**
+     * Removes the given entity from this set. Throws an exception if this set cannot be modified.
+     *
+     * @param entity The entity to remove.
+     */
+    public void removeEntity(Entity entity) {
+        if (entity.getEngine() != content.engine) {
+            throw new IllegalArgumentException("Cannot remove an entity from another engine");
+        }
+        if (view == this) {
+            throw new IllegalArgumentException("Cannot modify the entities of this set");
+        }
+
+        content.entities.clear(entity.getIndex());
+        content.modCount++;
+
+        for (EntitySetListener listener : content.listeners) {
+            listener.removed(entity);
+        }
+    }
+
+    /**
+     * Checks if this set contains the given entity.
+     *
+     * @param entity The entity to check for.
+     * @return Whether this set contains the given entity.
+     */
+    public boolean contains(Entity entity) {
+        if (entity.getEngine() != content.engine) {
+            throw new IllegalArgumentException("Cannot query an entity from another engine");
+        }
+        return content.entities.get(entity.getIndex());
     }
 
     /**
@@ -87,42 +205,5 @@ public final class EntitySet implements Iterable<Entity> {
             indicesModCount = content.modCount;
         }
         return indices;
-    }
-
-    private final class EntityIterator implements Iterator<Entity> {
-        private Entity[] entities = getEntities();
-        private int iterationIndex = 0;
-        private int previousIndex = -1;
-
-        @Override
-        public boolean hasNext() {
-            return iterationIndex < entities.length;
-        }
-
-        @Override
-        public Entity next() {
-            if (!hasNext())
-                throw new NoSuchElementException();
-            return entities[previousIndex = iterationIndex++];
-        }
-
-        @Override
-        public void remove() {
-            if (previousIndex == -1)
-                throw new IllegalStateException();
-            content.engine.getEntityForIndex(previousIndex).destroy();
-            previousIndex = -1;
-        }
-    }
-
-    @Override
-    public Iterator<Entity> iterator() {
-        return new EntityIterator();
-    }
-
-    public boolean includes(Entity entity) {
-        if (entity.getEngine() != content.engine)
-            throw new IllegalArgumentException();
-        return content.entities.get(entity.getIndex());
     }
 }

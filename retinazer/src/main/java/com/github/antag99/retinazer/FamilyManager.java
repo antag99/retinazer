@@ -30,44 +30,11 @@ import com.github.antag99.retinazer.utils.Mask;
 final class FamilyManager extends EntitySystem {
     private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
     private Bag<Family> families = new Bag<>();
-    private Bag<EntitySetContent> entitiesForFamily = new Bag<>();
-
+    private Bag<EntitySet> entitiesForFamily = new Bag<>();
     private Engine engine;
-
-    private Pool<EntityMatchEvent> entityAddEventPool = new Pool<EntityMatchEvent>() {
-        @Override
-        protected EntityMatchEvent create() {
-            return new EntityMatchEvent();
-        }
-
-        @Override
-        protected void destroy(EntityMatchEvent object) {
-            object.entity = null;
-            object.with = null;
-            object.exclude = null;
-        }
-    };
-
-    private Pool<EntityUnmatchEvent> entityRemoveEventPool = new Pool<EntityUnmatchEvent>() {
-        @Override
-        protected EntityUnmatchEvent create() {
-            return new EntityUnmatchEvent();
-        }
-
-        @Override
-        protected void destroy(EntityUnmatchEvent object) {
-            object.entity = null;
-            object.with = null;
-            object.exclude = null;
-        }
-    };
 
     public FamilyManager(Engine engine) {
         this.engine = engine;
-
-        // Ensure the empty family is created, in order to correctly notify
-        // interested listeners.
-        this.getFamily(Family.EMPTY);
     }
 
     public EntitySet getEntities() {
@@ -75,7 +42,7 @@ final class FamilyManager extends EntitySystem {
     }
 
     public EntitySet getEntitiesFor(FamilyConfig family) {
-        return entitiesForFamily.get(getFamily(family).index).defaultSet;
+        return entitiesForFamily.get(getFamily(family).index).unmodifiable();
     }
 
     public Family getFamily(FamilyConfig config) {
@@ -95,7 +62,7 @@ final class FamilyManager extends EntitySystem {
             familyIndexes.put(config.clone(), index);
             families.set(index, new Family(components, excludedComponents,
                     componentsArray, excludedComponentsArray, index));
-            entitiesForFamily.set(index, new EntitySetContent(engine));
+            entitiesForFamily.set(index, new EntitySet(engine));
 
             for (int i = engine.entityManager.currentEntities.nextSetBit(0); i != -1; i = engine.entityManager.currentEntities.nextSetBit(i + 1)) {
                 updateFamilyMembership(engine.entityManager.getEntityForIndex(i), false);
@@ -110,41 +77,20 @@ final class FamilyManager extends EntitySystem {
 
         for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
             final Family family = families.get(i);
-            final EntitySetContent familyContent = entitiesForFamily.get(i);
+            final EntitySet familyContent = entitiesForFamily.get(i);
 
             boolean belongsToFamily = entityFamilies.get(i);
             boolean matches = family.matches(entity) && !remove;
 
             if (belongsToFamily != matches) {
                 if (matches) {
-                    familyContent.entities.set(entity.getIndex());
+                    familyContent.addEntity(entity);
                     entityFamilies.set(i);
-
-                    EntityMatchEvent event = entityAddEventPool.obtain();
-                    event.entity = entity;
-                    event.with = family.componentsArray;
-                    event.exclude = family.excludedComponentsArray;
-                    engine.dispatchEvent(event);
-                    entityAddEventPool.free(event);
                 } else {
-                    familyContent.entities.clear(entity.getIndex());
+                    familyContent.removeEntity(entity);
                     entityFamilies.clear(i);
-
-                    EntityUnmatchEvent event = entityRemoveEventPool.obtain();
-                    event.entity = entity;
-                    event.with = family.componentsArray;
-                    event.exclude = family.excludedComponentsArray;
-                    engine.dispatchEvent(event);
-                    entityRemoveEventPool.free(event);
                 }
-                familyContent.modCount++;
             }
         }
-    }
-
-    public void reset() {
-        familyIndexes.clear();
-        families.clear();
-        entitiesForFamily.clear();
     }
 }
