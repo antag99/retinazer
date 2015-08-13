@@ -39,7 +39,7 @@ public final class FamilyConfig {
 
     @SafeVarargs
     public final FamilyConfig with(Class<? extends Component>... componentTypes) {
-        FamilyConfig config = clone();
+        FamilyConfig config = copy();
         for (Class<? extends Component> componentType : componentTypes) {
             config.excludedComponents.remove(componentType);
             config.components.add(componentType);
@@ -49,7 +49,7 @@ public final class FamilyConfig {
 
     @SafeVarargs
     public final FamilyConfig exclude(Class<? extends Component>... componentTypes) {
-        FamilyConfig config = clone();
+        FamilyConfig config = copy();
         for (Class<? extends Component> componentType : componentTypes) {
             config.components.remove(componentType);
             config.excludedComponents.add(componentType);
@@ -57,8 +57,7 @@ public final class FamilyConfig {
         return config;
     }
 
-    @Override
-    protected FamilyConfig clone() {
+    private FamilyConfig copy() {
         FamilyConfig config = new FamilyConfig();
         config.components.addAll(components);
         config.excludedComponents.addAll(excludedComponents);

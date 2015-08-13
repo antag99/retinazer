@@ -21,10 +21,11 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
 import com.github.antag99.retinazer.Wire.Ignore;
 import com.github.antag99.retinazer.utils.Mask;
 
@@ -38,13 +39,13 @@ final class WireCache {
         List<Field> fields = new ArrayList<>();
         Mask mandatoryFields = new Mask();
         Class<?> current = type;
-        while (current != null) {
-            boolean globalWire = current.getAnnotation(Wire.class) != null;
-            for (Field field : current.getDeclaredFields()) {
+        while (current != Object.class) {
+            boolean globalWire = ClassReflection.getDeclaredAnnotation(current, Wire.class) != null;
+            for (Field field : ClassReflection.getDeclaredFields(current)) {
                 field.setAccessible(true);
 
-                boolean wire = field.getAnnotation(Wire.class) != null;
-                boolean ignore = field.getAnnotation(Ignore.class) != null;
+                boolean wire = field.getDeclaredAnnotation(Wire.class) != null;
+                boolean ignore = field.getDeclaredAnnotation(Ignore.class) != null;
 
                 if ((wire || globalWire) && !ignore) {
                     mandatoryFields.set(fields.size(), wire);

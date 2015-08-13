@@ -21,8 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.utils;
 
-import java.util.Arrays;
-
 public final class Bag<E> {
     private Object[] buffer;
 
@@ -61,7 +59,10 @@ public final class Bag<E> {
             if (value == null) {
                 return;
             }
-            buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
+            int newCapacity = Bag.nextPowerOfTwo(index + 1);
+            Object[] newBuffer = new Object[newCapacity];
+            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+            this.buffer = newBuffer;
         }
 
         buffer[index] = value;

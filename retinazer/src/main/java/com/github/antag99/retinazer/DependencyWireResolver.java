@@ -21,7 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.lang.reflect.Field;
+import com.badlogic.gdx.utils.reflect.Field;
 
 public final class DependencyWireResolver implements WireResolver {
     @Override

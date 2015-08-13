@@ -39,11 +39,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx</artifactId>
-            <version>${gdx.version}</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
@@ -75,6 +70,8 @@
 
     <modules>
         <module>retinazer</module>
+        <module>retinazer-gwt</module>
+        <module>retinazer-gwt-test</module>
         <module>retinazer-benchmarks</module>
     </modules>
 

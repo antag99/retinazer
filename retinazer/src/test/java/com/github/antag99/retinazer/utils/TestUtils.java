@@ -19,13 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public class TestUtils {
@@ -83,13 +82,17 @@ public class TestUtils {
             throw new AssertionError("[expected:" + toString(expected) + ", was:" + toString(actual) + "]");
     }
 
+    public static boolean equals(Object o1, Object o2) {
+        return o1 == null ? o2 == null : o1.equals(o2);
+    }
+
     public static boolean equals(Iterable<?> first, Iterable<?> second) {
         return equals(first.iterator(), second.iterator());
     }
 
     public static boolean equals(Iterator<?> first, Iterator<?> second) {
         while (first.hasNext() && second.hasNext()) {
-            if (!Objects.equals(first.next(), second.next())) {
+            if (!equals(first.next(), second.next())) {
                 return false;
             }
         }

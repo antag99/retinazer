@@ -61,7 +61,11 @@ public final class Engine {
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
 
-        for (EntitySystem system : this.systems)
+        /*
+         * Note that no internal systems are wired, as libgdx's reflection
+         * cache can't handle non-public classes.
+         */
+        for (EntitySystem system : config.getSystems())
             wire(system);
 
         for (EntitySystem system : systems)
@@ -201,10 +205,12 @@ public final class Engine {
      * @throws IllegalArgumentException If {@code optional} is {@code false} and
      *             the system does not exist.
      */
+    // TODO: Use a map instead of linear search
+    @SuppressWarnings("unchecked")
     public <T extends EntitySystem> T getSystem(Class<T> systemClass, boolean optional) {
         for (int i = 0, n = systems.length; i < n; i++)
             if (systems[i].getClass() == systemClass)
-                return systemClass.cast(systems[i]);
+                return (T) systems[i];
 
         if (!optional) {
             throw new IllegalArgumentException("System not registered: " + systemClass.getName());

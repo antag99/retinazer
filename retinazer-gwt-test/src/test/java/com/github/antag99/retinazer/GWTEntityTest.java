@@ -21,18 +21,20 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static com.github.antag99.retinazer.utils.TestUtils.assertEqualsUnordered;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static com.github.antag99.retinazer.GWTTestUtils.assertEqualsUnordered;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.junit.Test;
+import com.google.gwt.junit.client.GWTTestCase;
 
-public class EntityTest {
-    @Test
+public class GWTEntityTest extends GWTTestCase {
+    @Override
+    public String getModuleName() {
+        return "com.github.antag99.RetinazerTest";
+    }
+
     public void testEntity() {
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
@@ -79,7 +81,6 @@ public class EntityTest {
                 entity.getComponents());
     }
 
-    @Test
     public void testComponentIteratorRemove() {
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
@@ -112,7 +113,6 @@ public class EntityTest {
                 entity.getComponents());
     }
 
-    @Test(expected = IllegalStateException.class)
     public void testComponentIteratorIllegalStateException() {
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
@@ -127,10 +127,13 @@ public class EntityTest {
         entity.add(flagComponentB);
         entity.add(flagComponentC);
         engine.update();
-        entity.getComponents().iterator().remove();
+        try {
+            entity.getComponents().iterator().remove();
+            fail("IllegalStateException expected");
+        } catch (IllegalStateException expected) {
+        }
     }
 
-    @Test(expected = NoSuchElementException.class)
     public void testComponentIteratorNoSuchElementException() {
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
@@ -149,10 +152,13 @@ public class EntityTest {
         iterator.next();
         iterator.next();
         iterator.next();
-        iterator.next();
+        try {
+            iterator.next();
+            fail("NoSuchElementException Expected");
+        } catch (NoSuchElementException expected) {
+        }
     }
 
-    @Test
     public void testEntityIndex() {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity();

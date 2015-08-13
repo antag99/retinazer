@@ -21,15 +21,20 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static com.github.antag99.retinazer.utils.TestUtils.assertEqualsUnordered;
-import static org.junit.Assert.assertSame;
+import static com.github.antag99.retinazer.GWTTestUtils.assertEqualsUnordered;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import com.google.gwt.junit.client.GWTTestCase;
 
-public class EngineTest {
-    @Test
+import junit.framework.Assert;
+
+public class GWTEngineTest extends GWTTestCase {
+    @Override
+    public String getModuleName() {
+        return "com.github.antag99.RetinazerTest";
+    }
+
     public void testEngine() {
         Engine engine = EngineConfig.create().finish();
         engine.update();
@@ -42,7 +47,6 @@ public class EngineTest {
         engine.update();
     }
 
-    @Test
     public void testEntityRetrieval() {
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
@@ -193,27 +197,30 @@ public class EngineTest {
                         Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
     }
 
-    private static class MissingService {
+    public static class MissingService {
     }
 
-    private static class MissingServiceConsumer {
+    public static class MissingServiceConsumer {
         private @Wire MissingService service;
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void testMissingDependencyInjection() {
         MissingServiceConsumer consumer = new MissingServiceConsumer();
-        EngineConfig.create().finish().wire(consumer);
+        Engine engine = EngineConfig.create().finish();
+        try {
+            engine.wire(consumer);
+            Assert.fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException expected) {
+        }
     }
 
-    private static class ExampleSystem extends EntitySystem {
+    public static class ExampleSystem extends EntitySystem {
         public @Wire Engine engine;
         public @Wire FlagSystemA flagSystemA;
         public @Wire FlagSystemB flagSystemB;
         public @Wire FlagSystemC flagSystemC;
     }
 
-    @Test
     public void testEngineDependencyInjection() {
         ExampleSystem system = new ExampleSystem();
         FlagSystemA flagSystemA = new FlagSystemA();
@@ -239,15 +246,19 @@ public class EngineTest {
         assertSame(flagSystemC, system.flagSystemC);
     }
 
-    private static class MissingSystem extends EntitySystem {
+    public static class MissingSystem extends EntitySystem {
     }
 
-    private static class MissingSystemConsumer extends EntitySystem {
+    public static class MissingSystemConsumer extends EntitySystem {
         public @Wire MissingSystem system;
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void testMissingEngineDependencyInjection() {
-        EngineConfig.create().withSystem(new MissingSystemConsumer()).finish();
+        try {
+            EngineConfig.create().withSystem(new MissingSystemConsumer()).finish();
+            fail("IllegalArgumentException expected");
+        } catch (IllegalArgumentException expected) {
+        }
     }
+
 }

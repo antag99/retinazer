@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 /**
  * Immutable copy-on-write engine configuration. This is used to setup static
  * properties of the engine, such as the systems to be processed, and additional
@@ -61,7 +63,7 @@ public final class EngineConfig {
      * @return The new engine configuration.
      */
     public static EngineConfig create() {
-        return DEFAULT.clone();
+        return DEFAULT.copy();
     }
 
     /**
@@ -143,7 +145,7 @@ public final class EngineConfig {
             throw new IllegalArgumentException(
                     "System of type " + systemType.getName() + " has already been registered");
         }
-        EngineConfig config = clone();
+        EngineConfig config = copy();
         config.systems.put(systemType, system);
         return config;
     }
@@ -159,7 +161,7 @@ public final class EngineConfig {
             throw new IllegalArgumentException(
                     "Component of type " + componentType.getName() + " has already been registered");
         }
-        EngineConfig config = clone();
+        EngineConfig config = copy();
         config.componentTypes.add(componentType);
         return config;
     }
@@ -171,7 +173,7 @@ public final class EngineConfig {
      * @return A new configuration with the wire resolver.
      */
     public EngineConfig withWireResolver(WireResolver resolver) {
-        EngineConfig config = clone();
+        EngineConfig config = copy();
         config.wireResolvers.add(resolver);
         return config;
     }
@@ -183,7 +185,7 @@ public final class EngineConfig {
      * @return New configuration with the dependency.
      */
     public EngineConfig withDependency(Object dependency) {
-        EngineConfig config = clone();
+        EngineConfig config = copy();
         config.dependencies.put(dependency.getClass(), dependency);
         return config;
     }
@@ -196,13 +198,16 @@ public final class EngineConfig {
      * @return New configuration with the given dependency.
      */
     public <T> EngineConfig withDependency(Class<T> type, T dependency) {
-        EngineConfig config = clone();
-        config.dependencies.put(type, type.cast(dependency));
+        if (!ClassReflection.isInstance(type, dependency)) {
+            throw new ClassCastException("Cannot cast " + dependency.getClass()
+                    .getName() + " to " + type.getClass().getName());
+        }
+        EngineConfig config = copy();
+        config.dependencies.put(type, dependency);
         return config;
     }
 
-    @Override
-    protected EngineConfig clone() {
+    private EngineConfig copy() {
         EngineConfig config = new EngineConfig();
         config.systems.putAll(systems);
         config.componentTypes.addAll(componentTypes);

@@ -21,8 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.utils;
 
-import java.util.Arrays;
-
 public final class Mask {
     private long[] words = new long[0];
 
@@ -37,12 +35,11 @@ public final class Mask {
      */
     public Mask set(Mask other) {
         if (words.length < other.words.length) {
-            words = other.words.clone();
-        } else {
-            System.arraycopy(other.words, 0, words, 0, other.words.length);
-            for (int i = other.words.length, n = words.length; i < n; i++)
-                words[i] = 0;
+            words = new long[other.words.length];
         }
+        System.arraycopy(other.words, 0, words, 0, other.words.length);
+        for (int i = other.words.length, n = words.length; i < n; i++)
+            words[i] = 0;
         return this;
     }
 
@@ -61,8 +58,11 @@ public final class Mask {
      * @param other The other operand.
      */
     public void or(Mask other) {
-        if (words.length < other.words.length)
-            words = Arrays.copyOf(words, other.words.length);
+        if (words.length < other.words.length) {
+            long[] newWords = new long[other.words.length];
+            System.arraycopy(words, 0, newWords, 0, words.length);
+            this.words = newWords;
+        }
 
         long[] words = this.words;
         long[] otherWords = other.words;
@@ -80,8 +80,11 @@ public final class Mask {
      * @param other The other operand.
      */
     public void xor(Mask other) {
-        if (words.length < other.words.length)
-            words = Arrays.copyOf(words, other.words.length);
+        if (words.length < other.words.length) {
+            long[] newWords = new long[other.words.length];
+            System.arraycopy(words, 0, newWords, 0, words.length);
+            this.words = newWords;
+        }
 
         long[] words = this.words;
         long[] otherWords = other.words;
@@ -134,7 +137,10 @@ public final class Mask {
     public void set(int index) {
         int wordIndex = index >> 6;
         if (wordIndex >= words.length) {
-            words = Arrays.copyOf(words, Bag.nextPowerOfTwo(wordIndex + 1));
+            int newCapacity = Bag.nextPowerOfTwo(wordIndex + 1);
+            long[] newWords = new long[newCapacity];
+            System.arraycopy(words, 0, newWords, 0, words.length);
+            this.words = newWords;
         }
         // Note: index is truncated before shifting
         words[wordIndex] |= 1L << index;
@@ -201,7 +207,9 @@ public final class Mask {
         }
         if (carry) {
             int wordCount = words.length;
-            words = Arrays.copyOf(words, words.length * 2);
+            long[] newWords = new long[words.length * 2];
+            System.arraycopy(words, 0, newWords, 0, words.length);
+            this.words = newWords;
             words[wordCount] = 1;
         }
     }

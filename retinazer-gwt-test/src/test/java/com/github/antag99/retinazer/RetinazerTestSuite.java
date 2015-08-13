@@ -21,35 +21,25 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.reflect.Field;
+import junit.framework.TestCase;
 
-/**
- * WireResolver is used for wiring/un-wiring fields marked with {@link Wire}.
- * Multiple resolvers can be registered to an {@link EngineConfig}.
- *
- * @see Wire
- */
-public interface WireResolver {
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.junit.tools.GWTTestSuite;
 
-    /**
-     * Wires the field of the given object.
-     *
-     * @param engine The engine instance.
-     * @param object The object to wire.
-     * @param field The field of the object.
-     * @return Whether this resolver handled the given field.
-     * @throws Throwable If an unexpected error occurred.
-     */
-    public boolean wire(Engine engine, Object object, Field field) throws Throwable;
+public class RetinazerTestSuite extends TestCase {
+    @SuppressWarnings("unchecked")
+    private static Class<? extends GWTTestCase>[] tests = new Class[] {
+            GWTEngineTest.class,
+            GWTEntityListenerTest.class,
+            GWTEntitySetTest.class,
+            GWTEntityTest.class,
+    };
 
-    /**
-     * Un-wires the field of the given object.
-     *
-     * @param engine The engine instance.
-     * @param object The object to wire.
-     * @param field The field of the object.
-     * @return Whether this resolver handled the given field.
-     * @throws Throwable If an unexpected error occurred.
-     */
-    public boolean unwire(Engine engine, Object object, Field field) throws Throwable;
+    public static GWTTestSuite suite() {
+        GWTTestSuite suite = new GWTTestSuite("retinazer gwt tests");
+        for (Class<? extends TestCase> tc : tests) {
+            suite.addTestSuite(tc);
+        }
+        return suite;
+    }
 }

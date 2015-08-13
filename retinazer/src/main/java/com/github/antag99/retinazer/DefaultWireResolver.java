@@ -21,16 +21,18 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.lang.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
 
 public final class DefaultWireResolver implements WireResolver {
     @Override
+    @SuppressWarnings("unchecked")
     public boolean wire(Engine engine, Object object, Field field) throws Throwable {
         Class<?> type = field.getType();
         if (type == Engine.class) {
             field.set(object, engine);
-        } else if (EntitySystem.class.isAssignableFrom(type)) {
-            field.set(object, engine.getSystem(type.asSubclass(EntitySystem.class)));
+        } else if (ClassReflection.isAssignableFrom(EntitySystem.class, type)) {
+            field.set(object, engine.getSystem((Class<? extends EntitySystem>) type));
         } else {
             return false;
         }
@@ -40,7 +42,7 @@ public final class DefaultWireResolver implements WireResolver {
     @Override
     public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
         Class<?> type = field.getType();
-        if (type == Engine.class || EntitySystem.class.isAssignableFrom(type)) {
+        if (type == Engine.class || ClassReflection.isAssignableFrom(EntitySystem.class, type)) {
             field.set(object, null);
         } else {
             return false;

@@ -59,7 +59,7 @@ final class FamilyManager extends EntitySystem {
             for (Class<? extends Component> componentType : excludedComponentsArray)
                 excludedComponents.set(engine.componentManager.getIndex(componentType));
 
-            familyIndexes.put(config.clone(), index);
+            familyIndexes.put(config, index);
             families.set(index, new Family(components, excludedComponents,
                     componentsArray, excludedComponentsArray, index));
             entitiesForFamily.set(index, new EntitySet(engine));
