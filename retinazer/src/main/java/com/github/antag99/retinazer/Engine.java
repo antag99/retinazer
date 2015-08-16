@@ -25,24 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.github.antag99.retinazer.utils.Bag;
-import com.github.antag99.retinazer.utils.Experimental;
-import com.github.antag99.retinazer.utils.Mask;
-
 public final class Engine {
     private final EntitySystem[] systems;
-
-    Pool<Mask> maskPool = new Pool<Mask>() {
-        @Override
-        protected Mask create() {
-            return new Mask();
-        }
-
-        @Override
-        protected void destroy(Mask object) {
-            object.clear();
-        }
-    };
 
     EngineConfig config;
     EntityManager entityManager;
@@ -50,22 +34,22 @@ public final class Engine {
     FamilyManager familyManager;
     WireManager wireManager;
 
+    /** Tracks whether any components or entities have been modified; reset at every call to flush() */
+    boolean dirty = false;
+
     Engine(EngineConfig config) {
         this.config = config;
 
+        entityManager = new EntityManager(this);
+        componentManager = new ComponentManager(this);
+        familyManager = new FamilyManager(this);
+        wireManager = new WireManager(this);
+
         List<EntitySystem> systems = new ArrayList<EntitySystem>();
-        systems.add(entityManager = new EntityManager(this));
-        systems.add(componentManager = new ComponentManager(this));
-        systems.add(familyManager = new FamilyManager(this));
-        systems.add(wireManager = new WireManager(this));
         systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
         this.systems = systems.toArray(new EntitySystem[0]);
 
-        /*
-         * Note that no internal systems are wired, as libgdx's reflection
-         * cache can't handle non-public classes.
-         */
-        for (EntitySystem system : config.getSystems())
+        for (EntitySystem system : systems)
             wire(system);
 
         for (EntitySystem system : systems)
@@ -88,62 +72,71 @@ public final class Engine {
     }
 
     public void update() {
-        for (EntitySystem system : systems)
+        while (dirty) {
+            flush();
+        }
+        for (EntitySystem system : systems) {
             system.update();
-        flush();
+            while (dirty) {
+                flush();
+            }
+        }
     }
 
-    /**
-     * Applies pending entity component operations in the following order:
-     * <ul>
-     * <li>Inserts created entities</li>
-     * <li>Removes components</li>
-     * <li>Inserts components</li>
-     * <li>Removes destroyed entities</li>
-     * </ul>
-     * This should be done with caution, as systems implementations do not
-     * expect that the entities they are iterating over will change during
-     * iteration. Usually, it's not valid to execute it during an update.
-     */
-    @Experimental
-    public void flush() {
-        entityManager.applyEntityAdditions();
+    private void flush() {
+        dirty = false;
+        entityManager.entities.andNot(entityManager.removeEntities);
+        entityManager.removeEntities.clear();
+        familyManager.updateFamilyMembership();
         componentManager.applyComponentChanges();
-        entityManager.applyEntityRemovals();
     }
 
     /**
-     * <p>
      * Creates a new entity. This entity will be assigned a index, which is not
      * shared with any existing entity. Note that indices are reused once the
-     * entity is no longer active.
-     * </p>
+     * entity is no longer active. The entity is immediately inserted into the
+     * engine, but it won't show up in entity sets until the next call to {@link #flush()}.
      *
-     * <p>
-     * All created entities are not added until the end of the current
-     * {@link #update()} call. This is done to avoid issues with modifying
-     * entities while iterating over them.
-     * </p>
-     *
-     * @return The new entity instance
+     * @return reused handle for accessing the entity; don't hold on to this as
+     *         it will be invalid once the next entity is created.
      */
-    public Entity createEntity() {
+    public Handle createEntity() {
         return entityManager.createEntity();
     }
 
     /**
-     * <p>
-     * Gets the entity with the given index.
-     * </p>
+     * Creates a handle for accessing the components of entities. Note that
+     * this handle can be reused by changing the index it points to; it is
+     * recommended to keep or pool handles in order to avoid garbage collection.
+     *
+     * @return an entity handle associated with this engine.
+     */
+    public Handle createHandle() {
+        return new Handle(this);
+    }
+
+    /**
+     * Creates a handle initially set to the given entity.
      *
      * @param index
-     *            The index of the entity.
-     * @return The entity with the given index.
-     * @throws IllegalArgumentException
-     *             If the entity does not exist, or hasn't been added yet.
+     *            index of the entity.
+     * @return handle for accessing components.
+     * @see #createHandle()
      */
-    public Entity getEntityForIndex(int index) {
-        return entityManager.getEntityForIndex(index);
+    public Handle createHandle(int index) {
+        Handle handle = createHandle();
+        handle.setEntity(index);
+        return handle;
+    }
+
+    /**
+     * Destroys the entity with the given index.
+     *
+     * @param entity
+     *            the entity to destroy.
+     */
+    public void destroyEntity(int entity) {
+        entityManager.destroyEntity(entity);
     }
 
     /**
@@ -164,7 +157,7 @@ public final class Engine {
      * </p>
      *
      * @param family
-     *            The family
+     *            the family
      * @return {@link EntitySet} containing all entities added to this engine
      *         that matches the given family.
      */
@@ -178,8 +171,8 @@ public final class Engine {
      * </p>
      *
      * @param config
-     *            Configuration for the family
-     * @return Family for the given configuration
+     *            configuration for the family
+     * @return family for the given configuration
      */
     public Family getFamily(FamilyConfig config) {
         return familyManager.getFamily(config);
@@ -189,9 +182,11 @@ public final class Engine {
      * Gets the system of the given type. Note that only one system of a type
      * can exist in an engine configuration.
      *
-     * @param systemClass The type of the system
-     * @return The system
-     * @throws IllegalArgumentException If the system does not exist
+     * @param systemClass
+     *            type of the system
+     * @return the system
+     * @throws IllegalArgumentException
+     *             if the system does not exist
      */
     public <T extends EntitySystem> T getSystem(Class<T> systemClass) {
         return getSystem(systemClass, false);
@@ -201,12 +196,12 @@ public final class Engine {
      * Gets the system of the given type. Note that only one system of a type
      * can exist in an engine configuration.
      *
-     * @param systemClass The type of the system
-     * @param optional Whether to return {@code null} if the system does not exist
-     * @return The system, or {@code null} if {@code optional} is {@code true} and
-     *         the system does not exist.
-     * @throws IllegalArgumentException If {@code optional} is {@code false} and
-     *             the system does not exist.
+     * @param systemClass type of the system
+     * @param optional whether to return {@code null} if the system does not exist
+     * @return the system, or {@code null} if {@code optional} is {@code true}
+     *         and the system does not exist.
+     * @throws IllegalArgumentException
+     *             if {@code optional} is {@code false} and the system does not exist.
      */
     // TODO: Use a map instead of linear search
     @SuppressWarnings("unchecked")
@@ -223,37 +218,15 @@ public final class Engine {
     }
 
     /**
-     * Gets the {@link Bag} storing the active entities.
+     * Gets the systems registered during configuration of the engine.
      *
-     * @return The active entities.
-     */
-    @Experimental
-    public Bag<Entity> getEntitiesAsBag() {
-        return entityManager.entities;
-    }
-
-    /**
-     * Gets the {@link Bag} storing the components of the given type.
-     *
-     * @param componentType The component type.
-     * @return The components of the given type.
-     */
-    @Experimental
-    public <T extends Component> Bag<T> getComponentsAsBag(Class<T> componentType) {
-        return componentManager.getStorage(componentType).components;
-    }
-
-    /**
-     * Gets the systems registered during configuration of the engine
+     * @return all systems registered during configuration of the engine.
      */
     public Iterable<EntitySystem> getSystems() {
         return config.getSystems();
     }
 
-    /**
-     * Gets the component types registered during configuration of the engine
-     */
-    public Iterable<Class<? extends Component>> getComponentTypes() {
-        return config.getComponentTypes();
+    public <T extends Component> Mapper<T> getMapper(Class<T> componentType) {
+        return componentManager.getMapper(componentType);
     }
 }

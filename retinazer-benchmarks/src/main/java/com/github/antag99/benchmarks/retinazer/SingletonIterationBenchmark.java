@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.Setup;
 
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EngineConfig;
-import com.github.antag99.retinazer.Entity;
+import com.github.antag99.retinazer.Handle;
 
 public class SingletonIterationBenchmark extends RetinazerBenchmark {
     private Engine engine;
@@ -13,10 +13,9 @@ public class SingletonIterationBenchmark extends RetinazerBenchmark {
     @Setup
     public void setup() {
         engine = EngineConfig.create()
-                .withComponentType(SingletonComponent.class)
                 .withSystem(new SingletonIterationSystem()).finish();
         for (int i = 0, n = getEntityCount(); i < n; i++) {
-            Entity entity = engine.createEntity();
+            Handle entity = engine.createEntity();
             if ((i % 8) == 0)
                 entity.add(SingletonComponent.INSTANCE);
         }

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-final class WireManager extends EntitySystem {
+final class WireManager {
     private Engine engine;
     private WireResolver[] wireResolvers;
     private Map<Class<?>, WireCache> wireCaches;

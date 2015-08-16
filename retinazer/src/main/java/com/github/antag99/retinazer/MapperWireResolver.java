@@ -21,55 +21,32 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-/**
- * <p>
- * Pool implementation for recycling objects; this saves the performance impact
- * of garbage collection, which is mostly important for weak mobile devices.
- * </p>
- * <p>
- * This class is not public API to avoid name clashes with various game libraries.
- * </p>
- *
- * @param <T> Type of objects to be recycled
- */
-abstract class Pool<T> {
-    private Object[] buffer;
-    private int last = -1;
+import com.badlogic.gdx.utils.reflect.Field;
 
-    public Pool() {
-        this(16);
-    }
-
-    public Pool(int capacity) {
-        buffer = new Object[capacity];
-    }
-
-    /**
-     * Creates a new object; called when this pool has run out of available objects
-     *
-     * @return The new object
-     */
-    protected abstract T create();
-
-    /**
-     * Destroys the given object; called when it is freed to reset to pristine state
-     *
-     * @param object The object to destroy
-     */
-    protected void destroy(T object) {
-    }
-
+public final class MapperWireResolver implements WireResolver {
     @SuppressWarnings("unchecked")
-    public T obtain() {
-        if (last == -1)
-            return create();
-        return (T) buffer[last--];
+    private Class<? extends Component> getType(Field field) {
+        if (field.getType() != Mapper.class)
+            return null;
+        return field.getElementType(0);
     }
 
-    public void free(T object) {
-        if (last < buffer.length) {
-            destroy(object);
-            buffer[++last] = object;
+    @Override
+    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
+        Class<? extends Component> type = getType(field);
+        if (type != null) {
+            field.set(object, engine.getMapper(type));
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
+        if (getType(field) != null) {
+            field.set(object, null);
+            return true;
+        }
+        return false;
     }
 }

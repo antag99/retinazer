@@ -26,10 +26,4 @@ public abstract class RetinazerBenchmark extends JmhSettings {
     }
 
     private static EngineConfig config = EngineConfig.create();
-
-    static {
-        for (Class<? extends Component> componentType : componentTypes) {
-            config = config.withComponentType(componentType);
-        }
-    }
 }

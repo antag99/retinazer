@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.Setup;
 
 import com.github.antag99.retinazer.Component;
 import com.github.antag99.retinazer.Engine;
-import com.github.antag99.retinazer.Entity;
+import com.github.antag99.retinazer.Handle;
 
 public class RetrievalBenchmark extends RetinazerBenchmark {
     private Engine engine;
@@ -27,7 +27,7 @@ public class RetrievalBenchmark extends RetinazerBenchmark {
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
         for (int i = 0, n = getEntityCount(); i < n; ++i) {
-            Entity entity = engine.createEntity();
+            Handle entity = engine.createEntity();
             // equivalent to mask = i % (2 ^ componentTypes.length)
             int mask = i & ((1 << componentTypes.length) - 1);
             for (int ii = 0, nn = componentTypes.length; ii < nn; ++ii) {

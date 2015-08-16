@@ -21,73 +21,29 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
-final class EntityManager extends EntitySystem {
-    // The entity bag; stores all current entities
-    Bag<Entity> entities = new Bag<Entity>();
-    // Indices of entities that are currently active
-    Mask currentEntities = new Mask();
-    // Indices of entities that will be active next tick
-    Mask nextEntities = new Mask();
-    Mask tmpMask = new Mask();
-
+final class EntityManager {
     private Engine engine;
+    private Handle tmpHandle;
+
+    Mask entities = new Mask();
+    Mask removeEntities = new Mask();
 
     public EntityManager(Engine engine) {
         this.engine = engine;
+        this.tmpHandle = engine.createHandle();
     }
 
-    public Entity createEntity() {
-        int index = nextEntities.nextClearBit(0);
-        Entity entity = new Entity(engine, index);
-        entities.set(index, entity);
-        nextEntities.set(index);
-        return entity;
+    public Handle createEntity() {
+        engine.dirty = true;
+        int entity = entities.nextClearBit(0);
+        entities.set(entity);
+        return tmpHandle.setEntity(entity);
     }
 
-    public void destroyEntity(Entity entity) {
-        if (!nextEntities.get(entity.getIndex()))
-            return;
-        nextEntities.clear(entity.getIndex());
-        engine.componentManager.destroyComponents(entity);
-    }
-
-    public Entity getEntityForIndex(int index) {
-        if (!currentEntities.get(index))
-            throw new IllegalArgumentException("No such entity: " + index);
-        return entities.get(index);
-    }
-
-    public void reset() {
-        entities.clear();
-        currentEntities.clear();
-        nextEntities.clear();
-    }
-
-    public void applyEntityAdditions() {
-        Mask addedEntities = tmpMask.set(nextEntities);
-        addedEntities.xor(currentEntities);
-        addedEntities.and(nextEntities);
-        currentEntities.or(addedEntities);
-
-        for (int i = addedEntities.nextSetBit(0); i != -1; i = addedEntities.nextSetBit(i + 1)) {
-            Entity entity = entities.get(i);
-            engine.familyManager.updateFamilyMembership(entity, false);
-        }
-    }
-
-    public void applyEntityRemovals() {
-        Mask removedEntities = tmpMask.set(nextEntities);
-        removedEntities.xor(currentEntities);
-        removedEntities.and(currentEntities);
-        currentEntities.xor(removedEntities);
-
-        for (int i = removedEntities.nextSetBit(0); i != -1; i = removedEntities.nextSetBit(i + 1)) {
-            Entity entity = entities.get(i);
-            engine.familyManager.updateFamilyMembership(entity, true);
-            entities.set(i, null);
-        }
+    public void destroyEntity(int entity) {
+        engine.dirty = true;
+        removeEntities.set(entity);
     }
 }

@@ -21,40 +21,23 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.Mask;
-
 public final class Family {
     public static final FamilyConfig EMPTY = new FamilyConfig();
 
-    final Mask components;
-    final Mask excludedComponents;
-    final Class<? extends Component>[] componentsArray;
-    final Class<? extends Component>[] excludedComponentsArray;
+    final Engine engine;
+    final int[] components;
+    final int[] excludedComponents;
     final int index;
+    final EntitySet entities = new EntitySet();
 
-    Family(
-            Mask components,
-            Mask excludedComponents,
-            Class<? extends Component>[] componentsArray,
-            Class<? extends Component>[] excludedComponentsArray,
+    Family(Engine engine,
+            int[] components,
+            int[] excludedComponents,
             int index) {
+        this.engine = engine;
         this.components = components;
         this.excludedComponents = excludedComponents;
-        this.componentsArray = componentsArray;
-        this.excludedComponentsArray = excludedComponentsArray;
         this.index = index;
-    }
-
-    public boolean matches(Entity entity) {
-        if (!components.isSubsetOf(entity.components)) {
-            return false;
-        }
-
-        if (excludedComponents.intersects(entity.components)) {
-            return false;
-        }
-
-        return true;
     }
 
     @Override

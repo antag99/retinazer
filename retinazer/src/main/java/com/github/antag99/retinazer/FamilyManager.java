@@ -21,16 +21,17 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.badlogic.gdx.utils.ObjectIntMap;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
-final class FamilyManager extends EntitySystem {
-    private Map<FamilyConfig, Integer> familyIndexes = new HashMap<>();
+final class FamilyManager {
+    private static Pool<Mask> pool = Pools.get(Mask.class);
+
+    private ObjectIntMap<FamilyConfig> familyIndices = new ObjectIntMap<>();
     private Bag<Family> families = new Bag<>();
-    private Bag<EntitySet> entitiesForFamily = new Bag<>();
     private Engine engine;
 
     public FamilyManager(Engine engine) {
@@ -42,55 +43,92 @@ final class FamilyManager extends EntitySystem {
     }
 
     public EntitySet getEntitiesFor(FamilyConfig family) {
-        return entitiesForFamily.get(getFamily(family).index).unmodifiable();
+        return getFamily(family).entities.unmodifiable();
     }
 
     public Family getFamily(FamilyConfig config) {
-        int index = familyIndexes.containsKey(config) ? familyIndexes.get(config) : familyIndexes.size();
-        if (index == familyIndexes.size()) {
-            Mask components = new Mask();
-            Mask excludedComponents = new Mask();
-            @SuppressWarnings("unchecked")
-            Class<? extends Component>[] componentsArray = config.getComponents().toArray(new Class[0]);
-            @SuppressWarnings("unchecked")
-            Class<? extends Component>[] excludedComponentsArray = config.getExcludedComponents().toArray(new Class[0]);
-            for (Class<? extends Component> componentType : componentsArray)
-                components.set(engine.componentManager.getIndex(componentType));
-            for (Class<? extends Component> componentType : excludedComponentsArray)
-                excludedComponents.set(engine.componentManager.getIndex(componentType));
+        int index = familyIndices.get(config, familyIndices.size);
+        if (index == familyIndices.size) {
+            int i;
+            int[] components = new int[config.getComponents().size()];
+            int[] excludedComponents = new int[config.getExcludedComponents().size()];
 
-            familyIndexes.put(config, index);
-            families.set(index, new Family(components, excludedComponents,
-                    componentsArray, excludedComponentsArray, index));
-            entitiesForFamily.set(index, new EntitySet(engine));
+            i = 0;
+            for (Class<? extends Component> componentType : config.getComponents())
+                components[i++] = engine.componentManager.getIndex(componentType);
 
-            for (int i = engine.entityManager.currentEntities.nextSetBit(0); i != -1; i = engine.entityManager.currentEntities.nextSetBit(i + 1)) {
-                updateFamilyMembership(engine.entityManager.getEntityForIndex(i), false);
+            i = 0;
+            for (Class<? extends Component> componentType : config.getExcludedComponents())
+                excludedComponents[i++] = engine.componentManager.getIndex(componentType);
+
+            Family family = new Family(engine, components, excludedComponents, index);
+            familyIndices.put(config, index);
+            families.set(index, family);
+
+            // Find matching entities, and add them to the new family set.
+            Mapper<?>[] mappers = engine.componentManager.array;
+            Mask matchedEntities = pool.obtain().set(engine.entityManager.entities);
+
+            for (int component : components) {
+                matchedEntities.and(mappers[component].componentsMask);
             }
+
+            for (int excludedComponent : excludedComponents) {
+                matchedEntities.andNot(mappers[excludedComponent].componentsMask);
+            }
+
+            family.entities.addEntities(matchedEntities);
+
+            pool.free(matchedEntities);
         }
 
         return families.get(index);
     }
 
-    public void updateFamilyMembership(Entity entity, boolean remove) {
-        final Mask entityFamilies = entity.families;
+    /**
+     * Updates family membership for all entities. This will insert/remove entities
+     * to/from family sets.
+     */
 
-        for (int i = 0, n = this.familyIndexes.size(); i < n; ++i) {
-            final Family family = families.get(i);
-            final EntitySet familyContent = entitiesForFamily.get(i);
+    void updateFamilyMembership() {
+        Mapper<?>[] mappers = engine.componentManager.array;
 
-            boolean belongsToFamily = entityFamilies.get(i);
-            boolean matches = family.matches(entity) && !remove;
+        Mask tmpMask = pool.obtain();
 
-            if (belongsToFamily != matches) {
-                if (matches) {
-                    familyContent.addEntity(entity);
-                    entityFamilies.set(i);
-                } else {
-                    familyContent.removeEntity(entity);
-                    entityFamilies.clear(i);
-                }
+        for (int i = 0, n = familyIndices.size; i < n; i++) {
+            int[] components = families.get(i).components;
+            int[] excludedComponents = families.get(i).excludedComponents;
+            EntitySet entities = families.get(i).entities;
+
+            Mask matchedEntities = pool.obtain().set(engine.entityManager.entities);
+
+            for (int component : components) {
+                Mapper<?> mapper = mappers[component];
+                tmpMask.set(mapper.componentsMask);
+                tmpMask.andNot(mapper.removeComponentsMask);
+                matchedEntities.and(tmpMask);
             }
+
+            for (int excludedComponent : excludedComponents) {
+                Mapper<?> mapper = mappers[excludedComponent];
+                tmpMask.set(mapper.componentsMask);
+                tmpMask.andNot(mapper.removeComponentsMask);
+                matchedEntities.andNot(tmpMask);
+            }
+
+            Mask insertFamilyEntities = pool.obtain().set(matchedEntities);
+            insertFamilyEntities.andNot(entities.getMask());
+            entities.addEntities(insertFamilyEntities);
+            pool.free(insertFamilyEntities);
+
+            Mask removeFamilyEntities = pool.obtain().set(entities.getMask());
+            removeFamilyEntities.andNot(matchedEntities);
+            entities.removeEntities(removeFamilyEntities);
+            pool.free(removeFamilyEntities);
+
+            pool.free(matchedEntities);
         }
+
+        pool.free(tmpMask);
     }
 }

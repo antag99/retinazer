@@ -27,33 +27,29 @@ import static java.util.Collections.unmodifiableMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /**
  * Immutable copy-on-write engine configuration. This is used to setup static
  * properties of the engine, such as the systems to be processed, and additional
- * dependencies. Typically, an engine is created when the application is loaded,
- * and {@link Engine#reset()} is called before/after each game.
+ * dependencies. Typically, an engine instance is created per game.
  */
 public final class EngineConfig {
     private static final EngineConfig DEFAULT = new EngineConfig()
             .withWireResolver(new DefaultWireResolver())
-            .withWireResolver(new DependencyWireResolver());
+            .withWireResolver(new DependencyWireResolver())
+            .withWireResolver(new MapperWireResolver());
 
     private EngineConfig() {
     }
 
     private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<Class<?>, EntitySystem>();
-    private final Set<Class<? extends Component>> componentTypes = new LinkedHashSet<Class<? extends Component>>();
     private final List<WireResolver> wireResolvers = new ArrayList<>();
     private final Map<Class<?>, Object> dependencies = new HashMap<>();
     private final Iterable<EntitySystem> systemsView = unmodifiableCollection(systems.values());
-    private final Iterable<Class<? extends Component>> componentsTypesView = unmodifiableCollection(componentTypes);
     private final Iterable<WireResolver> wireResolversView = unmodifiableCollection(wireResolvers);
     private final Map<Class<?>, Object> dependenciesView = unmodifiableMap(dependencies);
 
@@ -107,15 +103,6 @@ public final class EngineConfig {
     }
 
     /**
-     * Gets the registered component types of this engine configuration
-     *
-     * @return The registered component types of this engine configuration
-     */
-    public Iterable<Class<? extends Component>> getComponentTypes() {
-        return componentsTypesView;
-    }
-
-    /**
      * Gets the registered wire resolvers of this engine configuration.
      *
      * @return The registered wire resolvers of this engine configuration.
@@ -147,22 +134,6 @@ public final class EngineConfig {
         }
         EngineConfig config = copy();
         config.systems.put(systemType, system);
-        return config;
-    }
-
-    /**
-     * Registers a component type.
-     *
-     * @param componentType The component type to register.
-     * @return A new configuration with the component type.
-     */
-    public EngineConfig withComponentType(Class<? extends Component> componentType) {
-        if (componentTypes.contains(componentType)) {
-            throw new IllegalArgumentException(
-                    "Component of type " + componentType.getName() + " has already been registered");
-        }
-        EngineConfig config = copy();
-        config.componentTypes.add(componentType);
         return config;
     }
 
@@ -210,7 +181,6 @@ public final class EngineConfig {
     private EngineConfig copy() {
         EngineConfig config = new EngineConfig();
         config.systems.putAll(systems);
-        config.componentTypes.addAll(componentTypes);
         config.wireResolvers.addAll(wireResolvers);
         config.dependencies.putAll(dependencies);
         return config;

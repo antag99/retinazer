@@ -21,7 +21,10 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.utils;
 
-public final class Mask {
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Pool.Poolable;
+
+public final class Mask implements Poolable {
     private long[] words = new long[0];
 
     public Mask() {
@@ -360,12 +363,23 @@ public final class Mask {
      *
      * @return The indices of the set bits in this mask.
      */
-    public int[] indices() {
+    public int[] getIndices() {
         int[] indices = new int[cardinality()];
         for (int i = 0, b = nextSetBit(0), n = indices.length; i < n; i++, b = nextSetBit(b + 1)) {
             indices[i] = b;
         }
         return indices;
+    }
+
+    public void getIndices(IntArray out) {
+        int count = cardinality();
+        out.size = 0;
+        out.ensureCapacity(count);
+        int[] items = out.items;
+        for (int i = 0, b = nextSetBit(0), n = count; i < n; i++, b = nextSetBit(b + 1)) {
+            items[i] = b;
+        }
+        out.size = count;
     }
 
     @Override
@@ -418,5 +432,10 @@ public final class Mask {
             h = h * 31 + (int) (word ^ (word >>> 32));
         }
         return h;
+    }
+
+    @Override
+    public void reset() {
+        clear();
     }
 }

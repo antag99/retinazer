@@ -2,23 +2,23 @@ package com.github.antag99.benchmarks.retinazer;
 
 import org.openjdk.jmh.infra.Blackhole;
 
-import com.github.antag99.retinazer.Engine;
-import com.github.antag99.retinazer.Entity;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
+import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
 
+@Wire
 public final class RetrievalSystemH extends EntityProcessorSystem {
-    private @Wire Engine engine;
     private Blackhole voidness = new Blackhole();
+    private Mapper<ComponentH> mapper;
 
     public RetrievalSystemH() {
         super(Family.with(ComponentH.class));
     }
 
     @Override
-    public final void process(Entity entity) {
-        ComponentH component = entity.get(ComponentH.class);
+    public final void process(int entity) {
+        ComponentH component = mapper.get(entity);
         voidness.consume(entity);
         voidness.consume(component);
         voidness.consume(component.a);

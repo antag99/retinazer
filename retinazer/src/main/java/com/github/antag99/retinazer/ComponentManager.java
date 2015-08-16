@@ -21,37 +21,31 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
-final class ComponentManager extends EntitySystem {
+final class ComponentManager {
     private Engine engine;
+
+    ComponentManager(Engine engine) {
+        this.engine = engine;
+    }
 
     /*
      * Component types are mapped using an optimized hash table, that handles
-     * colliding keys using an extra array, and doesn't permit modification
-     * once initialized. The size is always a power of two, which allows
+     * colliding keys using an extra array, and is rebuilt every time the
+     * entries are changed. The size is always a power of two, which allows
      * reducing the modulus operation to a binary AND operation. The size is
      * always four times the number of component types, to minimize the amount
      * of keys that have to be put in the extra array (stash).
      *
-     * Note that this is done to achieve maximum performance without using
-     * so-called "component mappers" or other clever stuff.
-     *
-     * Usually, component types won't have to be looked up for every entity,
-     * but rather once per iteration, as the weaver optimizes retrieval.
+     * Note that component types are typically only looked up when retrieving
+     * Mapper instances and when adding components using Handle.
      */
-    private final int hashMask;
-    private final ComponentStorage<?>[] table;
-    private final Class<? extends Component>[] stashTypes;
-    private final ComponentStorage<?>[] stashTable;
-    private final ComponentStorage<?>[] array;
+    int hashMask = 3;
+    Mapper<?>[] table = new Mapper<?>[4];
+    Mapper<?>[] stash = new Mapper<?>[0];
+    Mapper<?>[] array = new Mapper<?>[0];
 
     static int nextPowerOfTwo(int value) {
         if (value == 0) {
@@ -66,131 +60,90 @@ final class ComponentManager extends EntitySystem {
         return value + 1;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    ComponentManager(Engine engine) {
-        this.engine = engine;
+    /**
+     * Rebuilds the map use for looking up component types. This is required
+     * every time a new component type is needed, which will hopefully not be
+     * during processing, but rather during initialization.
+     *
+     * @param <T>
+     *            generic component type.
+     * @param additionalType
+     *            component type to add to the map.
+     */
+    private <T extends Component> void rebuild(Class<T> additionalType) {
+        // Copy the array and add the new type
+        Mapper<?>[] newArray = new Mapper<?>[array.length + 1];
+        System.arraycopy(array, 0, newArray, 0, array.length);
+        newArray[array.length] = new Mapper<T>(engine, additionalType, array.length);
+        this.array = newArray;
 
-        Collection<Class<? extends Component>> componentTypes = (Collection) engine.getComponentTypes();
-
-        // Let the table size have a load factor of about 0.25
-        int capacity = nextPowerOfTwo(componentTypes.size()) * 4;
+        // Create backing hash table filled to about 25%; this is done to
+        // minimize hash code collisions.
+        int capacity = nextPowerOfTwo(array.length) * 4;
 
         hashMask = capacity - 1;
-        table = new ComponentStorage[capacity];
-        array = new ComponentStorage[componentTypes.size()];
+        table = new Mapper[capacity];
 
-        Bag<Class<? extends Component>> types = new Bag<>();
-        List<Class<? extends Component>> conflictingTypes = new ArrayList<>();
-        for (Class<? extends Component> type : componentTypes) {
-            int slot = type.hashCode() & hashMask;
+        // Types that conflict and need to be put in the stash + respective slots
+        Mask conflictingTypes = new Mask();
+        Mask conflictingSlots = new Mask();
 
-            // Search for colliding types that will be put in the stash
-            for (Class<? extends Component> conflictingType : conflictingTypes) {
-                if (slot == (conflictingType.hashCode() & hashMask)) {
-                    conflictingTypes.add(type);
-                    break;
-                }
+        for (int i = 0, n = array.length; i < n; i++) {
+            Mapper<?> mapper = array[i];
+
+            // Locate slot; same as `slot = hashCode % capacity;`
+            int slot = mapper.type.hashCode() & hashMask;
+
+            // Check if an existing type shares the same slot
+            if (table[slot] != null) {
+                conflictingSlots.set(slot);
+                conflictingTypes.set(table[slot].typeIndex);
+                table[slot] = null;
             }
 
-            if (types.get(slot) != null) {
-                conflictingTypes.add(types.get(slot));
-                conflictingTypes.add(type);
-                types.set(slot, null);
-            }
-
-            // Else, add it to the table
-            if (!conflictingTypes.contains(type)) {
-                types.set(slot, type);
+            if (conflictingSlots.get(slot)) {
+                conflictingTypes.set(i);
+            } else {
+                table[slot] = mapper;
             }
         }
 
-        int nextIndex = 0;
-
-        for (int i = 0, n = types.getCapacity(); i < n; i++) {
-            if (types.get(i) != null) {
-                table[i] = new ComponentStorage<>(types.get(i), nextIndex++);
-                array[table[i].index] = table[i];
-            }
-        }
-
-        stashTypes = new Class[conflictingTypes.size()];
-        stashTable = new ComponentStorage[conflictingTypes.size()];
-
-        for (int i = 0, n = conflictingTypes.size(); i < n; i++) {
-            stashTypes[i] = conflictingTypes.get(i);
-            stashTable[i] = new ComponentStorage(stashTypes[i], nextIndex++);
-            array[stashTable[i].index] = stashTable[i];
-        }
-    }
-
-    private final class ComponentIterator implements Iterator<Component> {
-        private Entity entity;
-        private int index = 0;
-        private int previousIndex = -1;
-
-        public ComponentIterator(Entity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return entity.components.nextSetBit(index) != -1;
-        }
-
-        @Override
-        public Component next() {
-            if (!hasNext())
-                throw new NoSuchElementException();
-            int componentIndex = entity.components.nextSetBit(index);
-            index = componentIndex + 1;
-            previousIndex = componentIndex;
-            return array[componentIndex].get(entity);
-        }
-
-        @Override
-        public void remove() {
-            if (previousIndex == -1)
-                throw new IllegalStateException();
-            array[previousIndex].remove(entity);
-            previousIndex = -1;
+        // Put conflicting types in the stash
+        int[] indices = conflictingTypes.getIndices();
+        stash = new Mapper[indices.length];
+        for (int i = 0, n = indices.length; i < n; i++) {
+            stash[i] = array[indices[i]];
         }
     }
 
     int getIndex(Class<? extends Component> componentType) {
-        return getStorage(componentType).index;
+        return getMapper(componentType).typeIndex;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    <T extends Component> ComponentStorage<T> getStorage(Class<T> componentType) {
+    <T extends Component> Mapper<T> getMapper(Class<T> componentType) {
         int slot = componentType.hashCode() & hashMask;
-        ComponentStorage storage = table[slot];
+        Mapper storage = table[slot];
         if (storage != null) {
-            if (storage.componentType == componentType) {
+            if (storage.type == componentType) {
                 return storage;
             }
         } else {
-            for (int i = 0, n = stashTypes.length; i < n; i++) {
-                if (stashTypes[i] == componentType) {
-                    return (ComponentStorage<T>) stashTable[i];
+            Mapper<?>[] stash = this.stash;
+            for (int i = 0, n = stash.length; i < n; i++) {
+                if (stash[i].type == componentType) {
+                    return (Mapper<T>) stash[i];
                 }
             }
         }
-        throw new IllegalArgumentException(
-                "Component type has not been registered: " +
-                        componentType.getName());
+
+        // Component type not found, add it to the map
+        rebuild(componentType);
+        return getMapper(componentType);
     }
 
-    Iterable<Component> getComponents(final Entity entity) {
-        return new Iterable<Component>() {
-            @Override
-            public Iterator<Component> iterator() {
-                return new ComponentIterator(entity);
-            }
-        };
-    }
-
-    void destroyComponents(Entity entity) {
-        for (ComponentStorage<?> storage : array) {
+    void destroyComponents(int entity) {
+        for (Mapper<?> storage : array) {
             storage.remove(entity);
         }
     }
@@ -198,39 +151,17 @@ final class ComponentManager extends EntitySystem {
     void applyComponentChanges() {
         for (int i = 0, n = array.length; i < n; ++i) {
             @SuppressWarnings("unchecked")
-            ComponentStorage<Component> storage = (ComponentStorage<Component>) array[i];
-            if (!storage.dirty) {
-                continue;
+            Mapper<Component> mapper = (Mapper<Component>) array[i];
+            Bag<Component> components = mapper.components;
+            int nn = mapper.removeComponents.size;
+            for (int ii = 0; ii < nn; ii++) {
+                int entity = mapper.removeComponents.get(ii);
+                components.set(entity, null);
+                mapper.componentsMask.clear(entity);
+                mapper.removeComponentsMask.clear(entity);
             }
-            storage.dirty = false;
-
-            Mask componentsAdded = engine.maskPool.obtain().set(storage.componentsAdded);
-            Mask componentsRemoved = engine.maskPool.obtain().set(storage.componentsRemoved);
-            storage.componentsAdded.clear();
-            storage.componentsRemoved.clear();
-
-            for (int ii = componentsRemoved.nextSetBit(0); ii != -1; ii = componentsRemoved.nextSetBit(ii + 1)) {
-                Entity entity = engine.entityManager.getEntityForIndex(ii);
-                entity.components.clear(i);
-                engine.familyManager.updateFamilyMembership(entity, false);
-            }
-
-            for (int ii = componentsRemoved.nextSetBit(0); ii != -1; ii = componentsRemoved.nextSetBit(ii + 1)) {
-                storage.components.set(ii, null);
-            }
-
-            for (int ii = componentsAdded.nextSetBit(0); ii != -1; ii = componentsAdded.nextSetBit(ii + 1)) {
-                storage.components.set(ii, storage.nextComponents.get(ii));
-            }
-
-            for (int ii = componentsAdded.nextSetBit(0); ii != -1; ii = componentsAdded.nextSetBit(ii + 1)) {
-                Entity entity = engine.entityManager.getEntityForIndex(ii);
-                entity.components.set(i);
-                engine.familyManager.updateFamilyMembership(entity, false);
-            }
-
-            engine.maskPool.free(componentsAdded);
-            engine.maskPool.free(componentsRemoved);
+            if (nn > 0)
+                mapper.removeComponents.removeRange(0, nn - 1);
         }
     }
 }

@@ -31,44 +31,18 @@ public class GWTEntitySetTest extends GWTTestCase {
         return "com.github.antag99.RetinazerTest";
     }
 
-    public void testEntities() {
-        Engine engine = EngineConfig.create()
-                .withComponentType(FlagComponentA.class)
-                .withComponentType(FlagComponentB.class)
-                .withComponentType(FlagComponentC.class)
-                .finish();
-        Entity entity0 = engine.createEntity();
-        Entity entity1 = engine.createEntity();
-        entity1.add(new FlagComponentA());
-        Entity entity2 = engine.createEntity();
-        Entity entity3 = engine.createEntity();
-        Entity entity4 = engine.createEntity();
-        engine.update();
-        assertTrue(Arrays.equals(engine.getEntities().getEntities(),
-                new Entity[] { entity0, entity1, entity2, entity3, entity4 }));
-        assertTrue(Arrays.equals(engine.getEntitiesFor(
-                Family.with(FlagComponentA.class)).getEntities(),
-                new Entity[] { entity1 }));
-    }
-
     public void testIndices() {
-        Engine engine = EngineConfig.create()
-                .withComponentType(FlagComponentA.class)
-                .withComponentType(FlagComponentB.class)
-                .withComponentType(FlagComponentC.class)
-                .finish();
-        Entity entity0 = engine.createEntity();
-        Entity entity1 = engine.createEntity();
-        entity1.add(new FlagComponentA());
-        Entity entity2 = engine.createEntity();
-        Entity entity3 = engine.createEntity();
-        Entity entity4 = engine.createEntity();
+        Engine engine = EngineConfig.create().finish();
+        int entity0 = engine.createEntity().getEntity();
+        int entity1 = engine.createEntity().add(new FlagComponentA()).getEntity();
+        int entity2 = engine.createEntity().getEntity();
+        int entity3 = engine.createEntity().getEntity();
+        int entity4 = engine.createEntity().getEntity();
         engine.update();
-        assertTrue(Arrays.equals(engine.getEntities().getIndices(), new int[] {
-                entity0.getIndex(), entity1.getIndex(), entity2.getIndex(),
-                entity3.getIndex(), entity4.getIndex() }));
+        assertTrue(Arrays.equals(engine.getEntities().getIndices().toArray(),
+                new int[] { entity0, entity1, entity2, entity3, entity4 }));
         assertTrue(Arrays.equals(engine.getEntitiesFor(
-                Family.with(FlagComponentA.class)).getIndices(), new int[] {
-                        entity1.getIndex() }));
+                Family.with(FlagComponentA.class)).getIndices().toArray(),
+                new int[] { entity1 }));
     }
 }

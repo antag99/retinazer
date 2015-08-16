@@ -22,7 +22,6 @@
 package com.github.antag99.retinazer.utils;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.Test;
 
@@ -34,14 +33,14 @@ public class BagTest {
     @Test
     public void testStorage() {
         Bag<Object> bag = new Bag<>();
-        Object element0 = mock(Object.class);
-        Object element1 = mock(Object.class);
-        Object element2 = mock(Object.class);
-        Object element3 = mock(Object.class);
-        Object element4 = mock(Object.class);
-        Object element5 = mock(Object.class);
-        Object element6 = mock(Object.class);
-        Object element7 = mock(Object.class);
+        Object element0 = new Object();
+        Object element1 = new Object();
+        Object element2 = new Object();
+        Object element3 = new Object();
+        Object element4 = new Object();
+        Object element5 = new Object();
+        Object element6 = new Object();
+        Object element7 = new Object();
 
         bag.set(0, element0);
         assertSame(element0, bag.get(0));
@@ -142,7 +141,7 @@ public class BagTest {
     public void testDefault() {
         Bag<Object> bag = new Bag<>();
         assertEquals(null, bag.get(0));
-        bag.set(0, mock(Object.class));
+        bag.set(0, new Object());
         assertEquals(null, bag.get(1));
         assertEquals(null, bag.get(2));
         assertEquals(null, bag.get(3));
@@ -160,19 +159,19 @@ public class BagTest {
         bag = new Bag<>();
         assertEquals(0, bag.getCapacity());
         assertEquals(0, bag.getBuffer().length);
-        bag.set(0, mock(Object.class));
+        bag.set(0, new Object());
         assertEquals(1, bag.getCapacity());
-        bag.set(1, mock(Object.class));
+        bag.set(1, new Object());
         assertEquals(2, bag.getCapacity());
-        bag.set(2, mock(Object.class));
+        bag.set(2, new Object());
         assertEquals(4, bag.getCapacity());
-        bag.set(3, mock(Object.class));
+        bag.set(3, new Object());
         assertEquals(4, bag.getCapacity());
-        bag.set(4, mock(Object.class));
+        bag.set(4, new Object());
         assertEquals(8, bag.getCapacity());
-        bag.set(8, mock(Object.class));
+        bag.set(8, new Object());
         assertEquals(16, bag.getCapacity());
-        bag.set(35, mock(Object.class));
+        bag.set(35, new Object());
         assertEquals(64, bag.getCapacity());
 
         bag = new Bag<>();
@@ -209,7 +208,7 @@ public class BagTest {
         Bag<Object> bag = new Bag<>();
         for (int i = 0; i < 32; i++) {
             try {
-                bag.set(-(1 << i), mock(Object.class));
+                bag.set(-(1 << i), new Object());
             } catch (ArrayIndexOutOfBoundsException ex) {
                 continue;
             }

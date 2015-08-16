@@ -21,12 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static com.github.antag99.retinazer.GWTTestUtils.assertEqualsUnordered;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import com.google.gwt.junit.client.GWTTestCase;
 
 public class GWTEntityTest extends GWTTestCase {
@@ -35,6 +29,7 @@ public class GWTEntityTest extends GWTTestCase {
         return "com.github.antag99.RetinazerTest";
     }
 
+    /*@off
     public void testEntity() {
         Engine engine = EngineConfig.create()
                 .withComponentType(FlagComponentA.class)
@@ -163,16 +158,17 @@ public class GWTEntityTest extends GWTTestCase {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity();
         engine.update();
-        assertEquals(0, entity.getIndex());
+        assertEquals(0, entity.getEntity());
         assertSame(entity, engine.getEntityForIndex(0));
         Entity secondEntity = engine.createEntity();
         engine.update();
-        assertEquals(1, secondEntity.getIndex());
+        assertEquals(1, secondEntity.getEntity());
         assertSame(secondEntity, engine.getEntityForIndex(1));
         entity.destroy();
         engine.update();
         Entity thirdEntity = engine.createEntity();
         engine.update();
-        assertEquals(0, thirdEntity.getIndex());
+        assertEquals(0, thirdEntity.getEntity());
     }
+    @on*/
 }

@@ -21,19 +21,18 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.Experimental;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.github.antag99.retinazer.utils.Mask;
 
 public final class EntitySet {
+    private static Pool<IntArray> pool = Pools.get(IntArray.class);
+
     private static class Content {
-        Engine engine;
         Mask entities = new Mask();
         int modCount = 0;
         EntitySetListener[] listeners = new EntitySetListener[0];
-
-        Content(Engine engine) {
-            this.engine = engine;
-        }
     }
 
     private Content content;
@@ -42,19 +41,23 @@ public final class EntitySet {
     // indicates that this set may not be modified.
     private EntitySet view = null;
 
-    private Entity[] entities = new Entity[0];
-    private int entitiesModCount = 0;
-
-    private int[] indices = new int[0];
+    private IntArray indices = new IntArray();
     private int indicesModCount = 0;
+
+    public EntitySet() {
+        this.content = new Content();
+    }
 
     private EntitySet(EntitySet source) {
         this.content = source.content;
         this.view = this;
     }
 
-    EntitySet(Engine engine) {
-        this.content = new Content(engine);
+    private void checkModification() {
+        if (view == this) {
+            throw new IllegalArgumentException("Cannot modify the entities of this set");
+        }
+        content.modCount++;
     }
 
     /**
@@ -104,104 +107,137 @@ public final class EntitySet {
     }
 
     /**
-     * Adds the given entity to this set. Throws an exception if this set cannot be modified.
+     * Adds the given entity to this set. Throws an exception if this set
+     * cannot be modified.
      *
-     * @param entity The entity to add.
+     * @param entity
+     *            the entity to add.
      */
-    public void addEntity(Entity entity) {
-        if (entity.getEngine() != content.engine) {
-            throw new IllegalArgumentException("Cannot add an entity from another engine");
-        }
-        if (view == this) {
-            throw new IllegalArgumentException("Cannot modify the entities of this set");
-        }
-
-        content.entities.set(entity.getIndex());
-        content.modCount++;
-
-        for (EntitySetListener listener : content.listeners) {
-            listener.inserted(entity);
-        }
+    public void addEntity(int entity) {
+        IntArray array = pool.obtain();
+        array.add(entity);
+        addEntities(array);
+        array.clear();
+        pool.free(array);
     }
 
     /**
-     * Removes the given entity from this set. Throws an exception if this set cannot be modified.
+     * Inserts entities into this {@link EntitySet}. Note that this will trigger
+     * notifications for <b>all</b> entities in the given array; independent of
+     * whether or not they were already in the set. Throws an exception if this
+     * set cannot be modified.
      *
-     * @param entity The entity to remove.
+     * @param entities
+     *            indices of the entities to insert.
      */
-    public void removeEntity(Entity entity) {
-        if (entity.getEngine() != content.engine) {
-            throw new IllegalArgumentException("Cannot remove an entity from another engine");
+    public void addEntities(IntArray entities) {
+        checkModification();
+        if (entities.size > 0) {
+            int[] items = entities.items;
+            for (int i = 0, n = items.length; i < n; i++)
+                content.entities.set(items[i]);
+            for (EntitySetListener listener : content.listeners) {
+                listener.inserted(entities);
+            }
         }
-        if (view == this) {
-            throw new IllegalArgumentException("Cannot modify the entities of this set");
+    }
+
+    public void addEntities(Mask entities) {
+        checkModification();
+        content.entities.or(entities);
+        new Object().hashCode();
+        IntArray array = pool.obtain();
+        entities.getIndices(array);
+        if (array.size > 0) {
+            for (EntitySetListener listener : content.listeners) {
+                listener.inserted(array);
+            }
         }
+        array.clear();
+        pool.free(array);
+    }
 
-        content.entities.clear(entity.getIndex());
-        content.modCount++;
+    /**
+     * Removes the given entity from this set. Throws an exception if this set
+     * cannot be modified.
+     *
+     * @param entity
+     *            the entity to remove.
+     */
+    public void removeEntity(int entity) {
+        IntArray array = pool.obtain();
+        array.add(entity);
+        removeEntities(array);
+        array.clear();
+        pool.free(array);
+    }
 
+    /**
+     * Removes entities from this {@link EntitySet}. Note that this will trigger
+     * notifications for <b>all</b> entities in the given array; independent of
+     * whether or not they were already in the set. Throws an exception if this
+     * set cannot be modified.
+     *
+     * @param entities
+     *            indices of the entities to remove.
+     */
+    public void removeEntities(IntArray entities) {
+        checkModification();
+        int[] items = entities.items;
+        for (int i = 0, n = items.length; i < n; i++)
+            content.entities.clear(items[i]);
         for (EntitySetListener listener : content.listeners) {
-            listener.removed(entity);
+            listener.removed(entities);
         }
+    }
+
+    public void removeEntities(Mask entities) {
+        checkModification();
+        content.entities.andNot(entities);
+        IntArray array = pool.obtain();
+        entities.getIndices(array);
+        if (array.size > 0) {
+            for (EntitySetListener listener : content.listeners) {
+                listener.removed(array);
+            }
+        }
+        array.clear();
+        pool.free(array);
     }
 
     /**
      * Checks if this set contains the given entity.
      *
-     * @param entity The entity to check for.
-     * @return Whether this set contains the given entity.
+     * @param entity
+     *            the entity to check for.
+     * @return whether this set contains the given entity.
      */
-    public boolean contains(Entity entity) {
-        if (entity.getEngine() != content.engine) {
-            throw new IllegalArgumentException("Cannot query an entity from another engine");
-        }
-        return content.entities.get(entity.getIndex());
+    public boolean contains(int entity) {
+        return content.entities.get(entity);
     }
 
     /**
-     * <p>
-     * Returns an array containing all entities in this set. Note that whenever
-     * the entity set changes, this array must be reconstructed. For maximum
-     * performance, {@link #getIndices()} should be used.
-     * </p>
+     * Returns the entities contained in this entity set. Do <b>not</b> modify
+     * this, as it inevitably leads to undefined behavior.
      *
-     * <p>
-     * <b>WARNING:</b> Modifying this array leads to undefined behavior.
-     * </p>
-     *
-     * @return All entities in this set.
+     * @return the entities contained in this set.
      */
-    @Experimental
-    public Entity[] getEntities() {
-        if (entitiesModCount != content.modCount) {
-            Engine engine = content.engine;
-            Mask m = content.entities;
-            entities = new Entity[m.cardinality()];
-            for (int i = 0, b = m.nextSetBit(0), n = entities.length; i < n; i++, b = m.nextSetBit(b + 1)) {
-                entities[i] = engine.getEntityForIndex(b);
-            }
-            entitiesModCount = content.modCount;
-        }
-        return entities;
+    public Mask getMask() {
+        return content.entities;
     }
 
     /**
-     * <p>
      * Returns an array containing the indices of all entities in this set.
      * Note that whenever the entity set changes, this array must be
-     * reconstructed.
-     * </p>
+     * reconstructed. Do <b>not</b> modify this, as it inevitably leads to
+     * undefined behavior.
      *
-     * <p>
-     * <b>WARNING:</b> Modifying this array leads to undefined behavior.
-     * </p>
-     *
-     * @return The indices of all entities in this set.
+     * @return the indices of all entities in this set.
      */
-    @Experimental
-    public int[] getIndices() {
+    public IntArray getIndices() {
         if (indicesModCount != content.modCount) {
-            indices = content.entities.indices();
+            indices.clear();
+            content.entities.getIndices(indices);
             indicesModCount = content.modCount;
         }
         return indices;

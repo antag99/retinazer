@@ -21,17 +21,8 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static com.github.antag99.retinazer.utils.TestUtils.assertEqualsUnordered;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.junit.Test;
-
 public class EntityTest {
+    /*@off
     @Test
     public void testEntity() {
         Engine engine = EngineConfig.create()
@@ -157,16 +148,17 @@ public class EntityTest {
         Engine engine = EngineConfig.create().finish();
         Entity entity = engine.createEntity();
         engine.update();
-        assertEquals(0, entity.getIndex());
+        assertEquals(0, entity.getEntity());
         assertSame(entity, engine.getEntityForIndex(0));
         Entity secondEntity = engine.createEntity();
         engine.update();
-        assertEquals(1, secondEntity.getIndex());
+        assertEquals(1, secondEntity.getEntity());
         assertSame(secondEntity, engine.getEntityForIndex(1));
         entity.destroy();
         engine.update();
         Entity thirdEntity = engine.createEntity();
         engine.update();
-        assertEquals(0, thirdEntity.getIndex());
+        assertEquals(0, thirdEntity.getEntity());
     }
+    @on*/
 }

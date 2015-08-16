@@ -30,7 +30,7 @@ public class RetinazerTestSuite extends TestCase {
     @SuppressWarnings("unchecked")
     private static Class<? extends GWTTestCase>[] tests = new Class[] {
             GWTEngineTest.class,
-            GWTEntityListenerTest.class,
+            GWTEntitySetListenerTest.class,
             GWTEntitySetTest.class,
             GWTEntityTest.class,
     };

@@ -97,6 +97,6 @@ public class MaskTest {
         mask.set(4);
         mask.set(6);
         mask.set(7);
-        assertTrue(Arrays.equals(new int[] { 1, 4, 6, 7 }, mask.indices()));
+        assertTrue(Arrays.equals(new int[] { 1, 4, 6, 7 }, mask.getIndices()));
     }
 }
