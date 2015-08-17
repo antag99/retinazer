@@ -37,20 +37,14 @@ public abstract class EntitySystem {
     }
 
     /**
-     * Updates this system. If you override this method, mark it {@code final}.
-     */
-    protected void update() {
-    }
-
-    /**
      * Initializes this system. If you override this method, mark it {@code final}.
      */
     protected void initialize() {
     }
 
     /**
-     * Destroys this system. If you override this method, mark it {@code final}.
+     * Updates this system. If you override this method, mark it {@code final}.
      */
-    protected void destroy() {
+    protected void update() {
     }
 }
