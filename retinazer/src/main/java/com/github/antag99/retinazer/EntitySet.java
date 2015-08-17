@@ -243,6 +243,13 @@ public final class EntitySet {
         return indices;
     }
 
+    /**
+     * Removes all entities from this set.
+     */
+    public void clear() {
+        removeEntities(getMask());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof EntitySet))
