@@ -222,11 +222,17 @@ public class EngineTest {
         EngineConfig.create().finish().wire(consumer);
     }
 
+    @Wire
     private static class ExampleSystem extends EntitySystem {
-        public @Wire Engine engine;
-        public @Wire FlagSystemA flagSystemA;
-        public @Wire FlagSystemB flagSystemB;
-        public @Wire FlagSystemC flagSystemC;
+        public Engine engine;
+        public FlagSystemA flagSystemA;
+        public FlagSystemB flagSystemB;
+        public FlagSystemC flagSystemC;
+        public Mapper<FlagComponentA> mFlagA;
+        public Mapper<FlagComponentB> mFlagB;
+        public Mapper<FlagComponentC> mFlagC;
+        public Mapper<? extends Component> mBad;
+        public Mapper<? extends Component> mWorse;
     }
 
     @Test
@@ -239,17 +245,33 @@ public class EngineTest {
                 .withSystem(system)
                 .withSystem(flagSystemA)
                 .withSystem(flagSystemB)
-                .withSystem(flagSystemC).finish();
+                .withSystem(flagSystemC)
+                .finish();
         assertSame(engine, system.engine);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
+        assertSame(engine.getMapper(FlagComponentA.class), system.mFlagA);
+        assertSame(engine.getMapper(FlagComponentB.class), system.mFlagB);
+        assertSame(engine.getMapper(FlagComponentC.class), system.mFlagC);
+        assertSame(null, system.mBad);
+        assertSame(null, system.mWorse);
         engine.unwire(system);
+        assertSame(null, system.flagSystemA);
+        assertSame(null, system.flagSystemB);
+        assertSame(null, system.flagSystemC);
+        assertSame(null, system.mFlagA);
+        assertSame(null, system.mFlagB);
+        assertSame(null, system.mFlagC);
+        assertSame(null, system.mBad);
+        assertSame(null, system.mWorse);
         engine.wire(system);
         assertSame(engine, system.engine);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
+        assertSame(null, system.mBad);
+        assertSame(null, system.mWorse);
     }
 
     private static class MissingSystem extends EntitySystem {
