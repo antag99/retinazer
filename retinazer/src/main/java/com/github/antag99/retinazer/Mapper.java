@@ -107,7 +107,7 @@ public final class Mapper<T extends Component> {
             if ("java.lang.reflect.InvocationTargetException".equals(
                     ex.getCause().getClass().getName()))
                 throw Internal.sneakyThrow(ex.getCause().getCause());
-            throw Internal.sneakyThrow(ex.getCause());
+            throw new AssertionError(ex);
         }
     }
 
@@ -123,7 +123,7 @@ public final class Mapper<T extends Component> {
      */
     public void add(int entity, T instance) {
         if (has(entity)) {
-            throw new IllegalStateException("Cannot insert a component that "
+            throw new IllegalArgumentException("Cannot insert a component that "
                     + "already exists: " + instance.getClass().getName());
         }
 
