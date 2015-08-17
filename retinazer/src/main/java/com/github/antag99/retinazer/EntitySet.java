@@ -100,7 +100,8 @@ public final class EntitySet {
             if (listeners[i] == listener) {
                 EntitySetListener[] newListeners = new EntitySetListener[listeners.length - 1];
                 System.arraycopy(listeners, 0, newListeners, 0, i);
-                System.arraycopy(listeners, i + 1, newListeners, i, listeners.length - i);
+                System.arraycopy(listeners, i + 1, newListeners, i, listeners.length - i - 1);
+                content.listeners = newListeners;
                 return;
             }
         }
