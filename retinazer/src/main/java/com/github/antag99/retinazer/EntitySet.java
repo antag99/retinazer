@@ -146,7 +146,6 @@ public final class EntitySet {
     public void addEntities(Mask entities) {
         checkModification();
         content.entities.or(entities);
-        new Object().hashCode();
         IntArray array = pool.obtain();
         entities.getIndices(array);
         if (array.size > 0) {
