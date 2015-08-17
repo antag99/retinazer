@@ -412,7 +412,7 @@ public final class Mask implements Poolable {
             }
         }
 
-        for (int i = shorterWords.length - 1; i != 0; i--) {
+        for (int i = shorterWords.length - 1; i > 0; i--) {
             if (shorterWords[i] != longerWords[i]) {
                 return false;
             }
@@ -427,7 +427,7 @@ public final class Mask implements Poolable {
         int h = 0;
         // As trailing zero words do not count in the hash, this should result
         // in the same hash no matter the size of the buffer.
-        for (int i = words.length - 1; i != 0; i--) {
+        for (int i = words.length - 1; i > 0; i--) {
             long word = words[i];
             h = h * 31 + (int) (word ^ (word >>> 32));
         }
