@@ -242,4 +242,16 @@ public final class EntitySet {
         }
         return indices;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EntitySet))
+            return false;
+        return ((EntitySet) obj).content.entities.equals(content.entities);
+    }
+
+    @Override
+    public int hashCode() {
+        return content.entities.hashCode();
+    }
 }
