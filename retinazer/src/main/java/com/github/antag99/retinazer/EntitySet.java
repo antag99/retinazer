@@ -134,7 +134,7 @@ public final class EntitySet {
         checkModification();
         if (entities.size > 0) {
             int[] items = entities.items;
-            for (int i = 0, n = items.length; i < n; i++)
+            for (int i = 0, n = entities.size; i < n; i++)
                 content.entities.set(items[i]);
             for (EntitySetListener listener : content.listeners) {
                 listener.inserted(entities);
@@ -184,7 +184,7 @@ public final class EntitySet {
     public void removeEntities(IntArray entities) {
         checkModification();
         int[] items = entities.items;
-        for (int i = 0, n = items.length; i < n; i++)
+        for (int i = 0, n = entities.size; i < n; i++)
             content.entities.clear(items[i]);
         for (EntitySetListener listener : content.listeners) {
             listener.removed(entities);
