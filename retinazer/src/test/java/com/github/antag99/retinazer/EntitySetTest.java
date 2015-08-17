@@ -126,8 +126,6 @@ public class EntitySetTest {
         entitySet.removeListener(testListener);
         // One listener; duplicate listeners are ignored
 
-        Mask mask = new Mask();
-
         // Paranoia!
         testListener.verifyInserted(new int[0]);
         testListener.verifyRemoved(new int[0]);
