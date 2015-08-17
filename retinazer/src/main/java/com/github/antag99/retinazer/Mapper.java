@@ -56,10 +56,6 @@ public final class Mapper<T extends Component> {
         } catch (ReflectionException ex) {
             if (ex.getCause() instanceof RuntimeException)
                 throw (RuntimeException) ex.getCause();
-            // GWT compatibility hack - no InvocationTargetException emulation
-            if ("java.lang.reflect.InvocationTargetException".equals(
-                    ex.getCause().getClass().getName()))
-                throw Internal.sneakyThrow(ex.getCause().getCause());
             this.constructor = null;
         }
     }
@@ -107,6 +103,10 @@ public final class Mapper<T extends Component> {
             add(entity, instance);
             return instance;
         } catch (ReflectionException ex) {
+            // GWT compatibility hack - no InvocationTargetException emulation
+            if ("java.lang.reflect.InvocationTargetException".equals(
+                    ex.getCause().getClass().getName()))
+                throw Internal.sneakyThrow(ex.getCause().getCause());
             throw Internal.sneakyThrow(ex.getCause());
         }
     }
