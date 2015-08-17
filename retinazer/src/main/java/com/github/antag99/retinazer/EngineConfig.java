@@ -66,9 +66,11 @@ public final class EngineConfig {
      * Gets the system of the given type. Note that only one system of a type
      * can exist in an engine configuration.
      *
-     * @param systemClass The type of the system
-     * @return The system
-     * @throws IllegalArgumentException If the system does not exist
+     * @param systemType
+     *            type of the system.
+     * @return the system.
+     * @throws IllegalArgumentException
+     *             if the system does not exist.
      */
     public EntitySystem getSystem(Class<? extends EntitySystem> systemType) {
         return getSystem(systemType, false);
@@ -78,12 +80,15 @@ public final class EngineConfig {
      * Gets the system of the given type. Note that only one system of a type
      * can exist in an engine configuration.
      *
-     * @param systemClass The type of the system
-     * @param optional Whether to return {@code null} if the system does not exist
-     * @return The system, or {@code null} if {@code optional} is {@code true} and
-     *         the system does not exist.
-     * @throws IllegalArgumentException If {@code optional} is {@code false} and
-     *             the system does not exist.
+     * @param systemType
+     *            type of the system.
+     * @param optional
+     *            whether to return {@code null} if the system does not exist.
+     * @return the system, or {@code null} if {@code optional} is {@code true}
+     *         and the system does not exist.
+     * @throws IllegalArgumentException
+     *             if {@code optional} is {@code false} and the system does not
+     *             exist.
      */
     public EntitySystem getSystem(Class<? extends EntitySystem> systemType, boolean optional) {
         EntitySystem system = systems.get(systemType);
@@ -96,7 +101,7 @@ public final class EngineConfig {
     /**
      * Gets the registered systems of this engine configuration
      *
-     * @return The registered systems of this engine configuration
+     * @return the registered systems of this engine configuration
      */
     public Iterable<EntitySystem> getSystems() {
         return systemsView;
@@ -105,7 +110,7 @@ public final class EngineConfig {
     /**
      * Gets the registered wire resolvers of this engine configuration.
      *
-     * @return The registered wire resolvers of this engine configuration.
+     * @return the registered wire resolvers of this engine configuration.
      */
     public Iterable<WireResolver> getWireResolvers() {
         return wireResolversView;
@@ -114,7 +119,7 @@ public final class EngineConfig {
     /**
      * Gets the registered dependencies of this engine configuration.
      *
-     * @return The registered dependencies of this engine configuration.
+     * @return the registered dependencies of this engine configuration.
      */
     public Map<Class<?>, Object> getDependencies() {
         return dependenciesView;
@@ -123,8 +128,9 @@ public final class EngineConfig {
     /**
      * Registers a system.
      *
-     * @param system The system to register.
-     * @return A new configuration with the system.
+     * @param system
+     *            system to register.
+     * @return new configuration with the system.
      */
     public EngineConfig withSystem(EntitySystem system) {
         Class<? extends EntitySystem> systemType = system.getClass();
@@ -140,8 +146,9 @@ public final class EngineConfig {
     /**
      * Registers a wire resolver.
      *
-     * @param resolver The resolver to register.
-     * @return A new configuration with the wire resolver.
+     * @param resolver
+     *            resolver to register.
+     * @return new configuration with the wire resolver.
      */
     public EngineConfig withWireResolver(WireResolver resolver) {
         EngineConfig config = copy();
@@ -152,8 +159,9 @@ public final class EngineConfig {
     /**
      * Registers a dependency, with the concrete type of the object.
      *
-     * @param dependency The dependency to register.
-     * @return New configuration with the dependency.
+     * @param dependency
+     *            dependency to register.
+     * @return new configuration with the dependency.
      */
     public EngineConfig withDependency(Object dependency) {
         EngineConfig config = copy();
@@ -164,9 +172,13 @@ public final class EngineConfig {
     /**
      * Registers a dependency of the given type.
      *
-     * @param type Type of the dependency.
-     * @param dependency The dependency.
-     * @return New configuration with the given dependency.
+     * @param type
+     *            type of the dependency.
+     * @param dependency
+     *            the dependency.
+     * @param <T>
+     *            generic type of the dependency.
+     * @return new configuration with the given dependency.
      */
     public <T> EngineConfig withDependency(Class<T> type, T dependency) {
         if (!ClassReflection.isInstance(type, dependency)) {
@@ -187,9 +199,11 @@ public final class EngineConfig {
     }
 
     /**
-     * Creates a new {@link Engine} instance based on this configuration
+     * Creates a new {@link Engine} based on this configuration. Note that the
+     * same configuration should <b>not</b> be reused, as system implementations
+     * do not handle being registered to multiple engines.
      *
-     * @return The new {@link Engine} instance.
+     * @return new {@link Engine}.
      */
     public Engine finish() {
         return new Engine(this);

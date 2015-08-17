@@ -32,14 +32,14 @@ public interface EntitySetListener {
      * Called when entities are inserted into the {@link EntitySet}.
      *
      * @param entities
-     *            indices of the entities that were removed.
+     *            indices of the entities that were inserted.
      */
     public void inserted(IntArray entities);
 
     /**
      * Called when entities are removed from the {@link EntitySet}.
      *
-     * @param entity
+     * @param entities
      *            indices of the entities that were removed.
      */
     public void removed(IntArray entities);

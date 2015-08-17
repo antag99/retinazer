@@ -78,6 +78,8 @@ public final class Handle {
      *
      * @param componentType
      *            type of the component to create.
+     * @param <T>
+     *            generic component type.
      * @return the component instance.
      */
     public <T extends Component> T create(Class<T> componentType) {
@@ -90,6 +92,8 @@ public final class Handle {
      *
      * @param component
      *            the component to add.
+     * @param <T>
+     *            generic component type.
      * @return this handle for chaining.
      */
     @SuppressWarnings("unchecked")
@@ -104,6 +108,8 @@ public final class Handle {
      *
      * @param componentType
      *            the type of component to remove.
+     * @param <T>
+     *            generic component type.
      * @return this handle for chaining.
      */
     public <T extends Component> Handle remove(Class<T> componentType) {

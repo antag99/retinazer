@@ -25,6 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Engine is the core class of retinazer; it manages all active entities,
+ * performs system processing and initialization. An engine instance is obtained
+ * using {@link EngineConfig#finish()}.
+ */
 public final class Engine {
     private final EntitySystem[] systems;
 
@@ -71,6 +76,10 @@ public final class Engine {
         wireManager.unwire(object);
     }
 
+    /**
+     * Updates all systems, interleaved by inserting/removing entities to/from
+     * entity sets.
+     */
     public void update() {
         while (dirty) {
             flush();
@@ -95,7 +104,7 @@ public final class Engine {
      * Creates a new entity. This entity will be assigned a index, which is not
      * shared with any existing entity. Note that indices are reused once the
      * entity is no longer active. The entity is immediately inserted into the
-     * engine, but it won't show up in entity sets until the next call to {@link #flush()}.
+     * engine, but it won't show up in entity sets until the next system processing.
      *
      * @return reused handle for accessing the entity; don't hold on to this as
      *         it will be invalid once the next entity is created.
@@ -130,7 +139,8 @@ public final class Engine {
     }
 
     /**
-     * Destroys the entity with the given index.
+     * Destroys the entity with the given index. This will not remove the entity
+     * immediately; after the current system processing,
      *
      * @param entity
      *            the entity to destroy.
@@ -140,9 +150,7 @@ public final class Engine {
     }
 
     /**
-     * <p>
      * Gets all entities added to this engine.
-     * </p>
      *
      * @return {@link EntitySet} containing all entities added to this engine
      */
@@ -151,13 +159,11 @@ public final class Engine {
     }
 
     /**
-     * <p>
      * Gets all entities matching the given family that has been added to
      * this engine.
-     * </p>
      *
      * @param family
-     *            the family
+     *            the family.
      * @return {@link EntitySet} containing all entities added to this engine
      *         that matches the given family.
      */
@@ -166,9 +172,9 @@ public final class Engine {
     }
 
     /**
-     * <p>
-     * Gets or creates a family for the given configuration
-     * </p>
+     * Gets or creates a family for the given configuration. Typically, it's
+     * not necessary to retrieve a family directly, but rather only use
+     * {@link FamilyConfig}.
      *
      * @param config
      *            configuration for the family
@@ -182,22 +188,28 @@ public final class Engine {
      * Gets the system of the given type. Note that only one system of a type
      * can exist in an engine configuration.
      *
-     * @param systemClass
+     * @param systemType
      *            type of the system
+     * @param <T>
+     *            generic type of the system.
      * @return the system
      * @throws IllegalArgumentException
      *             if the system does not exist
      */
-    public <T extends EntitySystem> T getSystem(Class<T> systemClass) {
-        return getSystem(systemClass, false);
+    public <T extends EntitySystem> T getSystem(Class<T> systemType) {
+        return getSystem(systemType, false);
     }
 
     /**
      * Gets the system of the given type. Note that only one system of a type
      * can exist in an engine configuration.
      *
-     * @param systemClass type of the system
-     * @param optional whether to return {@code null} if the system does not exist
+     * @param systemType
+     *            type of the system.
+     * @param optional
+     *            whether to return {@code null} if the system does not exist.
+     * @param <T>
+     *            generic type of the system.
      * @return the system, or {@code null} if {@code optional} is {@code true}
      *         and the system does not exist.
      * @throws IllegalArgumentException
@@ -205,13 +217,13 @@ public final class Engine {
      */
     // TODO: Use a map instead of linear search
     @SuppressWarnings("unchecked")
-    public <T extends EntitySystem> T getSystem(Class<T> systemClass, boolean optional) {
+    public <T extends EntitySystem> T getSystem(Class<T> systemType, boolean optional) {
         for (int i = 0, n = systems.length; i < n; i++)
-            if (systems[i].getClass() == systemClass)
+            if (systems[i].getClass() == systemType)
                 return (T) systems[i];
 
         if (!optional) {
-            throw new IllegalArgumentException("System not registered: " + systemClass.getName());
+            throw new IllegalArgumentException("System not registered: " + systemType.getName());
         } else {
             return null;
         }
@@ -226,6 +238,15 @@ public final class Engine {
         return config.getSystems();
     }
 
+    /**
+     * Gets a {@link Mapper} for accessing components of the specified type.
+     *
+     * @param componentType
+     *            component type.
+     * @param <T>
+     *            generic type of the component.
+     * @return mapper for the specified type.
+     */
     public <T extends Component> Mapper<T> getMapper(Class<T> componentType) {
         return componentManager.getMapper(componentType);
     }
