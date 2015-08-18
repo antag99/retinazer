@@ -15,6 +15,7 @@
         <gdx.version>1.6.4</gdx.version>
         <junit.version>4.12</junit.version>
         <site.path>maven/</site.path>
+        <autoVersionSubmodules>true</autoVersionSubmodules>
     </properties>
 
     <scm>
