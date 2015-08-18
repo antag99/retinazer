@@ -39,11 +39,11 @@ public abstract class EntityProcessorSystem extends EntitySystem {
         entities = engine.getEntitiesFor(getFamily());
     }
 
-    public EntitySet getEntities() {
+    public final EntitySet getEntities() {
         return entities;
     }
 
-    public FamilyConfig getFamily() {
+    public final FamilyConfig getFamily() {
         return family;
     }
 
