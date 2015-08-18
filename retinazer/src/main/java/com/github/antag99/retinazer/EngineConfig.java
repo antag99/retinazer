@@ -21,14 +21,24 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.util.Objects;
+
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Array.ArrayIterable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Stores configuration for an {@link Engine} instance.
  */
 public final class EngineConfig {
+    static final class EntitySystemRegistration {
+        final EntitySystem system;
+        final Priority priority;
+
+        EntitySystemRegistration(EntitySystem system, Priority priority) {
+            this.system = system;
+            this.priority = priority;
+        }
+    }
 
     /**
      * Creates a new engine configuration with the default values.
@@ -38,70 +48,8 @@ public final class EngineConfig {
         wireResolvers.add(new MapperWireResolver());
     }
 
-    private ObjectMap<Class<?>, EntitySystem> systems = new ObjectMap<Class<?>, EntitySystem>();
-    private ObjectMap.Values<EntitySystem> systemsView = new ObjectMap.Values<EntitySystem>(systems) {
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-    };
-    private Array<WireResolver> wireResolvers = new Array<>();
-    private ArrayIterable<WireResolver> wireResolversView = new ArrayIterable<>(wireResolvers, false);
-
-    /**
-     * Gets the system of the given type. Note that only one system of a type
-     * can exist in an engine configuration.
-     *
-     * @param systemType
-     *            type of the system.
-     * @return the system.
-     * @throws IllegalArgumentException
-     *             if the system does not exist.
-     */
-    public EntitySystem getSystem(Class<? extends EntitySystem> systemType) {
-        return getSystem(systemType, false);
-    }
-
-    /**
-     * Gets the system of the given type. Note that only one system of a type
-     * can exist in an engine configuration.
-     *
-     * @param systemType
-     *            type of the system.
-     * @param optional
-     *            whether to return {@code null} if the system does not exist.
-     * @return the system, or {@code null} if {@code optional} is {@code true}
-     *         and the system does not exist.
-     * @throws IllegalArgumentException
-     *             if {@code optional} is {@code false} and the system does not
-     *             exist.
-     */
-    public EntitySystem getSystem(Class<? extends EntitySystem> systemType, boolean optional) {
-        EntitySystem system = systems.get(systemType);
-        if (!optional && system == null) {
-            throw new IllegalArgumentException("System not registered: " + systemType);
-        }
-        return system;
-    }
-
-    /**
-     * Gets the registered systems of this engine configuration
-     *
-     * @return the registered systems of this engine configuration
-     */
-    public Iterable<EntitySystem> getSystems() {
-        systemsView.reset();
-        return systemsView;
-    }
-
-    /**
-     * Gets the registered wire resolvers of this engine configuration.
-     *
-     * @return the registered wire resolvers of this engine configuration.
-     */
-    public Iterable<WireResolver> getWireResolvers() {
-        return wireResolversView;
-    }
+    ObjectMap<Class<?>, EntitySystemRegistration> systems = new ObjectMap<>();
+    Array<WireResolver> wireResolvers = new Array<>();
 
     /**
      * Registers a system.
@@ -111,12 +59,27 @@ public final class EngineConfig {
      * @return {@code this} for chaining.
      */
     public EngineConfig addSystem(EntitySystem system) {
+        return addSystem(system, Priority.DEFAULT);
+    }
+
+    /**
+     * Registers a system.
+     *
+     * @param system
+     *            system to register.
+     * @param priority
+     *            priority of the system.
+     * @return {@code this} for chaining.
+     */
+    public EngineConfig addSystem(EntitySystem system, Priority priority) {
+        Objects.requireNonNull(system, "system cannot be null");
+        Objects.requireNonNull(priority, "priority cannot be null");
         Class<? extends EntitySystem> systemType = system.getClass();
         if (systems.containsKey(systemType)) {
             throw new IllegalArgumentException(
                     "System of type " + systemType.getName() + " has already been registered");
         }
-        systems.put(systemType, system);
+        systems.put(systemType, new EntitySystemRegistration(system, priority));
         return this;
     }
 
@@ -128,6 +91,7 @@ public final class EngineConfig {
      * @return {@code this} for chaining.
      */
     public EngineConfig addWireResolver(WireResolver resolver) {
+        Objects.requireNonNull(resolver, "resolver cannot be null");
         wireResolvers.add(resolver);
         return this;
     }

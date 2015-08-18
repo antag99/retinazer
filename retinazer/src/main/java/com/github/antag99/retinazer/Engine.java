@@ -21,8 +21,11 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.github.antag99.retinazer.EngineConfig.EntitySystemRegistration;
 
 /**
  * Engine is the core class of retinazer; it manages all active entities,
@@ -56,13 +59,27 @@ public final class Engine {
         familyManager = new FamilyManager(this, config);
         wireManager = new WireManager(this, config);
 
-        Array<EntitySystem> systems = new Array<>();
-        ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType = new ObjectMap<>();
-        for (EntitySystem system : config.getSystems()) {
-            systems.add(system);
-            systemsByType.put(system.getClass(), system);
+        Array<EntitySystemRegistration> systemRegistrations = new Array<>();
+        for (EntitySystemRegistration system : config.systems.values()) {
+            systemRegistrations.add(system);
         }
-        this.systems = systems.toArray(EntitySystem.class);
+
+        systemRegistrations.sort(new Comparator<EntitySystemRegistration>() {
+            @Override
+            public int compare(EntitySystemRegistration o1, EntitySystemRegistration o2) {
+                return o1.priority.ordinal() - o2.priority.ordinal();
+            }
+        });
+
+        EntitySystem[] systems = new EntitySystem[systemRegistrations.size];
+        ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType = new ObjectMap<>();
+
+        for (int i = 0, n = systemRegistrations.size; i < n; i++) {
+            systems[i] = systemRegistrations.get(i).system;
+            systemsByType.put(systems[i].getClass(), systems[i]);
+        }
+
+        this.systems = systems;
         this.systemsByType = systemsByType;
         this.systemsView = new ObjectMap.Values<EntitySystem>(systemsByType) {
             @Override

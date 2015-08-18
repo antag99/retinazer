@@ -21,6 +21,8 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.util.Objects;
+
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -38,6 +40,7 @@ public final class DependencyConfig {
      * @return {@code this} for chaining.
      */
     public DependencyConfig addDependency(Object dependency) {
+        Objects.requireNonNull(dependency, "dependency must not be null");
         dependencies.put(dependency.getClass(), dependency);
         return this;
     }
@@ -54,6 +57,8 @@ public final class DependencyConfig {
      * @return {@code this} for chaining.
      */
     public <T> DependencyConfig addDependency(Class<T> type, T dependency) {
+        Objects.requireNonNull(type, "type must not be null");
+        Objects.requireNonNull(dependency, "dependency must not be null");
         if (!ClassReflection.isInstance(type, dependency)) {
             throw new ClassCastException("Cannot cast " + dependency.getClass()
                     .getName() + " to " + type.getClass().getName());

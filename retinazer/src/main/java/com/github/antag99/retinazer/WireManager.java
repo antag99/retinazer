@@ -1,6 +1,5 @@
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 final class WireManager {
@@ -10,10 +9,7 @@ final class WireManager {
 
     public WireManager(Engine engine, EngineConfig config) {
         this.engine = engine;
-        Array<WireResolver> wireResolvers = new Array<>();
-        for (WireResolver wireResolver : config.getWireResolvers())
-            wireResolvers.add(wireResolver);
-        this.wireResolvers = wireResolvers.toArray(WireResolver.class);
+        this.wireResolvers = config.wireResolvers.toArray(WireResolver.class);
         this.wireCaches = new ObjectMap<>();
     }
 
