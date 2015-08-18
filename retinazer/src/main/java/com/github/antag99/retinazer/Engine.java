@@ -29,8 +29,7 @@ import com.github.antag99.retinazer.EngineConfig.EntitySystemRegistration;
 
 /**
  * Engine is the core class of retinazer; it manages all active entities,
- * performs system processing and initialization. An engine instance is obtained
- * using {@link EngineConfig#finish()}.
+ * performs system processing and initialization.
  */
 public final class Engine {
     private final EntitySystem[] systems;
