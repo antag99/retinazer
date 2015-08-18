@@ -60,7 +60,7 @@ public final class Engine {
         wireManager = new WireManager(this, config);
 
         Array<EntitySystemRegistration> systemRegistrations = new Array<>();
-        for (EntitySystemRegistration system : config.systems.values()) {
+        for (EntitySystemRegistration system : config.systems) {
             systemRegistrations.add(system);
         }
 
