@@ -21,16 +21,33 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 
 public class EngineTest {
+    private Array<EntitySystem> initializedSystems = new Array<>();
+    private Array<EntitySystem> updatedSystems = new Array<>();
+
+    public abstract class OrderSystem extends EntitySystem {
+        @Override
+        protected final void initialize() {
+            initializedSystems.add(this);
+        }
+
+        @Override
+        protected final void update() {
+            updatedSystems.add(this);
+        }
+    }
+
     @Test
     public void testEngine() {
         Engine engine = new Engine(new EngineConfig());
@@ -42,6 +59,64 @@ public class EngineTest {
         engine.update();
         engine.update();
         engine.update();
+    }
+
+    @Test
+    public void testEntitySystemPriority() {
+        EntitySystem entitySystemA = new OrderSystem() {
+            @Override
+            public String toString() {
+                return "A";
+            }
+        };
+
+        EntitySystem entitySystemB = new OrderSystem() {
+            @Override
+            public String toString() {
+                return "B";
+            }
+        };
+
+        EntitySystem entitySystemC = new OrderSystem() {
+            @Override
+            public String toString() {
+                return "C";
+            }
+        };
+
+        EntitySystem entitySystemD = new OrderSystem() {
+            @Override
+            public String toString() {
+                return "D";
+            }
+        };
+
+        EntitySystem entitySystemE = new OrderSystem() {
+            @Override
+            public String toString() {
+                return "E";
+            }
+        };
+
+        Engine engine = new Engine(new EngineConfig()
+                .addSystem(entitySystemA, Priority.DEFAULT)
+                .addSystem(entitySystemB, Priority.DEFAULT)
+                .addSystem(entitySystemC, Priority.HIGH)
+                .addSystem(entitySystemD, Priority.LOWEST)
+                .addSystem(entitySystemE, Priority.DEFAULT));
+        assertEquals(Array.with(entitySystemC,
+                entitySystemA,
+                entitySystemB,
+                entitySystemE,
+                entitySystemD), initializedSystems);
+        initializedSystems.clear();
+        engine.update();
+        assertEquals(Array.with(entitySystemC,
+                entitySystemA,
+                entitySystemB,
+                entitySystemE,
+                entitySystemD), updatedSystems);
+        updatedSystems.clear();
     }
 
     private Set<Integer> asSet(int... entities) {
