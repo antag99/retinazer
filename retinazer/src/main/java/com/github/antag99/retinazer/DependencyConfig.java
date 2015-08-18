@@ -21,27 +21,44 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
-public final class DependencyWireResolver implements WireResolver {
-    @Override
-    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
-        Object dependency = engine.getConfig().getDependencies().get(field.getType());
-        if (dependency != null) {
-            field.set(object, dependency);
-            return true;
-        }
-        return false;
+/**
+ * Configuration for {@link DependencyResolver}.
+ */
+public final class DependencyConfig {
+    ObjectMap<Class<?>, Object> dependencies = new ObjectMap<>();
+
+    /**
+     * Registers a dependency, with the concrete type of the given object.
+     *
+     * @param dependency
+     *            dependency to register.
+     * @return {@code this} for chaining.
+     */
+    public DependencyConfig addDependency(Object dependency) {
+        dependencies.put(dependency.getClass(), dependency);
+        return this;
     }
 
-    @Override
-    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
-        Object dependency = engine.getConfig().getDependencies().get(field.getType());
-        if (dependency != null) {
-            field.set(object, null);
-            return true;
+    /**
+     * Registers a dependency of the given type.
+     *
+     * @param type
+     *            type of the dependency.
+     * @param dependency
+     *            the dependency.
+     * @param <T>
+     *            generic type of the dependency.
+     * @return {@code this} for chaining.
+     */
+    public <T> DependencyConfig addDependency(Class<T> type, T dependency) {
+        if (!ClassReflection.isInstance(type, dependency)) {
+            throw new ClassCastException("Cannot cast " + dependency.getClass()
+                    .getName() + " to " + type.getClass().getName());
         }
-        return false;
+        dependencies.put(type, dependency);
+        return this;
     }
-
 }

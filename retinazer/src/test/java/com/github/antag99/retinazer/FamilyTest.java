@@ -7,7 +7,7 @@ import org.junit.Test;
 public class FamilyTest {
     @Test
     public void testHashCode() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         assertEquals(0, engine.getFamily(Family.create()).hashCode());
         assertEquals(1, engine.getFamily(Family.with(FlagComponentA.class)).hashCode());
         assertEquals(2, engine.getFamily(Family.exclude(FlagComponentA.class)).hashCode());
@@ -15,7 +15,7 @@ public class FamilyTest {
 
     @Test
     public void testEquals() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         assertEquals(engine.getFamily(Family.create()), engine.getFamily(Family.create()));
         assertEquals(engine.getFamily(Family.with(FlagComponentA.class)),
                 engine.getFamily(Family.with(FlagComponentA.class)));
@@ -27,7 +27,7 @@ public class FamilyTest {
 
     @Test
     public void testSame() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         assertSame(engine.getFamily(Family.create()), engine.getFamily(Family.create()));
         assertSame(engine.getFamily(Family.with(FlagComponentA.class)),
                 engine.getFamily(Family.with(FlagComponentA.class)));

@@ -7,7 +7,7 @@ import org.junit.Test;
 public class HandleTest {
     @Test
     public void testCreate() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createEntity();
         entity.create(FlagComponentA.class);
         assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.getEntity()));
@@ -17,7 +17,7 @@ public class HandleTest {
 
     @Test
     public void testAdd() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createEntity();
         entity.add(new FlagComponentA());
         assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.getEntity()));
@@ -27,7 +27,7 @@ public class HandleTest {
 
     @Test
     public void testRemove() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createEntity();
         entity.add(new FlagComponentA());
         entity.remove(FlagComponentA.class);
@@ -40,7 +40,7 @@ public class HandleTest {
 
     @Test
     public void testDuplicate() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createEntity();
         Handle reference = entity.duplicate();
         assertEquals(entity.getEngine(), reference.getEngine());
@@ -51,7 +51,7 @@ public class HandleTest {
 
     @Test
     public void testDestroy() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createEntity().duplicate();
         entity.destroy();
         engine.update();

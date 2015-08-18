@@ -21,9 +21,8 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Engine is the core class of retinazer; it manages all active entities,
@@ -32,27 +31,45 @@ import java.util.List;
  */
 public final class Engine {
     private final EntitySystem[] systems;
+    private final ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType;
+    private final ObjectMap.Values<EntitySystem> systemsView;
 
-    EngineConfig config;
-    EntityManager entityManager;
-    ComponentManager componentManager;
-    FamilyManager familyManager;
-    WireManager wireManager;
+    final EntityManager entityManager;
+    final ComponentManager componentManager;
+    final FamilyManager familyManager;
+    final WireManager wireManager;
 
     /** Tracks whether any components or entities have been modified; reset at every call to flush() */
     boolean dirty = false;
 
-    Engine(EngineConfig config) {
-        this.config = config;
+    /**
+     * Creates a new {@link Engine} based on the specified configuration. Note
+     * that the same configuration should <b>not</b> be reused, as system
+     * implementations do not handle being registered to multiple engines.
+     *
+     * @param config
+     *            configuration for this Engine.
+     */
+    public Engine(EngineConfig config) {
+        entityManager = new EntityManager(this, config);
+        componentManager = new ComponentManager(this, config);
+        familyManager = new FamilyManager(this, config);
+        wireManager = new WireManager(this, config);
 
-        entityManager = new EntityManager(this);
-        componentManager = new ComponentManager(this);
-        familyManager = new FamilyManager(this);
-        wireManager = new WireManager(this);
-
-        List<EntitySystem> systems = new ArrayList<EntitySystem>();
-        systems.addAll((Collection<? extends EntitySystem>) config.getSystems());
-        this.systems = systems.toArray(new EntitySystem[0]);
+        Array<EntitySystem> systems = new Array<>();
+        ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType = new ObjectMap<>();
+        for (EntitySystem system : config.getSystems()) {
+            systems.add(system);
+            systemsByType.put(system.getClass(), system);
+        }
+        this.systems = systems.toArray(EntitySystem.class);
+        this.systemsByType = systemsByType;
+        this.systemsView = new ObjectMap.Values<EntitySystem>(systemsByType) {
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
 
         for (EntitySystem system : systems)
             wire(system);
@@ -62,10 +79,6 @@ public final class Engine {
 
         for (EntitySystem system : systems)
             system.initialize();
-    }
-
-    public EngineConfig getConfig() {
-        return config;
     }
 
     public void wire(Object object) {
@@ -215,17 +228,14 @@ public final class Engine {
      * @throws IllegalArgumentException
      *             if {@code optional} is {@code false} and the system does not exist.
      */
-    // TODO: Use a map instead of linear search
-    @SuppressWarnings("unchecked")
     public <T extends EntitySystem> T getSystem(Class<T> systemType, boolean optional) {
-        for (int i = 0, n = systems.length; i < n; i++)
-            if (systems[i].getClass() == systemType)
-                return (T) systems[i];
+        @SuppressWarnings("unchecked")
+        T system = (T) systemsByType.get(systemType);
 
-        if (!optional) {
+        if (system == null && !optional) {
             throw new IllegalArgumentException("System not registered: " + systemType.getName());
         } else {
-            return null;
+            return (T) system;
         }
     }
 
@@ -235,7 +245,8 @@ public final class Engine {
      * @return all systems registered during configuration of the engine.
      */
     public Iterable<EntitySystem> getSystems() {
-        return config.getSystems();
+        systemsView.reset();
+        return systemsView;
     }
 
     /**

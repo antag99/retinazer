@@ -12,7 +12,7 @@ public class MapperTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNoConstructor() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         int entity = engine.createEntity().getEntity();
         Mapper<BadComponent> mBad = engine.getMapper(BadComponent.class);
         mBad.create(entity);
@@ -27,7 +27,7 @@ public class MapperTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testErrorConstructor() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         int entity = engine.createEntity().getEntity();
         Mapper<ReallyBadComponent> mReallyBad = engine.getMapper(ReallyBadComponent.class);
         mReallyBad.create(entity);
@@ -35,7 +35,7 @@ public class MapperTest {
 
     @Test
     public void testRemoveNothing() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
         int entity = engine.createEntity().getEntity();
         mFlagA.remove(entity); // nothing should happen
@@ -48,7 +48,7 @@ public class MapperTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testAddTwice() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
         int entity = engine.createEntity().getEntity();
         mFlagA.add(entity, new FlagComponentA());

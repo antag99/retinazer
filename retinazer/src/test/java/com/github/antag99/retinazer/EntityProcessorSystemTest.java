@@ -25,7 +25,7 @@ public class EntityProcessorSystemTest {
     @Test
     public void testEntityProcessorSystem() {
         TestEntityProcessorSystem system = new TestEntityProcessorSystem();
-        Engine engine = EngineConfig.create().withSystem(system).finish();
+        Engine engine = new Engine(new EngineConfig().addSystem(system));
         Mask entities = new Mask();
         int a, b, c;
         entities.set(a = engine.createEntity().getEntity());

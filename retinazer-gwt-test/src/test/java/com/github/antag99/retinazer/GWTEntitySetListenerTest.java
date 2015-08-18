@@ -29,6 +29,7 @@ public class GWTEntitySetListenerTest extends GWTTestCase {
     public String getModuleName() {
         return "com.github.antag99.RetinazerTest";
     }
+
     private static class EntitySetListenerMock implements EntitySetListener {
         private IntArray insertedEntities = new IntArray();
         private IntArray removedEntities = new IntArray();
@@ -62,7 +63,7 @@ public class GWTEntitySetListenerTest extends GWTTestCase {
 
     public void testEntityListener() {
         EntitySetListenerMock listener = new EntitySetListenerMock();
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         engine.getEntities().addListener(listener);
         int entity = engine.createEntity().getEntity();
         listener.verifyInserted(new int[0]);
@@ -81,7 +82,7 @@ public class GWTEntitySetListenerTest extends GWTTestCase {
     public void testFamilyListener() {
         EntitySetListenerMock listenerB = new EntitySetListenerMock();
         EntitySetListenerMock listenerC = new EntitySetListenerMock();
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         engine.getEntitiesFor(Family.with(FlagComponentB.class)).addListener(listenerB);
         engine.getEntitiesFor(Family.with(FlagComponentC.class)).addListener(listenerC);
         Handle entity = engine.createEntity().duplicate();

@@ -12,8 +12,8 @@ public class SingletonIterationBenchmark extends RetinazerBenchmark {
 
     @Setup
     public void setup() {
-        engine = EngineConfig.create()
-                .withSystem(new SingletonIterationSystem()).finish();
+        engine = new Engine(new EngineConfig()
+                .addSystem(new SingletonIterationSystem()));
         for (int i = 0, n = getEntityCount(); i < n; i++) {
             Handle entity = engine.createEntity();
             if ((i % 8) == 0)

@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.IntArray;
 public class EngineTest {
     @Test
     public void testEngine() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         engine.update();
         engine.update();
         engine.update();
@@ -57,7 +57,7 @@ public class EngineTest {
 
     @Test
     public void testEntityRetrieval() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
 
         int entity0 = engine.createEntity().getEntity();
 
@@ -219,7 +219,7 @@ public class EngineTest {
     @Test(expected = IllegalArgumentException.class)
     public void testMissingDependencyInjection() {
         MissingServiceConsumer consumer = new MissingServiceConsumer();
-        EngineConfig.create().finish().wire(consumer);
+        new Engine(new EngineConfig()).wire(consumer);
     }
 
     @Wire
@@ -241,12 +241,11 @@ public class EngineTest {
         FlagSystemA flagSystemA = new FlagSystemA();
         FlagSystemB flagSystemB = new FlagSystemB();
         FlagSystemC flagSystemC = new FlagSystemC();
-        Engine engine = EngineConfig.create()
-                .withSystem(system)
-                .withSystem(flagSystemA)
-                .withSystem(flagSystemB)
-                .withSystem(flagSystemC)
-                .finish();
+        Engine engine = new Engine(new EngineConfig()
+                .addSystem(system)
+                .addSystem(flagSystemA)
+                .addSystem(flagSystemB)
+                .addSystem(flagSystemC));
         assertSame(engine, system.engine);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
@@ -283,6 +282,6 @@ public class EngineTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMissingEngineDependencyInjection() {
-        EngineConfig.create().withSystem(new MissingSystemConsumer()).finish();
+        new Engine(new EngineConfig().addSystem(new MissingSystemConsumer()));
     }
 }

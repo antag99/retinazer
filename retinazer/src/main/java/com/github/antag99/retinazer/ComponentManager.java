@@ -27,7 +27,7 @@ import com.github.antag99.retinazer.utils.Mask;
 final class ComponentManager {
     private Engine engine;
 
-    ComponentManager(Engine engine) {
+    ComponentManager(Engine engine, EngineConfig config) {
         this.engine = engine;
     }
 

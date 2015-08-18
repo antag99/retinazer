@@ -1,19 +1,20 @@
 package com.github.antag99.retinazer;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 final class WireManager {
     private Engine engine;
     private WireResolver[] wireResolvers;
-    private Map<Class<?>, WireCache> wireCaches;
+    private ObjectMap<Class<?>, WireCache> wireCaches;
 
-    public WireManager(Engine engine) {
+    public WireManager(Engine engine, EngineConfig config) {
         this.engine = engine;
-        wireResolvers = ((Collection<WireResolver>) engine
-                .getConfig().getWireResolvers()).toArray(new WireResolver[0]);
-        wireCaches = new HashMap<>();
+        Array<WireResolver> wireResolvers = new Array<>();
+        for (WireResolver wireResolver : config.getWireResolvers())
+            wireResolvers.add(wireResolver);
+        this.wireResolvers = wireResolvers.toArray(WireResolver.class);
+        this.wireCaches = new ObjectMap<>();
     }
 
     private WireCache getCache(Class<?> type) {

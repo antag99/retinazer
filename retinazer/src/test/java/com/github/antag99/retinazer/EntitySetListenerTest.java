@@ -62,7 +62,7 @@ public class EntitySetListenerTest {
     @Test
     public void testEntityListener() {
         EntitySetListenerMock listener = new EntitySetListenerMock();
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         engine.getEntities().addListener(listener);
         int entity = engine.createEntity().getEntity();
         listener.verifyInserted(new int[0]);
@@ -82,7 +82,7 @@ public class EntitySetListenerTest {
     public void testFamilyListener() {
         EntitySetListenerMock listenerB = new EntitySetListenerMock();
         EntitySetListenerMock listenerC = new EntitySetListenerMock();
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         engine.getEntitiesFor(Family.with(FlagComponentB.class)).addListener(listenerB);
         engine.getEntitiesFor(Family.with(FlagComponentC.class)).addListener(listenerC);
         Handle entity = engine.createEntity().duplicate();

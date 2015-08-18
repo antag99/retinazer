@@ -34,7 +34,7 @@ final class FamilyManager {
     private Bag<Family> families = new Bag<>();
     private Engine engine;
 
-    public FamilyManager(Engine engine) {
+    public FamilyManager(Engine engine, EngineConfig config) {
         this.engine = engine;
     }
 

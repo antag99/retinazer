@@ -2,7 +2,6 @@ package com.github.antag99.benchmarks.retinazer;
 
 import com.github.antag99.benchmarks.JmhSettings;
 import com.github.antag99.retinazer.Component;
-import com.github.antag99.retinazer.EngineConfig;
 
 public abstract class RetinazerBenchmark extends JmhSettings {
     @SuppressWarnings("unchecked")
@@ -20,10 +19,4 @@ public abstract class RetinazerBenchmark extends JmhSettings {
     public Class<? extends Component>[] getComponentTypes() {
         return componentTypes;
     }
-
-    public EngineConfig getConfig() {
-        return config;
-    }
-
-    private static EngineConfig config = EngineConfig.create();
 }

@@ -21,46 +21,32 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableMap;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Array.ArrayIterable;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
- * Immutable copy-on-write engine configuration. This is used to setup static
- * properties of the engine, such as the systems to be processed, and additional
- * dependencies. Typically, an engine instance is created per game.
+ * Stores configuration for an {@link Engine} instance.
  */
 public final class EngineConfig {
-    private static final EngineConfig DEFAULT = new EngineConfig()
-            .withWireResolver(new DefaultWireResolver())
-            .withWireResolver(new DependencyWireResolver())
-            .withWireResolver(new MapperWireResolver());
-
-    private EngineConfig() {
-    }
-
-    private final Map<Class<?>, EntitySystem> systems = new LinkedHashMap<Class<?>, EntitySystem>();
-    private final List<WireResolver> wireResolvers = new ArrayList<>();
-    private final Map<Class<?>, Object> dependencies = new HashMap<>();
-    private final Iterable<EntitySystem> systemsView = unmodifiableCollection(systems.values());
-    private final Iterable<WireResolver> wireResolversView = unmodifiableCollection(wireResolvers);
-    private final Map<Class<?>, Object> dependenciesView = unmodifiableMap(dependencies);
 
     /**
      * Creates a new engine configuration with the default values.
-     *
-     * @return The new engine configuration.
      */
-    public static EngineConfig create() {
-        return DEFAULT.copy();
+    public EngineConfig() {
+        wireResolvers.add(new DefaultWireResolver());
+        wireResolvers.add(new MapperWireResolver());
     }
+
+    private ObjectMap<Class<?>, EntitySystem> systems = new ObjectMap<Class<?>, EntitySystem>();
+    private ObjectMap.Values<EntitySystem> systemsView = new ObjectMap.Values<EntitySystem>(systems) {
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    };
+    private Array<WireResolver> wireResolvers = new Array<>();
+    private ArrayIterable<WireResolver> wireResolversView = new ArrayIterable<>(wireResolvers, false);
 
     /**
      * Gets the system of the given type. Note that only one system of a type
@@ -104,6 +90,7 @@ public final class EngineConfig {
      * @return the registered systems of this engine configuration
      */
     public Iterable<EntitySystem> getSystems() {
+        systemsView.reset();
         return systemsView;
     }
 
@@ -117,30 +104,20 @@ public final class EngineConfig {
     }
 
     /**
-     * Gets the registered dependencies of this engine configuration.
-     *
-     * @return the registered dependencies of this engine configuration.
-     */
-    public Map<Class<?>, Object> getDependencies() {
-        return dependenciesView;
-    }
-
-    /**
      * Registers a system.
      *
      * @param system
      *            system to register.
-     * @return new configuration with the system.
+     * @return {@code this} for chaining.
      */
-    public EngineConfig withSystem(EntitySystem system) {
+    public EngineConfig addSystem(EntitySystem system) {
         Class<? extends EntitySystem> systemType = system.getClass();
         if (systems.containsKey(systemType)) {
             throw new IllegalArgumentException(
                     "System of type " + systemType.getName() + " has already been registered");
         }
-        EngineConfig config = copy();
-        config.systems.put(systemType, system);
-        return config;
+        systems.put(systemType, system);
+        return this;
     }
 
     /**
@@ -148,64 +125,10 @@ public final class EngineConfig {
      *
      * @param resolver
      *            resolver to register.
-     * @return new configuration with the wire resolver.
+     * @return {@code this} for chaining.
      */
-    public EngineConfig withWireResolver(WireResolver resolver) {
-        EngineConfig config = copy();
-        config.wireResolvers.add(resolver);
-        return config;
-    }
-
-    /**
-     * Registers a dependency, with the concrete type of the object.
-     *
-     * @param dependency
-     *            dependency to register.
-     * @return new configuration with the dependency.
-     */
-    public EngineConfig withDependency(Object dependency) {
-        EngineConfig config = copy();
-        config.dependencies.put(dependency.getClass(), dependency);
-        return config;
-    }
-
-    /**
-     * Registers a dependency of the given type.
-     *
-     * @param type
-     *            type of the dependency.
-     * @param dependency
-     *            the dependency.
-     * @param <T>
-     *            generic type of the dependency.
-     * @return new configuration with the given dependency.
-     */
-    public <T> EngineConfig withDependency(Class<T> type, T dependency) {
-        if (!ClassReflection.isInstance(type, dependency)) {
-            throw new ClassCastException("Cannot cast " + dependency.getClass()
-                    .getName() + " to " + type.getClass().getName());
-        }
-        EngineConfig config = copy();
-        config.dependencies.put(type, dependency);
-        return config;
-    }
-
-    private EngineConfig copy() {
-        EngineConfig config = new EngineConfig();
-        config.systems.putAll(systems);
-        config.wireResolvers.addAll(wireResolvers);
-        config.dependencies.putAll(dependencies);
-        return config;
-    }
-
-    /**
-     * Creates a new {@link Engine} based on this configuration. Note that the
-     * same configuration should <b>not</b> be reused, as system implementations
-     * do not handle being registered to multiple engines.
-     *
-     * @return new {@link Engine}.
-     */
-    public Engine finish() {
-        return new Engine(this);
+    public EngineConfig addWireResolver(WireResolver resolver) {
+        wireResolvers.add(resolver);
+        return this;
     }
 }

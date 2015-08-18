@@ -5,6 +5,7 @@ import org.openjdk.jmh.annotations.Setup;
 
 import com.github.antag99.retinazer.Component;
 import com.github.antag99.retinazer.Engine;
+import com.github.antag99.retinazer.EngineConfig;
 import com.github.antag99.retinazer.Handle;
 
 public class RetrievalBenchmark extends RetinazerBenchmark {
@@ -13,16 +14,15 @@ public class RetrievalBenchmark extends RetinazerBenchmark {
     @Setup
     public void setup() {
         // @off
-        engine = getConfig()
-                .withSystem(new RetrievalSystemA())
-                .withSystem(new RetrievalSystemB())
-                .withSystem(new RetrievalSystemC())
-                .withSystem(new RetrievalSystemD())
-                .withSystem(new RetrievalSystemE())
-                .withSystem(new RetrievalSystemF())
-                .withSystem(new RetrievalSystemG())
-                .withSystem(new RetrievalSystemH())
-                .finish();
+        engine = new Engine(new EngineConfig()
+                .addSystem(new RetrievalSystemA())
+                .addSystem(new RetrievalSystemB())
+                .addSystem(new RetrievalSystemC())
+                .addSystem(new RetrievalSystemD())
+                .addSystem(new RetrievalSystemE())
+                .addSystem(new RetrievalSystemF())
+                .addSystem(new RetrievalSystemG())
+                .addSystem(new RetrievalSystemH()));
         // @on
 
         Class<? extends Component>[] componentTypes = getComponentTypes();

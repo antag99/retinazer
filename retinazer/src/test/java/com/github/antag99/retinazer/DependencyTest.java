@@ -1,6 +1,6 @@
 package com.github.antag99.retinazer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
@@ -34,12 +34,13 @@ public class DependencyTest {
         Dummy4 theDummy4 = new Dummy4();
 
         TestConsumerSystem testConsumer = new TestConsumerSystem();
-        Engine engine = EngineConfig.create()
-                .withDependency(theDummy4)
-                .withDependency(theDummy3)
-                .withDependency(theDummy2)
-                .withDependency(theDummy)
-                .withSystem(testConsumer).finish();
+        Engine engine = new Engine(new EngineConfig().addWireResolver(
+                new DependencyResolver(new DependencyConfig()
+                        .addDependency(theDummy4)
+                        .addDependency(theDummy3)
+                        .addDependency(theDummy2)
+                        .addDependency(theDummy)))
+                .addSystem(testConsumer));
         assertSame(theDummy, testConsumer.dummy);
         assertSame(theDummy2, testConsumer.dummy2);
         assertSame(theDummy3, testConsumer.dummy3);
@@ -69,11 +70,12 @@ public class DependencyTest {
         Dummy4 theDummy4 = new Dummy4();
 
         TestConsumerSystem testConsumer = new TestConsumerSystem();
-        Engine engine = EngineConfig.create()
-                .withDependency(Dummy4.class, theDummy4)
-                .withDependency(Dummy2.class, theDummy3)
-                .withDependency(Dummy.class, theDummy)
-                .withSystem(testConsumer).finish();
+        Engine engine = new Engine(new EngineConfig()
+                .addWireResolver(new DependencyResolver(new DependencyConfig()
+                        .addDependency(Dummy4.class, theDummy4)
+                        .addDependency(Dummy2.class, theDummy3)
+                        .addDependency(Dummy.class, theDummy)))
+                .addSystem(testConsumer));
         assertSame(theDummy, testConsumer.dummy);
         assertSame(theDummy3, testConsumer.dummy2);
         assertSame(null, testConsumer.dummy3);
@@ -99,6 +101,6 @@ public class DependencyTest {
     @SuppressWarnings("unchecked")
     @Test(expected = ClassCastException.class)
     public void testMismatchDependency() {
-        EngineConfig.create().withDependency((Class<Dummy3>) (Class<?>) Dummy4.class, new Dummy3());
+        new DependencyConfig().addDependency((Class<Dummy3>) (Class<?>) Dummy4.class, new Dummy3());
     }
 }

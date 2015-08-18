@@ -59,7 +59,7 @@ public class EntitySetTest {
 
     @Test
     public void testIndices() {
-        Engine engine = EngineConfig.create().finish();
+        Engine engine = new Engine(new EngineConfig());
         int entity0 = engine.createEntity().getEntity();
         int entity1 = engine.createEntity().add(new FlagComponentA()).getEntity();
         int entity2 = engine.createEntity().getEntity();

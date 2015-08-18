@@ -21,29 +21,38 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.Mask;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.reflect.Field;
 
-final class EntityManager {
-    private Engine engine;
-    private Handle tmpHandle;
+/**
+ * {@link DependencyResolver} is used for registering arbitrary objects as
+ * dependencies, that will be injected into objects using {@link Wire}.
+ */
+public final class DependencyResolver implements WireResolver {
+    private ObjectMap<Class<?>, Object> dependenciesByType = new ObjectMap<>();
 
-    Mask entities = new Mask();
-    Mask removeEntities = new Mask();
-
-    public EntityManager(Engine engine, EngineConfig config) {
-        this.engine = engine;
-        this.tmpHandle = engine.createHandle();
+    public DependencyResolver(DependencyConfig config) {
+        dependenciesByType.putAll(config.dependencies);
     }
 
-    public Handle createEntity() {
-        engine.dirty = true;
-        int entity = entities.nextClearBit(0);
-        entities.set(entity);
-        return tmpHandle.setEntity(entity);
+    @Override
+    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
+        Object dependency = dependenciesByType.get(field.getType());
+        if (dependency != null) {
+            field.set(object, dependency);
+            return true;
+        }
+        return false;
     }
 
-    public void destroyEntity(int entity) {
-        engine.dirty = true;
-        removeEntities.set(entity);
+    @Override
+    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
+        Object dependency = dependenciesByType.get(field.getType());
+        if (dependency != null) {
+            field.set(object, null);
+            return true;
+        }
+        return false;
     }
+
 }

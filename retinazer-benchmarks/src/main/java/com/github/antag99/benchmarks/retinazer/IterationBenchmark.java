@@ -5,6 +5,7 @@ import org.openjdk.jmh.annotations.Setup;
 
 import com.github.antag99.retinazer.Component;
 import com.github.antag99.retinazer.Engine;
+import com.github.antag99.retinazer.EngineConfig;
 import com.github.antag99.retinazer.Handle;
 
 public class IterationBenchmark extends RetinazerBenchmark {
@@ -13,16 +14,15 @@ public class IterationBenchmark extends RetinazerBenchmark {
     @Setup
     public void setup() {
         // @off
-        engine = getConfig()
-                .withSystem(new IterationSystemA())
-                .withSystem(new IterationSystemB())
-                .withSystem(new IterationSystemC())
-                .withSystem(new IterationSystemD())
-                .withSystem(new IterationSystemE())
-                .withSystem(new IterationSystemF())
-                .withSystem(new IterationSystemG())
-                .withSystem(new IterationSystemH())
-                .finish();
+        engine = new Engine(new EngineConfig()
+                .addSystem(new IterationSystemA())
+                .addSystem(new IterationSystemB())
+                .addSystem(new IterationSystemC())
+                .addSystem(new IterationSystemD())
+                .addSystem(new IterationSystemE())
+                .addSystem(new IterationSystemF())
+                .addSystem(new IterationSystemG())
+                .addSystem(new IterationSystemH()));
         // @on
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
