@@ -21,68 +21,42 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static java.util.Collections.unmodifiableSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.badlogic.gdx.utils.ObjectSet;
 
-/**
- * Immutable copy-on-write family configuration.
- */
 public final class FamilyConfig {
-    private final Set<Class<? extends Component>> components = new LinkedHashSet<Class<? extends Component>>();
-    private final Set<Class<? extends Component>> componentsView = unmodifiableSet(components);
-    private final Set<Class<? extends Component>> excludedComponents = new LinkedHashSet<Class<? extends Component>>();
-    private final Set<Class<? extends Component>> excludedComponentsView = unmodifiableSet(excludedComponents);
+    ObjectSet<Class<? extends Component>> components = new ObjectSet<>();
+    ObjectSet<Class<? extends Component>> excludedComponents = new ObjectSet<>();
 
-    FamilyConfig() {
+    public FamilyConfig() {
     }
 
     @SafeVarargs
     public final FamilyConfig with(Class<? extends Component>... componentTypes) {
-        FamilyConfig config = copy();
+        ObjectSet<Class<? extends Component>> newComponents = new ObjectSet<>();
+        newComponents.addAll(components);
         for (Class<? extends Component> componentType : componentTypes) {
-            config.excludedComponents.remove(componentType);
-            config.components.add(componentType);
+            if (newComponents.contains(componentType))
+                throw new IllegalArgumentException(componentType.getName());
+            if (excludedComponents.contains(componentType))
+                throw new IllegalArgumentException(componentType.getName());
+            newComponents.add(componentType);
         }
-        return config;
+        this.components = newComponents;
+        return this;
     }
 
     @SafeVarargs
     public final FamilyConfig exclude(Class<? extends Component>... componentTypes) {
-        FamilyConfig config = copy();
+        ObjectSet<Class<? extends Component>> newExcludedComponents = new ObjectSet<>();
+        newExcludedComponents.addAll(excludedComponents);
         for (Class<? extends Component> componentType : componentTypes) {
-            config.components.remove(componentType);
-            config.excludedComponents.add(componentType);
+            if (newExcludedComponents.contains(componentType))
+                throw new IllegalArgumentException(componentType.getName());
+            if (components.contains(componentType))
+                throw new IllegalArgumentException(componentType.getName());
+            newExcludedComponents.add(componentType);
         }
-        return config;
-    }
-
-    private FamilyConfig copy() {
-        FamilyConfig config = new FamilyConfig();
-        config.components.addAll(components);
-        config.excludedComponents.addAll(excludedComponents);
-        return config;
-    }
-
-    Set<Class<? extends Component>> getComponents() {
-        return componentsView;
-    }
-
-    Set<Class<? extends Component>> getExcludedComponents() {
-        return excludedComponentsView;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof FamilyConfig))
-            return false;
-        FamilyConfig config = (FamilyConfig) obj;
-        return components.equals(config.components) &&
-                excludedComponents.equals(config.excludedComponents);
-    }
-
-    @Override
-    public int hashCode() {
-        return components.hashCode() * 31 + excludedComponents.hashCode();
+        this.excludedComponents = newExcludedComponents;
+        return this;
     }
 }

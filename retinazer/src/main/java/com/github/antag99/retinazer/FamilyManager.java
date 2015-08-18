@@ -22,6 +22,7 @@
 package com.github.antag99.retinazer;
 
 import com.badlogic.gdx.utils.ObjectIntMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.github.antag99.retinazer.utils.Bag;
@@ -30,16 +31,43 @@ import com.github.antag99.retinazer.utils.Mask;
 final class FamilyManager {
     private static Pool<Mask> pool = Pools.get(Mask.class);
 
-    private ObjectIntMap<FamilyConfig> familyIndices = new ObjectIntMap<>();
+    private static class Key {
+        ObjectSet<Class<? extends Component>> components = null;
+        ObjectSet<Class<? extends Component>> excludedComponents = null;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null)
+                return false;
+            // No need for a type check; this class is only used internally
+            Key key = (Key) obj;
+            return key.excludedComponents.equals(excludedComponents) &&
+                    key.components.equals(components);
+        }
+
+        @Override
+        public int hashCode() {
+            // Excluded components are rarer than required components; prioritize
+            // the components hashCode over excluded components hashCode.
+            return 31 * excludedComponents.hashCode() + components.hashCode();
+        }
+    }
+
+    private ObjectIntMap<Key> familyIndices = new ObjectIntMap<>();
     private Bag<Family> families = new Bag<>();
     private Engine engine;
+    private Key lookup = new Key();
+    private EntitySet entities;
 
     public FamilyManager(Engine engine, EngineConfig config) {
         this.engine = engine;
     }
 
     public EntitySet getEntities() {
-        return getEntitiesFor(Family.EMPTY);
+        if (entities == null) {
+            entities = getEntitiesFor(new FamilyConfig());
+        }
+        return entities;
     }
 
     public EntitySet getEntitiesFor(FamilyConfig family) {
@@ -47,22 +75,27 @@ final class FamilyManager {
     }
 
     public Family getFamily(FamilyConfig config) {
-        int index = familyIndices.get(config, familyIndices.size);
+        lookup.components = config.components;
+        lookup.excludedComponents = config.excludedComponents;
+        int index = familyIndices.get(lookup, familyIndices.size);
         if (index == familyIndices.size) {
             int i;
-            int[] components = new int[config.getComponents().size()];
-            int[] excludedComponents = new int[config.getExcludedComponents().size()];
+            int[] components = new int[config.components.size];
+            int[] excludedComponents = new int[config.excludedComponents.size];
 
             i = 0;
-            for (Class<? extends Component> componentType : config.getComponents())
+            for (Class<? extends Component> componentType : config.components)
                 components[i++] = engine.componentManager.getIndex(componentType);
 
             i = 0;
-            for (Class<? extends Component> componentType : config.getExcludedComponents())
+            for (Class<? extends Component> componentType : config.excludedComponents)
                 excludedComponents[i++] = engine.componentManager.getIndex(componentType);
 
             Family family = new Family(engine, components, excludedComponents, index);
-            familyIndices.put(config, index);
+            Key key = new Key();
+            key.components = config.components;
+            key.excludedComponents = config.excludedComponents;
+            familyIndices.put(key, index);
             families.set(index, family);
 
             // Find matching entities, and add them to the new family set.

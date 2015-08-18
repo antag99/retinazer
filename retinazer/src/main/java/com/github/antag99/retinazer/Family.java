@@ -22,8 +22,6 @@
 package com.github.antag99.retinazer;
 
 public final class Family {
-    public static final FamilyConfig EMPTY = new FamilyConfig();
-
     final Engine engine;
     final int[] components;
     final int[] excludedComponents;
@@ -56,11 +54,11 @@ public final class Family {
 
     @SafeVarargs
     public static final FamilyConfig with(Class<? extends Component>... componentTypes) {
-        return EMPTY.with(componentTypes);
+        return new FamilyConfig().with(componentTypes);
     }
 
     @SafeVarargs
     public static final FamilyConfig exclude(Class<? extends Component>... componentTypes) {
-        return EMPTY.exclude(componentTypes);
+        return new FamilyConfig().exclude(componentTypes);
     }
 }
