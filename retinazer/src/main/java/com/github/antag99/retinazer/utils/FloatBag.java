@@ -24,7 +24,8 @@ package com.github.antag99.retinazer.utils;
 import java.util.Arrays;
 
 public final class FloatBag {
-    private float[] buffer;
+    @Experimental
+    public float[] buffer;
 
     public FloatBag() {
         this(0);
@@ -57,15 +58,5 @@ public final class FloatBag {
         for (int i = 0, n = buffer.length; i < n; ++i) {
             buffer[i] = 0f;
         }
-    }
-
-    @Experimental
-    public int getCapacity() {
-        return buffer.length;
-    }
-
-    @Experimental
-    public float[] getBuffer() {
-        return buffer;
     }
 }

@@ -24,7 +24,8 @@ package com.github.antag99.retinazer.utils;
 import java.util.Arrays;
 
 public final class LongBag {
-    private long[] buffer;
+    @Experimental
+    public long[] buffer;
 
     public LongBag() {
         this(0);
@@ -57,15 +58,5 @@ public final class LongBag {
         for (int i = 0, n = buffer.length; i < n; ++i) {
             buffer[i] = 0L;
         }
-    }
-
-    @Experimental
-    public int getCapacity() {
-        return buffer.length;
-    }
-
-    @Experimental
-    public long[] getBuffer() {
-        return buffer;
     }
 }

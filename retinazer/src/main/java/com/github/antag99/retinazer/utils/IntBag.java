@@ -24,7 +24,8 @@ package com.github.antag99.retinazer.utils;
 import java.util.Arrays;
 
 public final class IntBag {
-    private int[] buffer;
+    @Experimental
+    public int[] buffer;
 
     public IntBag() {
         this(0);
@@ -57,15 +58,5 @@ public final class IntBag {
         for (int i = 0, n = buffer.length; i < n; ++i) {
             buffer[i] = 0;
         }
-    }
-
-    @Experimental
-    public int getCapacity() {
-        return buffer.length;
-    }
-
-    @Experimental
-    public int[] getBuffer() {
-        return buffer;
     }
 }

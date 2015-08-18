@@ -22,7 +22,8 @@
 package com.github.antag99.retinazer.utils;
 
 public final class Bag<E> {
-    private Object[] buffer;
+    @Experimental
+    public Object[] buffer;
 
     static int nextPowerOfTwo(int value) {
         if (value == 0) {
@@ -72,15 +73,5 @@ public final class Bag<E> {
         for (int i = 0, n = buffer.length; i < n; ++i) {
             buffer[i] = null;
         }
-    }
-
-    @Experimental
-    public int getCapacity() {
-        return buffer.length;
-    }
-
-    @Experimental
-    public Object[] getBuffer() {
-        return buffer;
     }
 }

@@ -149,38 +149,37 @@ public class FloatBagTest {
         FloatBag bag;
 
         bag = new FloatBag();
-        assertEquals(0, bag.getCapacity());
-        assertEquals(0, bag.getBuffer().length);
+        assertEquals(0, bag.buffer.length);
         bag.set(0, 1f);
-        assertEquals(1, bag.getCapacity());
+        assertEquals(1, bag.buffer.length);
         bag.set(1, 2f);
-        assertEquals(2, bag.getCapacity());
+        assertEquals(2, bag.buffer.length);
         bag.set(2, 3f);
-        assertEquals(4, bag.getCapacity());
+        assertEquals(4, bag.buffer.length);
         bag.set(3, 4f);
-        assertEquals(4, bag.getCapacity());
+        assertEquals(4, bag.buffer.length);
         bag.set(4, 5f);
-        assertEquals(8, bag.getCapacity());
+        assertEquals(8, bag.buffer.length);
         bag.set(8, 6f);
-        assertEquals(16, bag.getCapacity());
+        assertEquals(16, bag.buffer.length);
         bag.set(35, 7f);
-        assertEquals(64, bag.getCapacity());
+        assertEquals(64, bag.buffer.length);
 
         bag = new FloatBag();
         for (int i = 0; i < 32; i++) {
             bag.get((1 << i) - 1);
-            assertEquals(0, bag.getCapacity());
+            assertEquals(0, bag.buffer.length);
         }
         bag.get(Integer.MAX_VALUE);
-        assertEquals(0, bag.getCapacity());
+        assertEquals(0, bag.buffer.length);
 
         bag = new FloatBag();
         for (int i = 0; i < 31; i++) {
             bag.set((1 << i) - 1, 0f);
-            assertEquals(0, bag.getCapacity());
+            assertEquals(0, bag.buffer.length);
         }
         bag.set(Integer.MAX_VALUE, 0f);
-        assertEquals(0, bag.getCapacity());
+        assertEquals(0, bag.buffer.length);
     }
 
     /**

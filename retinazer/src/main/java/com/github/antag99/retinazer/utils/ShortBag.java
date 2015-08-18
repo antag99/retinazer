@@ -24,7 +24,8 @@ package com.github.antag99.retinazer.utils;
 import java.util.Arrays;
 
 public final class ShortBag {
-    private short[] buffer;
+    @Experimental
+    public short[] buffer;
 
     public ShortBag() {
         this(0);
@@ -57,15 +58,5 @@ public final class ShortBag {
         for (int i = 0, n = buffer.length; i < n; ++i) {
             buffer[i] = 0;
         }
-    }
-
-    @Experimental
-    public int getCapacity() {
-        return buffer.length;
-    }
-
-    @Experimental
-    public short[] getBuffer() {
-        return buffer;
     }
 }
