@@ -220,4 +220,9 @@ public class EntitySetTest {
     public void testUnmodifiable5() {
         new EntitySet().unmodifiable().removeEntities(new Mask());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUnmodifiable6() {
+        new EntitySet().unmodifiable().clear();
+    }
 }
