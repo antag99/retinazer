@@ -62,6 +62,7 @@
                     <htmlunit>IE8</htmlunit>
                     <mode>htmlunit</mode>
                     <includes>**/*TestSuite.java</includes>
+                    <extraJvmArgs>-XX:MaxPermSize=512m -Xmx1024m</extraJvmArgs>
                 </configuration>
                 <executions>
                     <execution>
