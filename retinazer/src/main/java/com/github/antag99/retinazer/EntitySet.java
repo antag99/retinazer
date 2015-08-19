@@ -22,13 +22,9 @@
 package com.github.antag99.retinazer;
 
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import com.github.antag99.retinazer.utils.Mask;
 
 public final class EntitySet {
-    private static Pool<IntArray> pool = Pools.get(IntArray.class);
-
     private static class Content {
         Mask entities = new Mask();
         int modCount = 0;
@@ -115,11 +111,11 @@ public final class EntitySet {
      *            the entity to add.
      */
     public void addEntity(int entity) {
-        IntArray array = pool.obtain();
+        IntArray array = Engine.intArrayPool.obtain();
         array.add(entity);
         addEntities(array);
         array.clear();
-        pool.free(array);
+        Engine.intArrayPool.free(array);
     }
 
     /**
@@ -146,7 +142,7 @@ public final class EntitySet {
     public void addEntities(Mask entities) {
         checkModification();
         content.entities.or(entities);
-        IntArray array = pool.obtain();
+        IntArray array = Engine.intArrayPool.obtain();
         entities.getIndices(array);
         if (array.size > 0) {
             for (EntitySetListener listener : content.listeners) {
@@ -154,7 +150,7 @@ public final class EntitySet {
             }
         }
         array.clear();
-        pool.free(array);
+        Engine.intArrayPool.free(array);
     }
 
     /**
@@ -165,11 +161,11 @@ public final class EntitySet {
      *            the entity to remove.
      */
     public void removeEntity(int entity) {
-        IntArray array = pool.obtain();
+        IntArray array = Engine.intArrayPool.obtain();
         array.add(entity);
         removeEntities(array);
         array.clear();
-        pool.free(array);
+        Engine.intArrayPool.free(array);
     }
 
     /**
@@ -196,7 +192,7 @@ public final class EntitySet {
     public void removeEntities(Mask entities) {
         checkModification();
         content.entities.andNot(entities);
-        IntArray array = pool.obtain();
+        IntArray array = Engine.intArrayPool.obtain();
         entities.getIndices(array);
         if (array.size > 0) {
             for (EntitySetListener listener : content.listeners) {
@@ -204,7 +200,7 @@ public final class EntitySet {
             }
         }
         array.clear();
-        pool.free(array);
+        Engine.intArrayPool.free(array);
     }
 
     /**

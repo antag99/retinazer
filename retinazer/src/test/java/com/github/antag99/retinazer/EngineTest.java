@@ -284,10 +284,10 @@ public class EngineTest {
                         Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)).getIndices()));
     }
 
-    private static class MissingService {
+    public static class MissingService {
     }
 
-    private static class MissingServiceConsumer {
+    public static class MissingServiceConsumer {
         private @Wire MissingService service;
     }
 
@@ -298,7 +298,7 @@ public class EngineTest {
     }
 
     @Wire
-    private static class ExampleSystem extends EntitySystem {
+    public static class ExampleSystem extends EntitySystem {
         public Engine engine;
         public FlagSystemA flagSystemA;
         public FlagSystemB flagSystemB;
@@ -348,10 +348,10 @@ public class EngineTest {
         assertSame(null, system.mWorse);
     }
 
-    private static class MissingSystem extends EntitySystem {
+    public static class MissingSystem extends EntitySystem {
     }
 
-    private static class MissingSystemConsumer extends EntitySystem {
+    public static class MissingSystemConsumer extends EntitySystem {
         public @Wire MissingSystem system;
     }
 

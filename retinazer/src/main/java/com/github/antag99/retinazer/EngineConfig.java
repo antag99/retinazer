@@ -47,7 +47,7 @@ public final class EngineConfig {
         wireResolvers.add(new MapperWireResolver());
     }
 
-    Array<EntitySystemRegistration> systems = new Array<>(EntitySystemRegistration.class);
+    Array<EntitySystemRegistration> systems = new Array<>();
     Array<WireResolver> wireResolvers = new Array<>(WireResolver.class);
 
     /**

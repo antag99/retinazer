@@ -24,14 +24,38 @@ package com.github.antag99.retinazer;
 import java.util.Comparator;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 import com.github.antag99.retinazer.EngineConfig.EntitySystemRegistration;
+import com.github.antag99.retinazer.utils.Mask;
 
 /**
  * Engine is the core class of retinazer; it manages all active entities,
  * performs system processing and initialization.
  */
 public final class Engine {
+
+    /**
+     * Shared pool for Mask objects
+     */
+    static final Pool<Mask> maskPool = new Pool<Mask>() {
+        @Override
+        protected Mask newObject() {
+            return new Mask();
+        }
+    };
+
+    /**
+     * Shared pool for IntArray objects
+     */
+    static final Pool<IntArray> intArrayPool = new Pool<IntArray>() {
+        @Override
+        protected IntArray newObject() {
+            return new IntArray();
+        }
+    };
+
     private final EntitySystem[] systems;
     private final ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType;
     private final ObjectMap.Values<EntitySystem> systemsView;

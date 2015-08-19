@@ -23,14 +23,10 @@ package com.github.antag99.retinazer;
 
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import com.github.antag99.retinazer.utils.Bag;
 import com.github.antag99.retinazer.utils.Mask;
 
 final class FamilyManager {
-    private static Pool<Mask> pool = Pools.get(Mask.class);
-
     private static class Key {
         ObjectSet<Class<? extends Component>> components = null;
         ObjectSet<Class<? extends Component>> excludedComponents = null;
@@ -100,7 +96,7 @@ final class FamilyManager {
 
             // Find matching entities, and add them to the new family set.
             Mapper<?>[] mappers = engine.componentManager.array;
-            Mask matchedEntities = pool.obtain().set(engine.entityManager.entities);
+            Mask matchedEntities = Engine.maskPool.obtain().set(engine.entityManager.entities);
 
             for (int component : components) {
                 matchedEntities.and(mappers[component].componentsMask);
@@ -112,7 +108,7 @@ final class FamilyManager {
 
             family.entities.addEntities(matchedEntities);
 
-            pool.free(matchedEntities);
+            Engine.maskPool.free(matchedEntities);
         }
 
         return families.get(index);
@@ -126,14 +122,14 @@ final class FamilyManager {
     void updateFamilyMembership() {
         Mapper<?>[] mappers = engine.componentManager.array;
 
-        Mask tmpMask = pool.obtain();
+        Mask tmpMask = Engine.maskPool.obtain();
 
         for (int i = 0, n = familyIndices.size; i < n; i++) {
             int[] components = families.get(i).components;
             int[] excludedComponents = families.get(i).excludedComponents;
             EntitySet entities = families.get(i).entities;
 
-            Mask matchedEntities = pool.obtain().set(engine.entityManager.entities);
+            Mask matchedEntities = Engine.maskPool.obtain().set(engine.entityManager.entities);
 
             for (int component : components) {
                 Mapper<?> mapper = mappers[component];
@@ -149,19 +145,19 @@ final class FamilyManager {
                 matchedEntities.andNot(tmpMask);
             }
 
-            Mask insertFamilyEntities = pool.obtain().set(matchedEntities);
+            Mask insertFamilyEntities = Engine.maskPool.obtain().set(matchedEntities);
             insertFamilyEntities.andNot(entities.getMask());
             entities.addEntities(insertFamilyEntities);
-            pool.free(insertFamilyEntities);
+            Engine.maskPool.free(insertFamilyEntities);
 
-            Mask removeFamilyEntities = pool.obtain().set(entities.getMask());
+            Mask removeFamilyEntities = Engine.maskPool.obtain().set(entities.getMask());
             removeFamilyEntities.andNot(matchedEntities);
             entities.removeEntities(removeFamilyEntities);
-            pool.free(removeFamilyEntities);
+            Engine.maskPool.free(removeFamilyEntities);
 
-            pool.free(matchedEntities);
+            Engine.maskPool.free(matchedEntities);
         }
 
-        pool.free(tmpMask);
+        Engine.maskPool.free(tmpMask);
     }
 }
