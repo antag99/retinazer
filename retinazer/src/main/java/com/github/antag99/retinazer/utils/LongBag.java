@@ -21,8 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.utils;
 
-import java.util.Arrays;
-
 public final class LongBag {
     @Experimental
     public long[] buffer;
@@ -48,7 +46,10 @@ public final class LongBag {
             if (value == 0L) {
                 return;
             }
-            buffer = Arrays.copyOf(buffer, Bag.nextPowerOfTwo(index + 1));
+            int newCapacity = Bag.nextPowerOfTwo(index + 1);
+            long[] newBuffer = new long[newCapacity];
+            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+            this.buffer = newBuffer;
         }
 
         buffer[index] = value;
