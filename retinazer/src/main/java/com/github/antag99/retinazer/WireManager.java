@@ -9,7 +9,7 @@ final class WireManager {
 
     public WireManager(Engine engine, EngineConfig config) {
         this.engine = engine;
-        this.wireResolvers = config.wireResolvers.toArray(WireResolver.class);
+        this.wireResolvers = config.wireResolvers.toArray();
         this.wireCaches = new ObjectMap<>();
     }
 
