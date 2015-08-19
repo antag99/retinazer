@@ -22,14 +22,8 @@
 package com.github.antag99.retinazer;
 
 import com.badlogic.gdx.utils.IntArray;
-import com.google.gwt.junit.client.GWTTestCase;
 
-public class GWTEntitySetListenerTest extends GWTTestCase {
-    @Override
-    public String getModuleName() {
-        return "com.github.antag99.RetinazerTest";
-    }
-
+public class GWTEntitySetListenerTest extends RetinazerTestCase {
     private static class EntitySetListenerMock implements EntitySetListener {
         private IntArray insertedEntities = new IntArray();
         private IntArray removedEntities = new IntArray();

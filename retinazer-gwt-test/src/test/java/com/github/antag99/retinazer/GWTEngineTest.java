@@ -24,15 +24,38 @@ package com.github.antag99.retinazer;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
-import com.google.gwt.junit.client.GWTTestCase;
 
-import junit.framework.Assert;
+public class GWTEngineTest extends RetinazerTestCase {
+    private Array<EntitySystem> initializedSystems = new Array<>();
+    private Array<EntitySystem> updatedSystems = new Array<>();
 
-public class GWTEngineTest extends GWTTestCase {
-    @Override
-    public String getModuleName() {
-        return "com.github.antag99.RetinazerTest";
+    public abstract class OrderSystem extends EntitySystem {
+        @Override
+        protected final void initialize() {
+            initializedSystems.add(this);
+        }
+
+        @Override
+        protected final void update() {
+            updatedSystems.add(this);
+        }
+    }
+
+    public final class OrderSystemA extends OrderSystem {
+    }
+
+    public final class OrderSystemB extends OrderSystem {
+    }
+
+    public final class OrderSystemC extends OrderSystem {
+    }
+
+    public final class OrderSystemD extends OrderSystem {
+    }
+
+    public final class OrderSystemE extends OrderSystem {
     }
 
     public void testEngine() {
@@ -45,6 +68,34 @@ public class GWTEngineTest extends GWTTestCase {
         engine.update();
         engine.update();
         engine.update();
+    }
+
+    public void testEntitySystemPriority() {
+        EntitySystem entitySystemA = new OrderSystemA();
+        EntitySystem entitySystemB = new OrderSystemB();
+        EntitySystem entitySystemC = new OrderSystemC();
+        EntitySystem entitySystemD = new OrderSystemD();
+        EntitySystem entitySystemE = new OrderSystemE();
+
+        Engine engine = new Engine(new EngineConfig()
+                .addSystem(entitySystemA, Priority.DEFAULT)
+                .addSystem(entitySystemB, Priority.DEFAULT)
+                .addSystem(entitySystemC, Priority.HIGH)
+                .addSystem(entitySystemD, Priority.LOWEST)
+                .addSystem(entitySystemE, Priority.DEFAULT));
+        assertEquals(Array.with(entitySystemC,
+                entitySystemA,
+                entitySystemB,
+                entitySystemE,
+                entitySystemD), initializedSystems);
+        initializedSystems.clear();
+        engine.update();
+        assertEquals(Array.with(entitySystemC,
+                entitySystemA,
+                entitySystemB,
+                entitySystemE,
+                entitySystemD), updatedSystems);
+        updatedSystems.clear();
     }
 
     private Set<Integer> asSet(int... entities) {
@@ -220,19 +271,25 @@ public class GWTEngineTest extends GWTTestCase {
 
     public void testMissingDependencyInjection() {
         MissingServiceConsumer consumer = new MissingServiceConsumer();
-        Engine engine = new Engine(new EngineConfig());
         try {
-            engine.wire(consumer);
-            Assert.fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException expected) {
+            new Engine(new EngineConfig()).wire(consumer);
+        } catch (IllegalArgumentException ex) {
+            return;
         }
+        fail("expected IllegalArgumentException");
     }
 
+    @Wire
     public static class ExampleSystem extends EntitySystem {
-        public @Wire Engine engine;
-        public @Wire FlagSystemA flagSystemA;
-        public @Wire FlagSystemB flagSystemB;
-        public @Wire FlagSystemC flagSystemC;
+        public Engine engine;
+        public FlagSystemA flagSystemA;
+        public FlagSystemB flagSystemB;
+        public FlagSystemC flagSystemC;
+        public Mapper<FlagComponentA> mFlagA;
+        public Mapper<FlagComponentB> mFlagB;
+        public Mapper<FlagComponentC> mFlagC;
+        public Mapper<? extends Component> mBad;
+        public Mapper<? extends Component> mWorse;
     }
 
     public void testEngineDependencyInjection() {
@@ -249,12 +306,31 @@ public class GWTEngineTest extends GWTTestCase {
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
+        assertSame(engine.getMapper(FlagComponentA.class), system.mFlagA);
+        assertSame(engine.getMapper(FlagComponentB.class), system.mFlagB);
+        assertSame(engine.getMapper(FlagComponentC.class), system.mFlagC);
+//@off: Broken on GWT
+//        assertSame(null, system.mBad);
+//        assertSame(null, system.mWorse);
+//@on
         engine.unwire(system);
+        assertSame(null, system.flagSystemA);
+        assertSame(null, system.flagSystemB);
+        assertSame(null, system.flagSystemC);
+        assertSame(null, system.mFlagA);
+        assertSame(null, system.mFlagB);
+        assertSame(null, system.mFlagC);
+        assertSame(null, system.mBad);
+        assertSame(null, system.mWorse);
         engine.wire(system);
         assertSame(engine, system.engine);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
+//@off: Broken on GWT
+//      assertSame(null, system.mBad);
+//      assertSame(null, system.mWorse);
+//@on
     }
 
     public static class MissingSystem extends EntitySystem {
@@ -267,9 +343,9 @@ public class GWTEngineTest extends GWTTestCase {
     public void testMissingEngineDependencyInjection() {
         try {
             new Engine(new EngineConfig().addSystem(new MissingSystemConsumer()));
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException expected) {
+        } catch (IllegalArgumentException ex) {
+            return;
         }
+        fail("expected IllegalArgumentException");
     }
-
 }
