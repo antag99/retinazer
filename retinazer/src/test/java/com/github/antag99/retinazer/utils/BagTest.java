@@ -200,28 +200,28 @@ public class BagTest {
     }
 
     /**
-     * When a negative index is used, an {@link ArrayIndexOutOfBoundsException} should be thrown.
+     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
      */
     @Test
-    public void testArrayIndexOutOfBoundsException() {
+    public void testIndexOutOfBoundsException() {
         Bag<Object> bag = new Bag<>();
         for (int i = 0; i < 32; i++) {
             try {
                 bag.set(-(1 << i), new Object());
-            } catch (ArrayIndexOutOfBoundsException ex) {
+            } catch (IndexOutOfBoundsException ex) {
                 continue;
             }
 
-            fail("ArrayIndexOutOfBoundsException expected for index " + (-(1 << i)));
+            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
         for (int i = 0; i < 32; i++) {
             try {
                 bag.get(-(1 << i));
-            } catch (ArrayIndexOutOfBoundsException ex) {
+            } catch (IndexOutOfBoundsException ex) {
                 continue;
             }
 
-            fail("ArrayIndexOutOfBoundsException expected for index " + (-(1 << i)));
+            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
     }
 }

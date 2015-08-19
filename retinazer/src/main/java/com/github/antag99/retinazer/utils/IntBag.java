@@ -42,6 +42,10 @@ public final class IntBag {
     }
 
     public void set(int index, int value) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
         if (index >= buffer.length) {
             if (value == 0) {
                 return;

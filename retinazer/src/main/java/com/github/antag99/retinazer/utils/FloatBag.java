@@ -42,6 +42,10 @@ public final class FloatBag {
     }
 
     public void set(int index, float value) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
         if (index >= buffer.length) {
             if (value == 0f) {
                 return;
