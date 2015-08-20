@@ -37,6 +37,14 @@
         <system>GitHub Issues</system>
     </issueManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>temporary-repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/maven</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -68,6 +76,12 @@
         <module>retinazer-gwt-test</module>
         <module>retinazer-benchmarks</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -136,6 +150,7 @@
                 <version>2.5.2</version>
                 <configuration>
                     <tagNameFormat>retinazer-@{project.version}</tagNameFormat>
+                    <useReleaseProfile>true</useReleaseProfile>
                 </configuration>
             </plugin>
 
@@ -143,6 +158,8 @@
                 Deployment to GitHub Pages maven repository. The official repo
                 of site-maven-plugin has some guidelines for setting this up:
                     https://github.com/github/maven-plugins
+                Also see this answer on StackOverflow:
+                    http://stackoverflow.com/a/14013645/4517740
             -->
             <plugin>
                 <groupId>com.github.github</groupId>
@@ -153,7 +170,8 @@
                         <goals>
                             <goal>site</goal>
                         </goals>
-                        <phase>site-deploy</phase>
+
+                        <phase>deploy</phase>
 
                         <configuration>
                             <server>github</server>
@@ -161,8 +179,11 @@
                             <!-- deploy to antag99/maven repository -->
                             <repositoryName>maven</repositoryName>
                             <repositoryOwner>antag99</repositoryOwner>
-
                             <branch>refs/heads/master</branch>
+
+                            <!-- path to temporary staging repository -->
+                            <outputDirectory>${project.build.directory}/maven</outputDirectory>
+
                             <merge>true</merge>
                             <noJekyll>true</noJekyll>
 
