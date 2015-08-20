@@ -15,6 +15,9 @@
         <gdx.version>1.6.4</gdx.version>
         <junit.version>4.12</junit.version>
         <autoVersionSubmodules>true</autoVersionSubmodules>
+        <bintray.subject>antag99</bintray.subject>
+        <bintray.repo>maven</bintray.repo>
+        <bintray.package>retinazer</bintray.package>
     </properties>
 
     <scm>
@@ -39,9 +42,8 @@
 
     <distributionManagement>
         <repository>
-            <id>temporary-repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/maven</url>
+            <id>bintray-repo-antag99</id>
+            <url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}</url>
         </repository>
     </distributionManagement>
 
