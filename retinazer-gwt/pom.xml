@@ -3,12 +3,12 @@
     <parent>
         <groupId>com.github.antag99.retinazer</groupId>
         <artifactId>retinazer-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
 
     <groupId>com.github.antag99.retinazer</groupId>
     <artifactId>retinazer-gwt</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 
     <properties>
         <junit.version>3.8</junit.version>
@@ -18,13 +18,13 @@
         <dependency>
             <groupId>com.github.antag99.retinazer</groupId>
             <artifactId>retinazer</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.antag99.retinazer</groupId>
             <artifactId>retinazer</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.1.0</version>
             <classifier>sources</classifier>
         </dependency>
 
