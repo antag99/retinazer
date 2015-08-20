@@ -4,17 +4,52 @@
 [![Lines of Code][loc_badge]][loc]
 [![License][license_badge]][license]
 [![Join the chat at https://gitter.im/antag99/retinazer][gitter_badge]][gitter]
+[![Download][bintray_badge]][bintray]
 
 Retinazer is an implementation of the [entity-component-system][ecs] design
-pattern in Java. Check out the [wiki](https://github.com/antag99/retinazer/wiki)
-for documentation.
+pattern in Java. Check out the source code for documentation; or help me set up
+the [wiki](https://github.com/antag99/retinazer/wiki).
 
-## What is this?
-Retinazer is an implementation of the [entity-component-system][ecs] design
-pattern. Currently, no release is available, as it's still in heavy development.
-But I expect to be able to release an initial development version pretty soon.
+## Using retinazer in your project
+Head over to [bintray](https://bintray.com/antag99/maven/retinazer/0.1.0/view)
+for instructions; alternatively add this to your `pom.xml`;
+```xml
+<repositories>
+  <repository>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+    <id>bintray-antag99-maven</id>
+    <name>bintray</name>
+    <url>http://dl.bintray.com/antag99/maven</url>
+  </repository>
+</repositories>
 
-## Great! I'd like to help!
+<dependencies>
+  <dependency>
+    <groupId>com.github.antag99.retinazer</groupId>
+    <artifactId>retinazer</artifactId>
+    <version>0.1.0</version>
+  </dependency>
+</dependencies>
+```
+or add this to your `build.gradle`:
+```groovy
+repositories {
+  maven {
+    id "bintray-antag99-maven"
+    url "http://dl.bintray.com/antag99/maven"
+  }
+}
+
+dependencies {
+  compile "com.github.antag99.retinazer:retinazer:0.1.0"
+}
+```
+Nightly builds can be obtained via `https://jitpack.io/` using `-SNAPSHOT` as
+version.
+
+## Contributing
 Contributions are welcome, but make sure to follow the [contribution guidelines](CONTRIBUTING.md).
 Also, if you plan to implement a new major feature, please open an issue first
 so I can provide input.
@@ -29,4 +64,6 @@ so I can provide input.
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [gitter]: https://gitter.im/antag99/retinazer
 [gitter_badge]: https://img.shields.io/badge/GITTER-JOIN_CHAT_%E2%86%92-1dce73.svg
+[bintray]: https://bintray.com/antag99/maven/retinazer/_latestVersion
+[bintray_badge]: https://api.bintray.com/packages/antag99/maven/retinazer/images/download.svg
 [ecs]: https://en.wikipedia.org/wiki/Entity_component_system
