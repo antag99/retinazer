@@ -14,7 +14,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gdx.version>1.6.4</gdx.version>
         <junit.version>4.12</junit.version>
-        <site.path>maven/</site.path>
         <autoVersionSubmodules>true</autoVersionSubmodules>
     </properties>
 
@@ -22,6 +21,7 @@
         <url>https://github.com/antag99/retinazer/</url>
         <connection>scm:git:git@github.com:antag99/retinazer.git</connection>
         <developerConnection>scm:git:git@github.com:antag99/retinazer.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
@@ -79,6 +79,38 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                Push code coverage data to coveralls.io via travis-ci.org
+            -->
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
@@ -97,32 +129,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -131,6 +138,12 @@
                     <tagNameFormat>retinazer-@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
+
+            <!--
+                Deployment to GitHub Pages maven repository. The official repo
+                of site-maven-plugin has some guidelines for setting this up:
+                    https://github.com/github/maven-plugins
+            -->
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
@@ -141,11 +154,19 @@
                             <goal>site</goal>
                         </goals>
                         <phase>site-deploy</phase>
+
                         <configuration>
                             <server>github</server>
-                            <message>Uploading artifacts for ${project.version}</message>
-                            <path>${site.path}</path>
+
+                            <!-- deploy to antag99/maven repository -->
+                            <repositoryName>maven</repositoryName>
+                            <repositoryOwner>antag99</repositoryOwner>
+
+                            <branch>refs/heads/master</branch>
                             <merge>true</merge>
+                            <noJekyll>true</noJekyll>
+
+                            <message>Uploading artifacts for ${project.version}</message>
                         </configuration>
                     </execution>
                 </executions>

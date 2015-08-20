@@ -18,6 +18,4 @@
     <artifactId>retinazer</artifactId>
     <packaging>jar</packaging>
     <name>retinazer</name>
-    <description>An entity-component-system implementation for Java</description>
-    <url>https://github.com/antag99/retinazer</url>
 </project>
