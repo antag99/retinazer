@@ -11,7 +11,7 @@ pattern in Java. Check out the source code for documentation; or help me set up
 the [wiki](https://github.com/antag99/retinazer/wiki).
 
 ## Using retinazer in your project
-Head over to [bintray](https://bintray.com/antag99/maven/retinazer/0.1.0/view)
+Head over to [bintray](https://bintray.com/antag99/maven/retinazer/view)
 for instructions; alternatively add this to your `pom.xml`;
 ```xml
 <repositories>
@@ -29,7 +29,7 @@ for instructions; alternatively add this to your `pom.xml`;
   <dependency>
     <groupId>com.github.antag99.retinazer</groupId>
     <artifactId>retinazer</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
   </dependency>
 </dependencies>
 ```
@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-  compile "com.github.antag99.retinazer:retinazer:0.1.0"
+  compile "com.github.antag99.retinazer:retinazer:0.1.1"
 }
 ```
 Nightly builds can be obtained via `https://jitpack.io/` using `-SNAPSHOT` as
