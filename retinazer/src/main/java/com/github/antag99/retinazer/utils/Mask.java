@@ -372,14 +372,14 @@ public final class Mask implements Poolable {
     }
 
     public void getIndices(IntArray out) {
+        int offset = out.size;
         int count = cardinality();
-        out.size = 0;
         out.ensureCapacity(count);
         int[] items = out.items;
         for (int i = 0, b = nextSetBit(0), n = count; i < n; i++, b = nextSetBit(b + 1)) {
-            items[i] = b;
+            items[offset + i] = b;
         }
-        out.size = count;
+        out.size += count;
     }
 
     @Override
