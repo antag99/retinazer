@@ -1,6 +1,6 @@
 ## Changelog
 
-# Version 0.1.2-SNAPSHOT
+# Version 0.1.2 (released 2015-08-22)
 - Made `Mask#getIndices(IntArray)` append elements to the array.
 - Fixed issue where destroying an entity didn't remove it's components
 
