@@ -142,12 +142,6 @@ final class ComponentManager {
         return getMapper(componentType);
     }
 
-    void destroyComponents(int entity) {
-        for (Mapper<?> storage : array) {
-            storage.remove(entity);
-        }
-    }
-
     void applyComponentChanges() {
         for (int i = 0, n = array.length; i < n; ++i) {
             @SuppressWarnings("unchecked")

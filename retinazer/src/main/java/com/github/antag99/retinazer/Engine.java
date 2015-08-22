@@ -147,6 +147,10 @@ public final class Engine {
 
     private void flush() {
         dirty = false;
+        for (Mapper<?> mapper : componentManager.array) {
+            entityManager.removeEntities.getIndices(mapper.removeComponents);
+            mapper.removeComponentsMask.or(entityManager.removeEntities);
+        }
         entityManager.entities.andNot(entityManager.removeEntities);
         entityManager.removeEntities.clear();
         familyManager.updateFamilyMembership();
