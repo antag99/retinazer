@@ -382,6 +382,21 @@ public final class Mask implements Poolable {
         out.size += count;
     }
 
+    public long getWord(int index) {
+        return index < words.length ? words[index] : 0L;
+    }
+
+    public int getWordCount() {
+        final long[] words = this.words;
+        for (int i = words.length - 1; i > 0; i--) {
+            if (words[i] != 0L) {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
     @Override
     public String toString() {
         char[] value = new char[length()];
