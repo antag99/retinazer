@@ -37,7 +37,7 @@ or add this to your `build.gradle`:
 ```groovy
 repositories {
   maven {
-    id "bintray-antag99-maven"
+    name "bintray-antag99-maven"
     url "http://dl.bintray.com/antag99/maven"
   }
 }
