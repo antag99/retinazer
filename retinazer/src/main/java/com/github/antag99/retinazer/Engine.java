@@ -67,6 +67,8 @@ public final class Engine {
 
     /** Tracks whether any components or entities have been modified; reset at every call to flush() */
     boolean dirty = false;
+    /** Tracks whether this engine is within a call to update() */
+    boolean update = false;
 
     /**
      * Creates a new {@link Engine} based on the specified configuration. Note
@@ -134,15 +136,46 @@ public final class Engine {
      * entity sets.
      */
     public void update() {
+        if (update) {
+            throw new IllegalStateException("Cannot nest calls to update()");
+        }
+
+        update = true;
+
         while (dirty) {
             flush();
         }
+
         for (EntitySystem system : systems) {
             system.update();
+
             while (dirty) {
                 flush();
             }
         }
+
+        update = false;
+    }
+
+    /**
+     * Resets this engine; this removes all existing entities.
+     */
+    public void reset() {
+        if (update) {
+            throw new IllegalStateException("Cannot call reset() within update()");
+        }
+
+        update = true;
+
+        IntArray entities = getEntities().getIndices();
+        int[] items = entities.items;
+        for (int i = 0, n = entities.size; i < n; i++) {
+            destroyEntity(items[i]);
+        }
+
+        flush();
+
+        update = false;
     }
 
     private void flush() {
