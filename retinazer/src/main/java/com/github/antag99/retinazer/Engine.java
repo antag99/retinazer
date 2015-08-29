@@ -142,16 +142,12 @@ public final class Engine {
 
         update = true;
 
-        while (dirty) {
-            flush();
-        }
+        flush();
 
         for (EntitySystem system : systems) {
             system.update();
 
-            while (dirty) {
-                flush();
-            }
+            flush();
         }
 
         update = false;
@@ -167,6 +163,8 @@ public final class Engine {
 
         update = true;
 
+        flush();
+
         IntArray entities = getEntities().getIndices();
         int[] items = entities.items;
         for (int i = 0, n = entities.size; i < n; i++) {
@@ -179,15 +177,17 @@ public final class Engine {
     }
 
     private void flush() {
-        dirty = false;
-        for (Mapper<?> mapper : componentManager.array) {
-            entityManager.removeEntities.getIndices(mapper.removeComponents);
-            mapper.removeComponentsMask.or(entityManager.removeEntities);
+        while (dirty) {
+            dirty = false;
+            for (Mapper<?> mapper : componentManager.array) {
+                entityManager.removeEntities.getIndices(mapper.removeComponents);
+                mapper.removeComponentsMask.or(entityManager.removeEntities);
+            }
+            entityManager.entities.andNot(entityManager.removeEntities);
+            entityManager.removeEntities.clear();
+            familyManager.updateFamilyMembership();
+            componentManager.applyComponentChanges();
         }
-        entityManager.entities.andNot(entityManager.removeEntities);
-        entityManager.removeEntities.clear();
-        familyManager.updateFamilyMembership();
-        componentManager.applyComponentChanges();
     }
 
     /**
