@@ -37,11 +37,15 @@ public final class Mask implements Poolable {
      * @return {@code this} mask instance
      */
     public Mask set(Mask other) {
-        if (words.length < other.words.length) {
-            words = new long[other.words.length];
+        return set(other.words);
+    }
+
+    public Mask set(long[] words) {
+        if (words.length < words.length) {
+            words = new long[words.length];
         }
-        System.arraycopy(other.words, 0, words, 0, other.words.length);
-        for (int i = other.words.length, n = words.length; i < n; i++)
+        System.arraycopy(words, 0, words, 0, words.length);
+        for (int i = words.length, n = words.length; i < n; i++)
             words[i] = 0;
         return this;
     }
@@ -386,6 +390,19 @@ public final class Mask implements Poolable {
         return index < words.length ? words[index] : 0L;
     }
 
+    public void setWord(int index, long word) {
+        if (index >= words.length) {
+            long[] newWords = new long[Bag.nextPowerOfTwo(index + 1)];
+            System.arraycopy(words, 0, newWords, 0, words.length);
+            this.words = newWords;
+        }
+        words[index] = word;
+    }
+
+    /**
+     * Gets the amount of necessary words in this mask. Excludes trailing zero
+     * words.
+     */
     public int getWordCount() {
         final long[] words = this.words;
         for (int i = words.length - 1; i > 0; i--) {
@@ -395,6 +412,14 @@ public final class Mask implements Poolable {
         }
 
         return 0;
+    }
+
+    /**
+     * Gets the backing buffer of this mask. Does not exclude trailing zero
+     * words.
+     */
+    public long[] getWords() {
+        return words;
     }
 
     @Override
