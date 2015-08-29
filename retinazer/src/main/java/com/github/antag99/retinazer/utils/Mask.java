@@ -40,12 +40,12 @@ public final class Mask implements Poolable {
         return set(other.words);
     }
 
-    public Mask set(long[] words) {
-        if (words.length < words.length) {
-            words = new long[words.length];
+    public Mask set(long[] otherWords) {
+        if (words.length < otherWords.length) {
+            words = new long[otherWords.length];
         }
-        System.arraycopy(words, 0, words, 0, words.length);
-        for (int i = words.length, n = words.length; i < n; i++)
+        System.arraycopy(otherWords, 0, words, 0, otherWords.length);
+        for (int i = otherWords.length, n = words.length; i < n; i++)
             words[i] = 0;
         return this;
     }
