@@ -40,6 +40,21 @@ public final class EntitySet {
     private IntArray indices = new IntArray();
     private int indicesModCount = 0;
 
+    // Temporary IntArray to minimize allocations - not using Pool because it
+    // is not thread safe. Note that *does* perform allocation if more than one
+    // temporary array is needed at a time, which generally shouldn't happen.
+    private IntArray tmp = null;
+
+    private IntArray tmp() {
+        if (tmp == null) {
+            return new IntArray();
+        }
+
+        IntArray value = tmp;
+        tmp = null;
+        return value;
+    }
+
     public EntitySet() {
         this.content = new Content();
     }
@@ -111,11 +126,11 @@ public final class EntitySet {
      *            the entity to add.
      */
     public void addEntity(int entity) {
-        IntArray array = Engine.intArrayPool.obtain();
+        IntArray array = tmp();
         array.add(entity);
         addEntities(array);
         array.clear();
-        Engine.intArrayPool.free(array);
+        tmp = array;
     }
 
     /**
@@ -142,7 +157,7 @@ public final class EntitySet {
     public void addEntities(Mask entities) {
         checkModification();
         content.entities.or(entities);
-        IntArray array = Engine.intArrayPool.obtain();
+        IntArray array = tmp();
         entities.getIndices(array);
         if (array.size > 0) {
             for (EntitySetListener listener : content.listeners) {
@@ -150,7 +165,7 @@ public final class EntitySet {
             }
         }
         array.clear();
-        Engine.intArrayPool.free(array);
+        tmp = array;
     }
 
     /**
@@ -161,11 +176,11 @@ public final class EntitySet {
      *            the entity to remove.
      */
     public void removeEntity(int entity) {
-        IntArray array = Engine.intArrayPool.obtain();
+        IntArray array = tmp();
         array.add(entity);
         removeEntities(array);
         array.clear();
-        Engine.intArrayPool.free(array);
+        tmp = array;
     }
 
     /**
@@ -192,7 +207,7 @@ public final class EntitySet {
     public void removeEntities(Mask entities) {
         checkModification();
         content.entities.andNot(entities);
-        IntArray array = Engine.intArrayPool.obtain();
+        IntArray array = tmp();
         entities.getIndices(array);
         if (array.size > 0) {
             for (EntitySetListener listener : content.listeners) {
@@ -200,7 +215,7 @@ public final class EntitySet {
             }
         }
         array.clear();
-        Engine.intArrayPool.free(array);
+        tmp = array;
     }
 
     /**
