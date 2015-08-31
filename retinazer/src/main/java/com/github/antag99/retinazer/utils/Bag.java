@@ -48,6 +48,10 @@ public final class Bag<E> {
 
     @SuppressWarnings("unchecked")
     public E get(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
         if (index >= buffer.length) {
             return null;
         }

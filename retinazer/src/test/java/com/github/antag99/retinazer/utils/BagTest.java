@@ -209,7 +209,8 @@ public class BagTest {
             try {
                 bag.set(-(1 << i), new Object());
             } catch (IndexOutOfBoundsException ex) {
-                continue;
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
             }
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
@@ -218,7 +219,8 @@ public class BagTest {
             try {
                 bag.get(-(1 << i));
             } catch (IndexOutOfBoundsException ex) {
-                continue;
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
             }
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));

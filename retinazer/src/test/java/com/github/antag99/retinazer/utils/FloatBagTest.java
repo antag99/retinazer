@@ -192,7 +192,8 @@ public class FloatBagTest {
             try {
                 bag.set(-(1 << i), 0f);
             } catch (IndexOutOfBoundsException ex) {
-                continue;
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
             }
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
@@ -202,7 +203,8 @@ public class FloatBagTest {
             try {
                 bag.get(-(1 << i));
             } catch (IndexOutOfBoundsException ex) {
-                continue;
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
             }
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));

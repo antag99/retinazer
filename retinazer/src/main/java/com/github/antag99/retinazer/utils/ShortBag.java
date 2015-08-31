@@ -34,6 +34,10 @@ public final class ShortBag {
     }
 
     public short get(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
         if (index >= buffer.length) {
             return 0;
         }
