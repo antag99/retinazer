@@ -118,8 +118,10 @@ public final class Mapper<T extends Component> {
      * permitted to replace an existing component; {@link #remove(int)} must
      * be called first (and bear in mind that removals are delayed).
      *
-     * @param entity the index of the entity.
-     * @param instance the component instance.
+     * @param entity
+     *            the index of the entity.
+     * @param instance
+     *            the component instance.
      */
     public void add(int entity, T instance) {
         if (has(entity)) {
@@ -140,7 +142,8 @@ public final class Mapper<T extends Component> {
      * attempting to remove a component that does not exist. Removal operations
      * will be delayed until the next call to {@link Engine#flush()}.
      *
-     * @param entity the index of the entity.
+     * @param entity
+     *            the index of the entity.
      */
     public void remove(int entity) {
         if (!has(entity)) {
@@ -155,4 +158,69 @@ public final class Mapper<T extends Component> {
         removeComponents.add(entity);
         removeComponentsMask.set(entity);
     }
+
+    /**
+     * Retrieves a component of the type handled by this mapper. Returns {@code null}
+     * if the specified entity does not have a component of the type.
+     *
+     * @param handle
+     *            handle pointing to the entity.
+     * @return the component; may be {@code null}.
+     */
+    public T get(Handle handle) {
+        return get(handle.getEntity());
+    }
+
+    /**
+     * Checks whether the specified entity has a component of the type handled by
+     * this mapper.
+     *
+     * @param handle
+     *            handle pointing to the entity.
+     * @return whether the entity has the component of the type handled by this mapper.
+     */
+    public boolean has(Handle handle) {
+        return has(handle.getEntity());
+    }
+
+    /**
+     * Creates a component of the type handled by this mapper for the given entity.
+     *
+     * @param handle
+     *            handle pointing to the entity.
+     * @return the created component.
+     */
+    public T create(Handle handle) {
+        return create(handle.getEntity());
+    }
+
+    /**
+     * Adds a component of the type represented by this mapper. The operation
+     * will take effect immediately, but notifications will be delayed until
+     * the next call to {@link Engine#flush()}. Note that it is <b>not</b>
+     * permitted to replace an existing component; {@link #remove(Handle)} must
+     * be called first (and bear in mind that removals are delayed).
+     *
+     * @param handle
+     *            handle pointing to the entity.
+     * @param instance
+     *            the component instance.
+     */
+    public void add(Handle handle, T instance) {
+        add(handle.getEntity(), instance);
+    }
+
+    /**
+     * Removes a component of the type represented by this mapper. Calling this
+     * method multiple times does not result in an exception, neither does
+     * attempting to remove a component that does not exist. Removal operations
+     * will be delayed until the next call to {@link Engine#flush()}.
+     *
+     * @param handle
+     *            handle pointing to the entity.
+     */
+    public void remove(Handle handle) {
+        remove(handle.getEntity());
+    }
+
 }
