@@ -191,6 +191,18 @@ public class EntitySetTest {
         assertNotEquals(a.hashCode(), b.hashCode());
     }
 
+    @Test
+    public void testToString() {
+        EntitySet set = new EntitySet();
+        assertEquals("[]", set.toString());
+        set.addEntity(0);
+        assertEquals("[0]", set.toString());
+        set.addEntity(4);
+        assertEquals("[0, 4]", set.toString());
+        set.addEntity(2);
+        assertEquals("[0, 2, 4]", set.toString());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testUnmodifiable0() {
         new EntitySet().unmodifiable().addEntity(0);

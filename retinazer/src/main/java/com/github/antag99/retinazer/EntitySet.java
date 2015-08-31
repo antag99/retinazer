@@ -259,4 +259,23 @@ public final class EntitySet {
     public int hashCode() {
         return content.entities.hashCode();
     }
+
+    @Override
+    public String toString() {
+        IntArray indices = getIndices();
+        if (indices.size == 0) {
+            return "[]";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append('[');
+        int[] items = indices.items;
+        builder.append(items[0]);
+        for (int i = 1, n = indices.size; i < n; i++) {
+            builder.append(',');
+            builder.append(' ');
+            builder.append(items[i]);
+        }
+        builder.append(']');
+        return builder.toString();
+    }
 }
