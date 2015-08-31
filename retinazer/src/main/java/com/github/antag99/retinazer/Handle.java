@@ -113,9 +113,34 @@ public final class Handle {
      * @return this handle for chaining.
      */
     public <T extends Component> Handle remove(Class<T> componentType) {
-        ((Mapper<T>) engine.componentManager.getMapper(componentType))
-                .remove(entity);
+        engine.componentManager.getMapper(componentType).remove(entity);
         return this;
+    }
+
+    /**
+     * Retrieves the component of the given type from the referenced entity.
+     *
+     * @param componentType
+     *            the type of component to retrieve.
+     * @param <T>
+     *            generic component type.
+     * @return the component; may be {@code null}.
+     */
+    public <T extends Component> T get(Class<T> componentType) {
+        return engine.componentManager.getMapper(componentType).get(entity);
+    }
+
+    /**
+     * Checks whether the referenced entity has the component of the given type.
+     *
+     * @param componentType
+     *            the type of component to check for.
+     * @param <T>
+     *            generic component type.
+     * @return whether the entity has the component of the given type.
+     */
+    public <T extends Component> boolean has(Class<T> componentType) {
+        return engine.componentManager.getMapper(componentType).has(entity);
     }
 
     /**
