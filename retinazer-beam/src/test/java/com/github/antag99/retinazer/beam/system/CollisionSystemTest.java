@@ -92,10 +92,10 @@ public final class CollisionSystemTest {
         CollisionListenerMock mock = new CollisionListenerMock();
         collisionSystem.addCollisionListener(Category.ALL, Category.ALL, mock);
 
-        Handle roomEntity = engine.createEntity().duplicate();
+        Handle roomEntity = engine.createEntity().cpy();
         roomEntity.create(Room.class);
 
-        Handle entityA = engine.createEntity().duplicate();
+        Handle entityA = engine.createEntity().cpy();
 
         Position positionA = entityA.create(Position.class);
         positionA.x = 0f;
@@ -105,12 +105,12 @@ public final class CollisionSystemTest {
         sizeA.set(ENTITY_WIDTH, ENTITY_HEIGHT);
 
         Location locationA = entityA.create(Location.class);
-        locationA.room(roomEntity.getEntity());
+        locationA.room(roomEntity.idx());
 
         Collision collisionA = entityA.create(Collision.class);
         collisionA.collidesWith(Category.ALL);
 
-        Handle entityB = engine.createEntity().duplicate();
+        Handle entityB = engine.createEntity().cpy();
 
         Position positionB = entityB.create(Position.class);
         positionB.x = 0f;
@@ -120,14 +120,14 @@ public final class CollisionSystemTest {
         sizeB.set(ENTITY_WIDTH, ENTITY_HEIGHT);
 
         Location locationB = entityB.create(Location.class);
-        locationB.room(roomEntity.getEntity());
+        locationB.room(roomEntity.idx());
 
         Collision collisionB = entityB.create(Collision.class);
         collisionB.collidesWith(Category.ALL);
 
         engine.update();
 
-        mock.verifyUnordered(entityA.getEntity(), entityB.getEntity());
+        mock.verifyUnordered(entityA.idx(), entityB.idx());
         mock.verifyNoMoreInteractions();
     }
 }

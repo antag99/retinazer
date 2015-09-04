@@ -61,7 +61,7 @@ public final class BindingSystem extends EntityProcessorSystem {
             Command command = entry.value;
 
             if (!input.controls.contains(control) ||
-                    command.apply(handle.setEntity(entity), deltaTime) > 0f) {
+                    command.apply(handle.idx(entity), deltaTime) > 0f) {
                 command.restart();
             }
         }

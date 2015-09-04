@@ -202,7 +202,7 @@ public final class Engine {
      */
     public Handle createHandle(int index) {
         Handle handle = createHandle();
-        handle.setEntity(index);
+        handle.idx(index);
         return handle;
     }
 

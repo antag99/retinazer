@@ -11,7 +11,7 @@ public class GWTMapperTest extends RetinazerTestCase {
     public void testNoConstructor() {
         try {
             Engine engine = new Engine(new EngineConfig());
-            int entity = engine.createEntity().getEntity();
+            int entity = engine.createEntity().idx();
             Mapper<BadComponent> mBad = engine.getMapper(BadComponent.class);
             mBad.create(entity);
         } catch (IllegalArgumentException ex) {
@@ -30,7 +30,7 @@ public class GWTMapperTest extends RetinazerTestCase {
     public void testErrorConstructor() {
         try {
             Engine engine = new Engine(new EngineConfig());
-            int entity = engine.createEntity().getEntity();
+            int entity = engine.createEntity().idx();
             Mapper<ReallyBadComponent> mReallyBad = engine.getMapper(ReallyBadComponent.class);
             mReallyBad.create(entity);
         } catch (UnsupportedOperationException ex) {
@@ -42,7 +42,7 @@ public class GWTMapperTest extends RetinazerTestCase {
     public void testRemoveNothing() {
         Engine engine = new Engine(new EngineConfig());
         Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
-        int entity = engine.createEntity().getEntity();
+        int entity = engine.createEntity().idx();
         mFlagA.remove(entity); // nothing should happen
         engine.update();
         mFlagA.create(entity);
@@ -55,7 +55,7 @@ public class GWTMapperTest extends RetinazerTestCase {
         try {
             Engine engine = new Engine(new EngineConfig());
             Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
-            int entity = engine.createEntity().getEntity();
+            int entity = engine.createEntity().idx();
             mFlagA.add(entity, new FlagComponentA());
             mFlagA.add(entity, new FlagComponentA());
         } catch (IllegalArgumentException ex) {

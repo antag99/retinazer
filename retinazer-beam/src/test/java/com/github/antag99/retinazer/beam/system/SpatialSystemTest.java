@@ -58,13 +58,13 @@ public final class SpatialSystemTest {
 
     @Test
     public void testSpatial() {
-        Handle roomEntity = engine.createEntity().duplicate();
+        Handle roomEntity = engine.createEntity().cpy();
         Room room = roomEntity.create(Room.class);
 
-        Handle entity = engine.createEntity().duplicate();
+        Handle entity = engine.createEntity().cpy();
 
         EntitySet set = new EntitySet();
-        set.addEntity(entity.getEntity());
+        set.addEntity(entity.idx());
 
         EntitySet emptySet = new EntitySet();
 
@@ -77,7 +77,7 @@ public final class SpatialSystemTest {
         size.height = 4f;
 
         Location location = entity.create(Location.class);
-        location.room = roomEntity.getEntity();
+        location.room = roomEntity.idx();
 
         engine.update();
 

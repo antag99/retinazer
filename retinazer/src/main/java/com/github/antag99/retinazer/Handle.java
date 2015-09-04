@@ -22,11 +22,27 @@
 package com.github.antag99.retinazer;
 
 /**
- * Handle for modifying the components of an entity.
+ * <p>
+ * Handles are used for accessing the composition (components) of an entity. Each
+ * handle internally manages an {@link Engine} reference along with an entity
+ * index, which can be retrieved via {@link #idx()} and changed via {@link #idx(int)}.
+ * </p>
+ *
+ * <p>
+ * To create a handle, one of the {@link Engine#createHandle()} and
+ * {@link Engine#createHandle(int)} methods can be used.
+ * </p>
+ *
+ * <p>
+ * Note that in most cases, using a plain {@code int} should be preferred, as
+ * long as an {@link Engine} instance is available. Otherwise, it may be convenient
+ * to use {@link Handle} rather than supplying an {@link Engine} instance along
+ * with an {@code int}.
+ * </p>
  */
 public final class Handle {
     private Engine engine;
-    private int entity = -1;
+    private int index = -1;
 
     Handle(Engine engine) {
         this.engine = engine;
@@ -44,12 +60,12 @@ public final class Handle {
     /**
      * Sets the entity referenced by this handle.
      *
-     * @param entity
+     * @param index
      *            index of the entity referenced by this handle.
      * @return this handle for chaining.
      */
-    public Handle setEntity(int entity) {
-        this.entity = entity;
+    public Handle idx(int index) {
+        this.index = index;
         return this;
     }
 
@@ -58,8 +74,8 @@ public final class Handle {
      *
      * @return index of the entity referenced by this handle.
      */
-    public int getEntity() {
-        return entity;
+    public int idx() {
+        return index;
     }
 
     /**
@@ -67,9 +83,9 @@ public final class Handle {
      *
      * @return a copy of this handle.
      */
-    public Handle duplicate() {
+    public Handle cpy() {
         Handle handle = engine.createHandle();
-        handle.entity = entity;
+        handle.index = index;
         return handle;
     }
 
@@ -83,7 +99,7 @@ public final class Handle {
      * @return the component instance.
      */
     public <T extends Component> T create(Class<T> componentType) {
-        return engine.componentManager.getMapper(componentType).create(entity);
+        return engine.componentManager.getMapper(componentType).create(index);
     }
 
     /**
@@ -99,7 +115,7 @@ public final class Handle {
     @SuppressWarnings("unchecked")
     public <T extends Component> Handle add(T component) {
         ((Mapper<T>) engine.componentManager.getMapper(component.getClass()))
-                .add(entity, component);
+                .add(index, component);
         return this;
     }
 
@@ -113,7 +129,7 @@ public final class Handle {
      * @return this handle for chaining.
      */
     public <T extends Component> Handle remove(Class<T> componentType) {
-        engine.componentManager.getMapper(componentType).remove(entity);
+        engine.componentManager.getMapper(componentType).remove(index);
         return this;
     }
 
@@ -127,7 +143,7 @@ public final class Handle {
      * @return the component; may be {@code null}.
      */
     public <T extends Component> T get(Class<T> componentType) {
-        return engine.componentManager.getMapper(componentType).get(entity);
+        return engine.componentManager.getMapper(componentType).get(index);
     }
 
     /**
@@ -140,13 +156,13 @@ public final class Handle {
      * @return whether the entity has the component of the given type.
      */
     public <T extends Component> boolean has(Class<T> componentType) {
-        return engine.componentManager.getMapper(componentType).has(entity);
+        return engine.componentManager.getMapper(componentType).has(index);
     }
 
     /**
      * Destroys the referenced entity.
      */
     public void destroy() {
-        engine.destroyEntity(entity);
+        engine.destroyEntity(index);
     }
 }

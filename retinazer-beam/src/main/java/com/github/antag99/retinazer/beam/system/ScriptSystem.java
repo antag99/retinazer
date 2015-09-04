@@ -57,7 +57,7 @@ public final class ScriptSystem extends EntityProcessorSystem {
         for (int i = 0, n = script.commands.size; i < n; i++) {
             Command command = (Command) items[i];
 
-            if (command.apply(handle.setEntity(entity), deltaTime) > 0f) {
+            if (command.apply(handle.idx(entity), deltaTime) > 0f) {
                 script.commands.removeValue(command, true);
             }
         }

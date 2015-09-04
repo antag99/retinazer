@@ -1,5 +1,11 @@
 ## Changelog
 
+# Version 0.1.3-SNAPSHOT
+- Refactored `Handle` API
+  - `Handle.getIndex()` -> `Handle.idx()`
+  - `Handle.setIndex(int)` -> `Handle.idx(int)`
+  - `Handle.duplicate()` -> `Handle.cpy()`
+
 # Version 0.1.2 (released 2015-08-22)
 - Made `Mask#getIndices(IntArray)` append elements to the array.
 - Fixed issue where destroying an entity didn't remove it's components

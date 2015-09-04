@@ -50,12 +50,12 @@ public class CommandTest {
         FlagA flag = new FlagA();
         AddCommand add = add(flag);
         add.apply(entity, 0f);
-        assertEquals(flag, engine.getMapper(FlagA.class).get(entity.getEntity()));
+        assertEquals(flag, engine.getMapper(FlagA.class).get(entity.idx()));
         Pools.free(add);
         add = add(new FlagA());
         add.apply(entity, 0f);
         // should *not* change added component
-        assertEquals(flag, engine.getMapper(FlagA.class).get(entity.getEntity()));
+        assertEquals(flag, engine.getMapper(FlagA.class).get(entity.idx()));
     }
 
     @Test
@@ -66,12 +66,12 @@ public class CommandTest {
         RemoveCommand remove = remove(FlagA.class);
         remove.apply(entity, 0f);
         engine.update();
-        assertFalse(engine.getMapper(FlagA.class).has(entity.getEntity()));
+        assertFalse(engine.getMapper(FlagA.class).has(entity.idx()));
         Pools.free(remove);
         remove = remove(FlagB.class);
         remove.apply(entity, 0f);
         engine.update();
-        assertFalse(engine.getMapper(FlagB.class).has(entity.getEntity()));
+        assertFalse(engine.getMapper(FlagB.class).has(entity.idx()));
     }
 
     @Test

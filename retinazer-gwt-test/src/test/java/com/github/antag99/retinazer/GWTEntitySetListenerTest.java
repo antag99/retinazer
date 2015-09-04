@@ -59,7 +59,7 @@ public class GWTEntitySetListenerTest extends RetinazerTestCase {
         EntitySetListenerMock listener = new EntitySetListenerMock();
         Engine engine = new Engine(new EngineConfig());
         engine.getEntities().addListener(listener);
-        int entity = engine.createEntity().getEntity();
+        int entity = engine.createEntity().idx();
         listener.verifyInserted(new int[0]);
         listener.verifyRemoved(new int[0]);
         engine.update();
@@ -79,7 +79,7 @@ public class GWTEntitySetListenerTest extends RetinazerTestCase {
         Engine engine = new Engine(new EngineConfig());
         engine.getEntitiesFor(Family.with(FlagComponentB.class)).addListener(listenerB);
         engine.getEntitiesFor(Family.with(FlagComponentC.class)).addListener(listenerC);
-        Handle entity = engine.createEntity().duplicate();
+        Handle entity = engine.createEntity().cpy();
         engine.update();
         listenerB.verifyInserted(new int[0]);
         listenerB.verifyRemoved(new int[0]);
@@ -91,27 +91,27 @@ public class GWTEntitySetListenerTest extends RetinazerTestCase {
         listenerC.verifyInserted(new int[0]);
         listenerC.verifyRemoved(new int[0]);
         engine.update();
-        listenerB.verifyInserted(entity.getEntity());
+        listenerB.verifyInserted(entity.idx());
         listenerB.verifyRemoved(new int[0]);
         listenerC.verifyInserted(new int[0]);
         listenerC.verifyRemoved(new int[0]);
         entity.remove(FlagComponentB.class);
         engine.update();
         listenerB.verifyInserted(new int[0]);
-        listenerB.verifyRemoved(entity.getEntity());
+        listenerB.verifyRemoved(entity.idx());
         listenerC.verifyInserted(new int[0]);
         listenerC.verifyRemoved(new int[0]);
         entity.add(new FlagComponentC());
         engine.update();
         listenerB.verifyInserted(new int[0]);
         listenerB.verifyRemoved(new int[0]);
-        listenerC.verifyInserted(entity.getEntity());
+        listenerC.verifyInserted(entity.idx());
         listenerC.verifyRemoved(new int[0]);
         entity.destroy();
         engine.update();
         listenerB.verifyInserted(new int[0]);
         listenerB.verifyRemoved(new int[0]);
         listenerC.verifyInserted(new int[0]);
-        listenerC.verifyRemoved(entity.getEntity());
+        listenerC.verifyRemoved(entity.idx());
     }
 }

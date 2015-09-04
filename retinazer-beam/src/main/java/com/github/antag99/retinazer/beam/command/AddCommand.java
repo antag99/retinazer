@@ -32,8 +32,8 @@ public final class AddCommand extends Command {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public float apply(Handle entity, float time) {
         Mapper mapper = entity.getEngine().getMapper(component.getClass());
-        if (!mapper.has(entity.getEntity())) {
-            mapper.add(entity.getEntity(), component);
+        if (!mapper.has(entity.idx())) {
+            mapper.add(entity.idx(), component);
         }
         return time;
     }

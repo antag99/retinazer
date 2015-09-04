@@ -44,10 +44,10 @@ public final class IdSystemTest extends EntitySystem {
 
     @Test
     public void testId() {
-        Handle entity = engine.createEntity().duplicate();
+        Handle entity = engine.createEntity().cpy();
         entity.create(Id.class).id("player");
         engine.update();
-        assertEquals(entity.getEntity(), idSystem.getEntity("player"));
+        assertEquals(entity.idx(), idSystem.getEntity("player"));
         entity.destroy();
         engine.update();
         assertEquals(-1, idSystem.getEntity("player", true));
@@ -83,7 +83,7 @@ public final class IdSystemTest extends EntitySystem {
 
     @Test(expected = IllegalStateException.class)
     public void testChangingId() {
-        Handle entity = engine.createEntity().duplicate();
+        Handle entity = engine.createEntity().cpy();
         Id id = entity.create(Id.class);
         id.id = "good";
         engine.update();

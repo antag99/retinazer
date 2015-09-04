@@ -39,7 +39,7 @@ final class EntityManager {
         engine.dirty = true;
         int entity = entities.nextClearBit(0);
         entities.set(entity);
-        return tmpHandle.setEntity(entity);
+        return tmpHandle.idx(entity);
     }
 
     public void destroyEntity(int entity) {

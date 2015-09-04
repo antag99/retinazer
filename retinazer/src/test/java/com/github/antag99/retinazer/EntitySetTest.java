@@ -60,11 +60,11 @@ public class EntitySetTest {
     @Test
     public void testIndices() {
         Engine engine = new Engine(new EngineConfig());
-        int entity0 = engine.createEntity().getEntity();
-        int entity1 = engine.createEntity().add(new FlagComponentA()).getEntity();
-        int entity2 = engine.createEntity().getEntity();
-        int entity3 = engine.createEntity().getEntity();
-        int entity4 = engine.createEntity().getEntity();
+        int entity0 = engine.createEntity().idx();
+        int entity1 = engine.createEntity().add(new FlagComponentA()).idx();
+        int entity2 = engine.createEntity().idx();
+        int entity3 = engine.createEntity().idx();
+        int entity4 = engine.createEntity().idx();
         engine.update();
         assertTrue(Arrays.equals(engine.getEntities().getIndices().toArray(),
                 new int[] { entity0, entity1, entity2, entity3, entity4 }));

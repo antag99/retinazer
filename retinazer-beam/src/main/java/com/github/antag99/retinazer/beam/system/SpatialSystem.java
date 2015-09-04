@@ -103,7 +103,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
         Room room = mRoom.get(entity);
         int partition = room.partitions.get(lookup.set(x, y), -1);
         if (partition == -1) {
-            partition = engine.createEntity().getEntity();
+            partition = engine.createEntity().idx();
             mSpatial.create(partition);
 
             GridPoint2 pos = new GridPoint2(x, y);
