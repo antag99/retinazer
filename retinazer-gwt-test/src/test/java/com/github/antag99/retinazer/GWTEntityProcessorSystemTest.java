@@ -1,6 +1,6 @@
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 public class GWTEntityProcessorSystemTest extends RetinazerTestCase {
     public static final class TestEntityProcessorSystem extends EntityProcessorSystem {

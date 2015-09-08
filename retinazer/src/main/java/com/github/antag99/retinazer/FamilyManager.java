@@ -23,8 +23,8 @@ package com.github.antag99.retinazer;
 
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.github.antag99.retinazer.utils.Bag;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Bag;
+import com.github.antag99.retinazer.util.Mask;
 
 final class FamilyManager {
     private static class Key {

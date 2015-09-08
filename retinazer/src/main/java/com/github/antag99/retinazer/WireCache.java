@@ -27,7 +27,7 @@ import java.util.List;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.github.antag99.retinazer.Wire.Ignore;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 final class WireCache {
     private final Engine engine;

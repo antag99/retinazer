@@ -19,21 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-public final class ShortBag {
+public final class IntBag {
     @Experimental
-    public short[] buffer;
+    public int[] buffer;
 
-    public ShortBag() {
+    public IntBag() {
         this(0);
     }
 
-    public ShortBag(int capacity) {
-        buffer = new short[capacity];
+    public IntBag(int capacity) {
+        buffer = new int[capacity];
     }
 
-    public short get(int index) {
+    public int get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
         }
@@ -45,7 +45,7 @@ public final class ShortBag {
         return buffer[index];
     }
 
-    public void set(int index, short value) {
+    public void set(int index, int value) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
         }
@@ -55,7 +55,7 @@ public final class ShortBag {
                 return;
             }
             int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            short[] newBuffer = new short[newCapacity];
+            int[] newBuffer = new int[newCapacity];
             System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
             this.buffer = newBuffer;
         }

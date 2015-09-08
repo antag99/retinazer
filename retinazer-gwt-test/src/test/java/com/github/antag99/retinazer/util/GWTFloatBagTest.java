@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
 import com.github.antag99.retinazer.RetinazerTestCase;
+import com.github.antag99.retinazer.util.FloatBag;
 
 public class GWTFloatBagTest extends RetinazerTestCase {
 

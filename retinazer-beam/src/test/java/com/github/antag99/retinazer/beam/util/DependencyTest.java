@@ -1,6 +1,18 @@
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.beam.util;
 
-public class GWTDependencyTest extends RetinazerTestCase {
+import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
+
+import com.github.antag99.retinazer.Engine;
+import com.github.antag99.retinazer.EngineConfig;
+import com.github.antag99.retinazer.EntitySystem;
+import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.beam.util.DependencyConfig;
+import com.github.antag99.retinazer.beam.util.DependencyResolver;
+
+public class DependencyTest {
+
     public static class Dummy {
     }
 
@@ -21,6 +33,7 @@ public class GWTDependencyTest extends RetinazerTestCase {
         public Dummy4 dummy4;
     }
 
+    @Test
     public void testExactDependency() {
         Dummy theDummy = new Dummy();
         Dummy2 theDummy2 = new Dummy2();
@@ -57,6 +70,7 @@ public class GWTDependencyTest extends RetinazerTestCase {
         assertSame(null, testConsumer.dummy4);
     }
 
+    @Test
     public void testInexactDependency() {
         Dummy theDummy = new Dummy();
         Dummy3 theDummy3 = new Dummy3();
@@ -92,12 +106,8 @@ public class GWTDependencyTest extends RetinazerTestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test(expected = ClassCastException.class)
     public void testMismatchDependency() {
-        try {
-            new DependencyConfig().addDependency((Class<Dummy3>) (Class<?>) Dummy4.class, new Dummy3());
-        } catch (ClassCastException ex) {
-            return;
-        }
-        fail("expected ClassCastException");
+        new DependencyConfig().addDependency((Class<Dummy3>) (Class<?>) Dummy4.class, new Dummy3());
     }
 }

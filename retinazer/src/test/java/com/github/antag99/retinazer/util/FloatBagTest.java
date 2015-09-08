@@ -19,11 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import com.github.antag99.retinazer.util.FloatBag;
 
 public class FloatBagTest {
 

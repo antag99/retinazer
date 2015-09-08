@@ -22,7 +22,7 @@
 package com.github.antag99.retinazer;
 
 import com.badlogic.gdx.utils.IntArray;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 public final class EntitySet {
     private static class Content {

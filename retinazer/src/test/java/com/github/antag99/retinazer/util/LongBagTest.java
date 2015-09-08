@@ -19,17 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-import com.github.antag99.retinazer.RetinazerTestCase;
+import static org.junit.Assert.*;
 
-public class GWTIntBagTest extends RetinazerTestCase {
+import org.junit.Test;
+
+import com.github.antag99.retinazer.util.LongBag;
+
+public class LongBagTest {
 
     /**
      * Ensures that the elements of a bag are actually stored
      */
+    @Test
     public void testStorage() {
-        IntBag bag = new IntBag();
+        LongBag bag = new LongBag();
 
         bag.set(0, 0);
         assertEquals(0, bag.get(0));
@@ -126,8 +131,9 @@ public class GWTIntBagTest extends RetinazerTestCase {
     /**
      * Ensures that the bag contains the default value by default
      */
+    @Test
     public void testDefault() {
-        IntBag bag = new IntBag();
+        LongBag bag = new LongBag();
         assertEquals(0, bag.get(0));
         bag.set(0, 1);
         assertEquals(0, bag.get(1));
@@ -140,10 +146,11 @@ public class GWTIntBagTest extends RetinazerTestCase {
      * does not resize when queried for non-existing elements, and that it does
      * not resize when the default value is set.
      */
+    @Test
     public void testCapacity() {
-        IntBag bag;
+        LongBag bag;
 
-        bag = new IntBag();
+        bag = new LongBag();
         assertEquals(0, bag.buffer.length);
         bag.set(0, 1);
         assertEquals(1, bag.buffer.length);
@@ -160,15 +167,15 @@ public class GWTIntBagTest extends RetinazerTestCase {
         bag.set(35, 7);
         assertEquals(64, bag.buffer.length);
 
-        bag = new IntBag();
-        for (int i = 0; i < 31; i++) {
+        bag = new LongBag();
+        for (int i = 0; i < 32; i++) {
             bag.get((1 << i) - 1);
             assertEquals(0, bag.buffer.length);
         }
         bag.get(Integer.MAX_VALUE);
         assertEquals(0, bag.buffer.length);
 
-        bag = new IntBag();
+        bag = new LongBag();
         for (int i = 0; i < 31; i++) {
             bag.set((1 << i) - 1, 0);
             assertEquals(0, bag.buffer.length);
@@ -177,31 +184,32 @@ public class GWTIntBagTest extends RetinazerTestCase {
         assertEquals(0, bag.buffer.length);
     }
 
-//@off: Broken on GWT
-//    /**
-//     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
-//     */
-//    public void testIndexOutOfBoundsException() {
-//        IntBag bag = new IntBag();
-//        for (int i = 0; i < 32; i++) {
-//            try {
-//                bag.set(-(1 << i), 0);
-//            } catch (IndexOutOfBoundsException ex) {
-//                continue;
-//            }
-//
-//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-//        }
-//
-//        for (int i = 0; i < 32; i++) {
-//            try {
-//                bag.get(-(1 << i));
-//            } catch (IndexOutOfBoundsException ex) {
-//                continue;
-//            }
-//
-//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-//        }
-//    }
-//@on
+    /**
+     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
+     */
+    @Test
+    public void testIndexOutOfBoundsException() {
+        LongBag bag = new LongBag();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.set(-(1 << i), 0);
+            } catch (IndexOutOfBoundsException ex) {
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
+            }
+
+            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+        }
+
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.get(-(1 << i));
+            } catch (IndexOutOfBoundsException ex) {
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
+            }
+
+            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+        }
+    }
 }

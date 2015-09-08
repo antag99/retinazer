@@ -22,7 +22,7 @@
 package com.github.antag99.retinazer.beam.util;
 
 import com.badlogic.gdx.utils.ObjectMap;
-import com.github.antag99.retinazer.utils.Bag;
+import com.github.antag99.retinazer.util.Bag;
 
 public final class OrdinalType<T extends Ordinal<T>> {
     int nextIndex = 0;

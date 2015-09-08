@@ -19,18 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-import static org.junit.Assert.*;
+import com.github.antag99.retinazer.RetinazerTestCase;
+import com.github.antag99.retinazer.util.ShortBag;
 
-import org.junit.Test;
-
-public class ShortBagTest {
+public class GWTShortBagTest extends RetinazerTestCase {
 
     /**
      * Ensures that the elements of a bag are actually stored
      */
-    @Test
     public void testStorage() {
         ShortBag bag = new ShortBag();
 
@@ -129,7 +127,6 @@ public class ShortBagTest {
     /**
      * Ensures that the bag contains the default value by default
      */
-    @Test
     public void testDefault() {
         ShortBag bag = new ShortBag();
         assertEquals((short) 0, bag.get(0));
@@ -144,7 +141,6 @@ public class ShortBagTest {
      * does not resize when queried for non-existing elements, and that it does
      * not resize when the default value is set.
      */
-    @Test
     public void testCapacity() {
         ShortBag bag;
 
@@ -166,7 +162,7 @@ public class ShortBagTest {
         assertEquals(64, bag.buffer.length);
 
         bag = new ShortBag();
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 31; i++) {
             bag.get((1 << i) - 1);
             assertEquals(0, bag.buffer.length);
         }
@@ -182,32 +178,31 @@ public class ShortBagTest {
         assertEquals(0, bag.buffer.length);
     }
 
-    /**
-     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
-     */
-    @Test
-    public void testIndexOutOfBoundsException() {
-        ShortBag bag = new ShortBag();
-        for (int i = 0; i < 32; i++) {
-            try {
-                bag.set(-(1 << i), (short) 0);
-            } catch (IndexOutOfBoundsException ex) {
-                if (ex.getClass() == IndexOutOfBoundsException.class)
-                    continue;
-            }
-
-            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-        }
-
-        for (int i = 0; i < 32; i++) {
-            try {
-                bag.get(-(1 << i));
-            } catch (IndexOutOfBoundsException ex) {
-                if (ex.getClass() == IndexOutOfBoundsException.class)
-                    continue;
-            }
-
-            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-        }
-    }
+//@off: Broken on GWT
+//    /**
+//     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
+//     */
+//    public void testIndexOutOfBoundsException() {
+//        ShortBag bag = new ShortBag();
+//        for (int i = 0; i < 32; i++) {
+//            try {
+//                bag.set(-(1 << i), (short) 0);
+//            } catch (IndexOutOfBoundsException ex) {
+//                continue;
+//            }
+//
+//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+//        }
+//
+//        for (int i = 0; i < 32; i++) {
+//            try {
+//                bag.get(-(1 << i));
+//            } catch (IndexOutOfBoundsException ex) {
+//                continue;
+//            }
+//
+//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+//        }
+//    }
+//@on
 }

@@ -19,15 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-import com.github.antag99.retinazer.RetinazerTestCase;
+import static org.junit.Assert.*;
 
-public class GWTBagTest extends RetinazerTestCase {
+import org.junit.Test;
+
+import com.github.antag99.retinazer.util.Bag;
+
+public class BagTest {
 
     /**
      * Ensures that the elements of a bag are actually stored
      */
+    @Test
     public void testStorage() {
         Bag<Object> bag = new Bag<>();
         Object element0 = new Object();
@@ -134,6 +139,7 @@ public class GWTBagTest extends RetinazerTestCase {
     /**
      * Ensures that the bag contains the default value by default
      */
+    @Test
     public void testDefault() {
         Bag<Object> bag = new Bag<>();
         assertEquals(null, bag.get(0));
@@ -148,6 +154,7 @@ public class GWTBagTest extends RetinazerTestCase {
      * does not resize when queried for non-existing elements, and that it does
      * not resize when the default value is set.
      */
+    @Test
     public void testCapacity() {
         Bag<Object> bag;
 
@@ -169,7 +176,7 @@ public class GWTBagTest extends RetinazerTestCase {
         assertEquals(64, bag.buffer.length);
 
         bag = new Bag<>();
-        for (int i = 0; i < 31; i++) {
+        for (int i = 0; i < 32; i++) {
             bag.get((1 << i) - 1);
             assertEquals(0, bag.buffer.length);
         }
@@ -185,40 +192,40 @@ public class GWTBagTest extends RetinazerTestCase {
         assertEquals(0, bag.buffer.length);
     }
 
-//@off: Broken on GWT
-//    public void testNextPowerOfTwo() {
-//        assertEquals(1, Bag.nextPowerOfTwo(0));
-//        assertEquals(1, Bag.nextPowerOfTwo(1));
-//        assertEquals(2, Bag.nextPowerOfTwo(2));
-//        assertEquals(4, Bag.nextPowerOfTwo(3));
-//        assertEquals(1 << 31, Bag.nextPowerOfTwo((1 << 30) + 1));
-//    }
-//@on
+    @Test
+    public void testNextPowerOfTwo() {
+        assertEquals(1, Bag.nextPowerOfTwo(0));
+        assertEquals(1, Bag.nextPowerOfTwo(1));
+        assertEquals(2, Bag.nextPowerOfTwo(2));
+        assertEquals(4, Bag.nextPowerOfTwo(3));
+        assertEquals(1 << 31, Bag.nextPowerOfTwo((1 << 30) + 1));
+    }
 
-//@off: Broken on GWT
-//    /**
-//     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
-//     */
-//    public void testIndexOutOfBoundsException() {
-//        Bag<Object> bag = new Bag<>();
-//        for (int i = 0; i < 32; i++) {
-//            try {
-//                bag.set(-(1 << i), new Object());
-//            } catch (IndexOutOfBoundsException ex) {
-//                continue;
-//            }
-//
-//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-//        }
-//        for (int i = 0; i < 32; i++) {
-//            try {
-//                bag.get(-(1 << i));
-//            } catch (IndexOutOfBoundsException ex) {
-//                continue;
-//            }
-//
-//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-//        }
-//    }
-//@on
+    /**
+     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
+     */
+    @Test
+    public void testIndexOutOfBoundsException() {
+        Bag<Object> bag = new Bag<>();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.set(-(1 << i), new Object());
+            } catch (IndexOutOfBoundsException ex) {
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
+            }
+
+            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+        }
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.get(-(1 << i));
+            } catch (IndexOutOfBoundsException ex) {
+                if (ex.getClass() == IndexOutOfBoundsException.class)
+                    continue;
+            }
+
+            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+        }
+    }
 }

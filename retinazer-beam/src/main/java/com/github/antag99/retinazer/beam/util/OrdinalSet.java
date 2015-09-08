@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 public final class OrdinalSet<T extends Ordinal<T>> implements Iterable<T> {
     private OrdinalType<T> type;

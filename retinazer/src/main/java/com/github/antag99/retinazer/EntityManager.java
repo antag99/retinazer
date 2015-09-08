@@ -21,7 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 final class EntityManager {
     private Engine engine;

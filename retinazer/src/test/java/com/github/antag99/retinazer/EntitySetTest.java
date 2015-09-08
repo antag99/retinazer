@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import com.badlogic.gdx.utils.IntArray;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 public class EntitySetTest {
     public static final class TestEntitySetListener implements EntitySetListener {

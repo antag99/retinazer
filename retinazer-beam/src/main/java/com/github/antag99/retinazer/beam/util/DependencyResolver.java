@@ -19,53 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.beam.util;
 
-public final class DoubleBag {
-    @Experimental
-    public double[] buffer;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.github.antag99.retinazer.Engine;
+import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.WireResolver;
 
-    public DoubleBag() {
-        this(0);
+/**
+ * {@link DependencyResolver} is used for registering arbitrary objects as
+ * dependencies, that will be injected into objects using {@link Wire}.
+ */
+public final class DependencyResolver implements WireResolver {
+    private ObjectMap<Class<?>, Object> dependenciesByType = new ObjectMap<>();
+
+    public DependencyResolver(DependencyConfig config) {
+        dependenciesByType.putAll(config.dependencies);
     }
 
-    public DoubleBag(int capacity) {
-        buffer = new double[capacity];
+    @Override
+    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
+        Object dependency = dependenciesByType.get(field.getType());
+        if (dependency != null) {
+            field.set(object, dependency);
+            return true;
+        }
+        return false;
     }
 
-    public double get(int index) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("index < 0: " + index);
+    @Override
+    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
+        Object dependency = dependenciesByType.get(field.getType());
+        if (dependency != null) {
+            field.set(object, null);
+            return true;
         }
-
-        if (index >= buffer.length) {
-            return 0;
-        }
-
-        return buffer[index];
+        return false;
     }
 
-    public void set(int index, double value) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
-
-        if (index >= buffer.length) {
-            if (value == 0d) {
-                return;
-            }
-            int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            double[] newBuffer = new double[newCapacity];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-            this.buffer = newBuffer;
-        }
-
-        buffer[index] = value;
-    }
-
-    public void clear() {
-        for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0d;
-        }
-    }
 }

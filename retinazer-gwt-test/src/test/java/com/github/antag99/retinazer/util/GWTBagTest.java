@@ -19,18 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-import static org.junit.Assert.*;
+import com.github.antag99.retinazer.RetinazerTestCase;
+import com.github.antag99.retinazer.util.Bag;
 
-import org.junit.Test;
-
-public class BagTest {
+public class GWTBagTest extends RetinazerTestCase {
 
     /**
      * Ensures that the elements of a bag are actually stored
      */
-    @Test
     public void testStorage() {
         Bag<Object> bag = new Bag<>();
         Object element0 = new Object();
@@ -137,7 +135,6 @@ public class BagTest {
     /**
      * Ensures that the bag contains the default value by default
      */
-    @Test
     public void testDefault() {
         Bag<Object> bag = new Bag<>();
         assertEquals(null, bag.get(0));
@@ -152,7 +149,6 @@ public class BagTest {
      * does not resize when queried for non-existing elements, and that it does
      * not resize when the default value is set.
      */
-    @Test
     public void testCapacity() {
         Bag<Object> bag;
 
@@ -174,7 +170,7 @@ public class BagTest {
         assertEquals(64, bag.buffer.length);
 
         bag = new Bag<>();
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 31; i++) {
             bag.get((1 << i) - 1);
             assertEquals(0, bag.buffer.length);
         }
@@ -190,40 +186,40 @@ public class BagTest {
         assertEquals(0, bag.buffer.length);
     }
 
-    @Test
-    public void testNextPowerOfTwo() {
-        assertEquals(1, Bag.nextPowerOfTwo(0));
-        assertEquals(1, Bag.nextPowerOfTwo(1));
-        assertEquals(2, Bag.nextPowerOfTwo(2));
-        assertEquals(4, Bag.nextPowerOfTwo(3));
-        assertEquals(1 << 31, Bag.nextPowerOfTwo((1 << 30) + 1));
-    }
+//@off: Broken on GWT
+//    public void testNextPowerOfTwo() {
+//        assertEquals(1, Bag.nextPowerOfTwo(0));
+//        assertEquals(1, Bag.nextPowerOfTwo(1));
+//        assertEquals(2, Bag.nextPowerOfTwo(2));
+//        assertEquals(4, Bag.nextPowerOfTwo(3));
+//        assertEquals(1 << 31, Bag.nextPowerOfTwo((1 << 30) + 1));
+//    }
+//@on
 
-    /**
-     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
-     */
-    @Test
-    public void testIndexOutOfBoundsException() {
-        Bag<Object> bag = new Bag<>();
-        for (int i = 0; i < 32; i++) {
-            try {
-                bag.set(-(1 << i), new Object());
-            } catch (IndexOutOfBoundsException ex) {
-                if (ex.getClass() == IndexOutOfBoundsException.class)
-                    continue;
-            }
-
-            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-        }
-        for (int i = 0; i < 32; i++) {
-            try {
-                bag.get(-(1 << i));
-            } catch (IndexOutOfBoundsException ex) {
-                if (ex.getClass() == IndexOutOfBoundsException.class)
-                    continue;
-            }
-
-            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
-        }
-    }
+//@off: Broken on GWT
+//    /**
+//     * When a negative index is used, an {@link IndexOutOfBoundsException} should be thrown.
+//     */
+//    public void testIndexOutOfBoundsException() {
+//        Bag<Object> bag = new Bag<>();
+//        for (int i = 0; i < 32; i++) {
+//            try {
+//                bag.set(-(1 << i), new Object());
+//            } catch (IndexOutOfBoundsException ex) {
+//                continue;
+//            }
+//
+//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+//        }
+//        for (int i = 0; i < 32; i++) {
+//            try {
+//                bag.get(-(1 << i));
+//            } catch (IndexOutOfBoundsException ex) {
+//                continue;
+//            }
+//
+//            fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
+//        }
+//    }
+//@on
 }

@@ -30,7 +30,7 @@ import com.github.antag99.retinazer.Wire.Ignore;
 import com.github.antag99.retinazer.beam.component.Input;
 import com.github.antag99.retinazer.beam.component.Keyboard;
 import com.github.antag99.retinazer.beam.util.Control;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 @Wire
 public final class KeyboardSystem extends EntityProcessorSystem implements InputProcessor {

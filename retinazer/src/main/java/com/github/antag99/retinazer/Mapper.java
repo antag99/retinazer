@@ -25,8 +25,8 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.github.antag99.retinazer.utils.Bag;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Bag;
+import com.github.antag99.retinazer.util.Mask;
 
 /**
  * {@code Mapper} is used for accessing the components of a specific type. This

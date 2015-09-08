@@ -19,13 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
+
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import com.github.antag99.retinazer.RetinazerTestCase;
+import org.junit.Test;
 
-public class GWTMaskTest extends RetinazerTestCase {
+import com.github.antag99.retinazer.util.Mask;
+
+public class MaskTest {
+
+    @Test
     public void testPushAndPop() {
         Mask mask = new Mask();
         mask.set(0);
@@ -40,6 +46,7 @@ public class GWTMaskTest extends RetinazerTestCase {
         }
     }
 
+    @Test
     public void testPush() {
         Mask mask = new Mask();
         for (int i = 0; i < 128; i++) {
@@ -50,6 +57,7 @@ public class GWTMaskTest extends RetinazerTestCase {
         }
     }
 
+    @Test
     public void testPop() {
         Mask mask = new Mask();
         for (int i = 0; i < 128; i++)
@@ -60,6 +68,7 @@ public class GWTMaskTest extends RetinazerTestCase {
         }
     }
 
+    @Test
     public void testLength() {
         Mask mask;
 
@@ -79,6 +88,7 @@ public class GWTMaskTest extends RetinazerTestCase {
         assertEquals(65, mask.length());
     }
 
+    @Test
     public void testIndices() {
         Mask mask;
 

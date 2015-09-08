@@ -19,43 +19,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-public final class FloatBag {
+public final class Bag<E> {
     @Experimental
-    public float[] buffer;
+    public Object[] buffer;
 
-    public FloatBag() {
+    static int nextPowerOfTwo(int value) {
+        if (value == 0) {
+            return 1;
+        }
+        value--;
+        value |= value >>> 1;
+        value |= value >>> 2;
+        value |= value >>> 4;
+        value |= value >>> 8;
+        value |= value >>> 16;
+        return value + 1;
+    }
+
+    public Bag() {
         this(0);
     }
 
-    public FloatBag(int capacity) {
-        buffer = new float[capacity];
+    public Bag(int capacity) {
+        buffer = new Object[capacity];
     }
 
-    public float get(int index) {
+    @SuppressWarnings("unchecked")
+    public E get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
         }
 
         if (index >= buffer.length) {
-            return 0;
+            return null;
         }
 
-        return buffer[index];
+        return (E) buffer[index];
     }
 
-    public void set(int index, float value) {
+    public void set(int index, E value) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
         }
 
         if (index >= buffer.length) {
-            if (value == 0f) {
+            if (value == null) {
                 return;
             }
             int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            float[] newBuffer = new float[newCapacity];
+            Object[] newBuffer = new Object[newCapacity];
             System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
             this.buffer = newBuffer;
         }
@@ -65,7 +79,7 @@ public final class FloatBag {
 
     public void clear() {
         for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0f;
+            buffer[i] = null;
         }
     }
 }

@@ -19,40 +19,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.util;
 
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.reflect.Field;
+public final class ShortBag {
+    @Experimental
+    public short[] buffer;
 
-/**
- * {@link DependencyResolver} is used for registering arbitrary objects as
- * dependencies, that will be injected into objects using {@link Wire}.
- */
-public final class DependencyResolver implements WireResolver {
-    private ObjectMap<Class<?>, Object> dependenciesByType = new ObjectMap<>();
-
-    public DependencyResolver(DependencyConfig config) {
-        dependenciesByType.putAll(config.dependencies);
+    public ShortBag() {
+        this(0);
     }
 
-    @Override
-    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
-        Object dependency = dependenciesByType.get(field.getType());
-        if (dependency != null) {
-            field.set(object, dependency);
-            return true;
+    public ShortBag(int capacity) {
+        buffer = new short[capacity];
+    }
+
+    public short get(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
         }
-        return false;
-    }
 
-    @Override
-    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
-        Object dependency = dependenciesByType.get(field.getType());
-        if (dependency != null) {
-            field.set(object, null);
-            return true;
+        if (index >= buffer.length) {
+            return 0;
         }
-        return false;
+
+        return buffer[index];
     }
 
+    public void set(int index, short value) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
+        if (index >= buffer.length) {
+            if (value == 0) {
+                return;
+            }
+            int newCapacity = Bag.nextPowerOfTwo(index + 1);
+            short[] newBuffer = new short[newCapacity];
+            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+            this.buffer = newBuffer;
+        }
+
+        buffer[index] = value;
+    }
+
+    public void clear() {
+        for (int i = 0, n = buffer.length; i < n; ++i) {
+            buffer[i] = 0;
+        }
+    }
 }

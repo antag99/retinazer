@@ -3,7 +3,7 @@ package com.github.antag99.retinazer;
 import java.util.Arrays;
 
 import com.badlogic.gdx.utils.IntArray;
-import com.github.antag99.retinazer.utils.Mask;
+import com.github.antag99.retinazer.util.Mask;
 
 public class GWTEntitySetTest extends RetinazerTestCase {
     public static final class TestEntitySetListener implements EntitySetListener {

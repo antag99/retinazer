@@ -23,14 +23,14 @@ package com.github.antag99.retinazer;
 
 import java.util.Arrays;
 
-import com.github.antag99.retinazer.utils.GWTBagTest;
-import com.github.antag99.retinazer.utils.GWTByteBagTest;
-import com.github.antag99.retinazer.utils.GWTDoubleBagTest;
-import com.github.antag99.retinazer.utils.GWTFloatBagTest;
-import com.github.antag99.retinazer.utils.GWTIntBagTest;
-import com.github.antag99.retinazer.utils.GWTLongBagTest;
-import com.github.antag99.retinazer.utils.GWTMaskTest;
-import com.github.antag99.retinazer.utils.GWTShortBagTest;
+import com.github.antag99.retinazer.util.GWTBagTest;
+import com.github.antag99.retinazer.util.GWTByteBagTest;
+import com.github.antag99.retinazer.util.GWTDoubleBagTest;
+import com.github.antag99.retinazer.util.GWTFloatBagTest;
+import com.github.antag99.retinazer.util.GWTIntBagTest;
+import com.github.antag99.retinazer.util.GWTLongBagTest;
+import com.github.antag99.retinazer.util.GWTMaskTest;
+import com.github.antag99.retinazer.util.GWTShortBagTest;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.junit.tools.GWTTestSuite;
 
@@ -40,7 +40,6 @@ public class RetinazerTestSuite extends TestCase {
     public static GWTTestSuite suite() {
         GWTTestSuite suite = new GWTTestSuite("retinazer gwt tests");
         for (Class<? extends TestCase> tc : Arrays.<Class<? extends GWTTestCase>> asList(
-                GWTDependencyTest.class,
                 GWTEngineTest.class,
                 GWTEntityProcessorSystemTest.class,
                 GWTEntitySetListenerTest.class,

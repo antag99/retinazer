@@ -19,21 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-public final class LongBag {
+public final class FloatBag {
     @Experimental
-    public long[] buffer;
+    public float[] buffer;
 
-    public LongBag() {
+    public FloatBag() {
         this(0);
     }
 
-    public LongBag(int capacity) {
-        buffer = new long[capacity];
+    public FloatBag(int capacity) {
+        buffer = new float[capacity];
     }
 
-    public long get(int index) {
+    public float get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
         }
@@ -45,17 +45,17 @@ public final class LongBag {
         return buffer[index];
     }
 
-    public void set(int index, long value) {
+    public void set(int index, float value) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
         }
 
         if (index >= buffer.length) {
-            if (value == 0L) {
+            if (value == 0f) {
                 return;
             }
             int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            long[] newBuffer = new long[newCapacity];
+            float[] newBuffer = new float[newCapacity];
             System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
             this.buffer = newBuffer;
         }
@@ -65,7 +65,7 @@ public final class LongBag {
 
     public void clear() {
         for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0L;
+            buffer[i] = 0f;
         }
     }
 }

@@ -19,18 +19,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer.utils;
+package com.github.antag99.retinazer.util;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+public final class DoubleBag {
+    @Experimental
+    public double[] buffer;
 
-/**
- * Informal annotation used to denote that a feature is experimental and may be
- * removed in a future version.
- */
-@Retention(RetentionPolicy.SOURCE)
-@Documented
-@Experimental
-public @interface Experimental {
+    public DoubleBag() {
+        this(0);
+    }
+
+    public DoubleBag(int capacity) {
+        buffer = new double[capacity];
+    }
+
+    public double get(int index) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
+        if (index >= buffer.length) {
+            return 0;
+        }
+
+        return buffer[index];
+    }
+
+    public void set(int index, double value) {
+        if (index < 0) {
+            throw new IndexOutOfBoundsException("index < 0: " + index);
+        }
+
+        if (index >= buffer.length) {
+            if (value == 0d) {
+                return;
+            }
+            int newCapacity = Bag.nextPowerOfTwo(index + 1);
+            double[] newBuffer = new double[newCapacity];
+            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+            this.buffer = newBuffer;
+        }
+
+        buffer[index] = value;
+    }
+
+    public void clear() {
+        for (int i = 0, n = buffer.length; i < n; ++i) {
+            buffer[i] = 0d;
+        }
+    }
 }
