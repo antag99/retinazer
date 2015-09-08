@@ -291,7 +291,7 @@ public class EngineTest {
         private @Wire MissingService service;
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testMissingDependencyInjection() {
         MissingServiceConsumer consumer = new MissingServiceConsumer();
         new Engine(new EngineConfig()).wire(consumer);
@@ -346,17 +346,5 @@ public class EngineTest {
         assertSame(flagSystemC, system.flagSystemC);
         assertSame(null, system.mBad);
         assertSame(null, system.mWorse);
-    }
-
-    public static class MissingSystem extends EntitySystem {
-    }
-
-    public static class MissingSystemConsumer extends EntitySystem {
-        public @Wire MissingSystem system;
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMissingEngineDependencyInjection() {
-        new Engine(new EngineConfig().addSystem(new MissingSystemConsumer()));
     }
 }

@@ -68,7 +68,7 @@ public final class EntitySet {
 
     private void checkModification() {
         if (view == this) {
-            throw new IllegalArgumentException("Cannot modify the entities of this set");
+            throw new RetinazerException("Cannot modify the entities of this set");
         }
         content.modCount++;
     }

@@ -14,10 +14,10 @@ public class GWTMapperTest extends RetinazerTestCase {
             int entity = engine.createEntity().idx();
             Mapper<BadComponent> mBad = engine.getMapper(BadComponent.class);
             mBad.create(entity);
-        } catch (IllegalArgumentException ex) {
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("IllegalArgumentException expected");
+        fail("RetinazerException expected");
     }
 
     // This should *never* be done

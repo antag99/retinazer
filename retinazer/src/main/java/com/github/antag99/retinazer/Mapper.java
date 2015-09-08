@@ -93,7 +93,7 @@ public final class Mapper<T extends Component> {
      */
     public T create(int entity) {
         if (constructor == null) {
-            throw new IllegalArgumentException("Component type " + type.getName()
+            throw new RetinazerException("Component type " + type.getName()
                     + " does not expose a zero-argument constructor");
         }
 

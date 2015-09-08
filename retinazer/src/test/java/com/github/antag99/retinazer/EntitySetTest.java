@@ -201,27 +201,27 @@ public class EntitySetTest {
         assertEquals("[0, 2, 4]", set.toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testUnmodifiable0() {
         new EntitySet().unmodifiable().addEntity(0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testUnmodifiable1() {
         new EntitySet().unmodifiable().addEntities(new Mask());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testUnmodifiable2() {
         new EntitySet().unmodifiable().removeEntity(0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testUnmodifiable3() {
         new EntitySet().unmodifiable().removeEntities(new Mask());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testUnmodifiable4() {
         new EntitySet().unmodifiable().clear();
     }

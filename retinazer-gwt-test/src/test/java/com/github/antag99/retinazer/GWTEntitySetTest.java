@@ -146,9 +146,7 @@ public class GWTEntitySetTest extends RetinazerTestCase {
         TestEntitySetListener testListener = new TestEntitySetListener();
         EntitySet entitySet = new EntitySet();
         entitySet.addListener(testListener);
-        entitySet.addEntities(new IntArray());
         entitySet.addEntities(new Mask());
-        entitySet.removeEntities(new IntArray());
         entitySet.removeEntities(new Mask());
         testListener.verifyInserted(new int[0]);
         testListener.verifyRemoved(new int[0]);
@@ -184,63 +182,45 @@ public class GWTEntitySetTest extends RetinazerTestCase {
     public void testUnmodifiable0() {
         try {
             new EntitySet().unmodifiable().addEntity(0);
-        } catch (IllegalArgumentException ex) {
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("IllegalArgumentException expected");
+        fail("RetinazerException expected");
     }
 
     public void testUnmodifiable1() {
         try {
-            new EntitySet().unmodifiable().addEntities(new IntArray());
-        } catch (IllegalArgumentException ex) {
+            new EntitySet().unmodifiable().addEntities(new Mask());
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("IllegalArgumentException expected");
+        fail("RetinazerException expected");
     }
 
     public void testUnmodifiable2() {
         try {
-            new EntitySet().unmodifiable().addEntities(new Mask());
-        } catch (IllegalArgumentException ex) {
+            new EntitySet().unmodifiable().removeEntity(0);
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("IllegalArgumentException expected");
+        fail("RetinazerException expected");
     }
 
     public void testUnmodifiable3() {
         try {
-            new EntitySet().unmodifiable().removeEntity(0);
-        } catch (IllegalArgumentException ex) {
+            new EntitySet().unmodifiable().removeEntities(new Mask());
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("IllegalArgumentException expected");
+        fail("RetinazerException expected");
     }
 
     public void testUnmodifiable4() {
         try {
-            new EntitySet().unmodifiable().removeEntities(new IntArray());
-        } catch (IllegalArgumentException ex) {
-            return;
-        }
-        fail("IllegalArgumentException expected");
-    }
-
-    public void testUnmodifiable5() {
-        try {
-            new EntitySet().unmodifiable().removeEntities(new Mask());
-        } catch (IllegalArgumentException ex) {
-            return;
-        }
-        fail("IllegalArgumentException expected");
-    }
-
-    public void testUnmodifiable6() {
-        try {
             new EntitySet().unmodifiable().clear();
-        } catch (IllegalArgumentException ex) {
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("IllegalArgumentException expected");
+        fail("RetinazerException expected");
     }
 }

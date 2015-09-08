@@ -17,7 +17,7 @@ public class EntityProcessorSystemTest {
         @Override
         protected void process(int entity) {
             if (processedEntities.contains(entity))
-                throw new IllegalStateException("entity already processed: " + entity);
+                throw new AssertionError("entity already processed: " + entity);
             processedEntities.addEntity(entity);
         }
     }

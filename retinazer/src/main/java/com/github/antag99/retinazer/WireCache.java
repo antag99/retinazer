@@ -79,7 +79,7 @@ final class WireCache {
             }
 
             if (mandatoryFields.get(i)) {
-                throw new IllegalArgumentException("Failed to wire field " +
+                throw new RetinazerException("Failed to wire field " +
                         field.getName() + " of " +
                         field.getDeclaringClass().getName() + "; no resolver");
             }
@@ -104,7 +104,7 @@ final class WireCache {
             }
 
             if (mandatoryFields.get(i)) {
-                throw new IllegalArgumentException("Failed to unwire field " +
+                throw new RetinazerException("Failed to unwire field " +
                         field.getName() + " of " +
                         field.getDeclaringClass().getName() + "; no resolver");
             }

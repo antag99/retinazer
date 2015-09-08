@@ -273,10 +273,10 @@ public class GWTEngineTest extends RetinazerTestCase {
         MissingServiceConsumer consumer = new MissingServiceConsumer();
         try {
             new Engine(new EngineConfig()).wire(consumer);
-        } catch (IllegalArgumentException ex) {
+        } catch (RetinazerException ex) {
             return;
         }
-        fail("expected IllegalArgumentException");
+        fail("expected RetinazerException");
     }
 
     @Wire
@@ -331,21 +331,5 @@ public class GWTEngineTest extends RetinazerTestCase {
 //      assertSame(null, system.mBad);
 //      assertSame(null, system.mWorse);
 //@on
-    }
-
-    public static class MissingSystem extends EntitySystem {
-    }
-
-    public static class MissingSystemConsumer extends EntitySystem {
-        public @Wire MissingSystem system;
-    }
-
-    public void testMissingEngineDependencyInjection() {
-        try {
-            new Engine(new EngineConfig().addSystem(new MissingSystemConsumer()));
-        } catch (IllegalArgumentException ex) {
-            return;
-        }
-        fail("expected IllegalArgumentException");
     }
 }

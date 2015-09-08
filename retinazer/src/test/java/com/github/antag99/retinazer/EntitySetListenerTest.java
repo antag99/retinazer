@@ -35,14 +35,14 @@ public class EntitySetListenerTest {
         @Override
         public void inserted(IntArray entities) {
             if (insertedEntities.size != 0)
-                throw new IllegalStateException();
+                throw new AssertionError();
             this.insertedEntities = new IntArray(entities);
         }
 
         @Override
         public void removed(IntArray entities) {
             if (removedEntities.size != 0)
-                throw new IllegalStateException();
+                throw new AssertionError();
             this.removedEntities = new IntArray(entities);
         }
 

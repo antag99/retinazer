@@ -10,7 +10,7 @@ public class MapperTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RetinazerException.class)
     public void testNoConstructor() {
         Engine engine = new Engine(new EngineConfig());
         int entity = engine.createEntity().idx();

@@ -161,7 +161,7 @@ public class GWTLongBagTest extends RetinazerTestCase {
         assertEquals(64, bag.buffer.length);
 
         bag = new LongBag();
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 31; i++) {
             bag.get((1 << i) - 1);
             assertEquals(0, bag.buffer.length);
         }
