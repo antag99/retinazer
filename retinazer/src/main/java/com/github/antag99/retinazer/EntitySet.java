@@ -40,9 +40,9 @@ public final class EntitySet {
     private IntArray indices = new IntArray();
     private int indicesModCount = 0;
 
-    // Temporary IntArray to minimize allocations - not using Pool because it
-    // is not thread safe. Note that *does* perform allocation if more than one
-    // temporary array is needed at a time, which generally shouldn't happen.
+    // Temporary IntArray to minimize allocations - not using Pool because it is
+    // not thread safe. Note that this *does* perform allocation if more than
+    // one temporary array is needed at a time, which generally shouldn't happen.
     private IntArray tmp = null;
 
     private IntArray tmp() {
@@ -54,6 +54,8 @@ public final class EntitySet {
         tmp = null;
         return value;
     }
+
+    private Mask tmpMask = new Mask();
 
     public EntitySet() {
         this.content = new Content();
@@ -126,39 +128,26 @@ public final class EntitySet {
      *            the entity to add.
      */
     public void addEntity(int entity) {
+        checkModification();
+        if (content.entities.get(entity))
+            return;
+        content.entities.set(entity);
         IntArray array = tmp();
         array.add(entity);
-        addEntities(array);
+        for (EntitySetListener listener : content.listeners) {
+            listener.inserted(array);
+        }
         array.clear();
         tmp = array;
     }
 
-    /**
-     * Inserts entities into this {@link EntitySet}. Note that this will trigger
-     * notifications for <b>all</b> entities in the given array; independent of
-     * whether or not they were already in the set. Throws an exception if this
-     * set cannot be modified.
-     *
-     * @param entities
-     *            indices of the entities to insert.
-     */
-    public void addEntities(IntArray entities) {
-        checkModification();
-        if (entities.size > 0) {
-            int[] items = entities.items;
-            for (int i = 0, n = entities.size; i < n; i++)
-                content.entities.set(items[i]);
-            for (EntitySetListener listener : content.listeners) {
-                listener.inserted(entities);
-            }
-        }
-    }
-
     public void addEntities(Mask entities) {
         checkModification();
-        content.entities.or(entities);
+        tmpMask.set(entities);
+        tmpMask.andNot(content.entities);
+        content.entities.or(tmpMask);
         IntArray array = tmp();
-        entities.getIndices(array);
+        tmpMask.getIndices(array);
         if (array.size > 0) {
             for (EntitySetListener listener : content.listeners) {
                 listener.inserted(array);
@@ -176,39 +165,26 @@ public final class EntitySet {
      *            the entity to remove.
      */
     public void removeEntity(int entity) {
+        checkModification();
+        if (!content.entities.get(entity))
+            return;
+        content.entities.clear(entity);
         IntArray array = tmp();
         array.add(entity);
-        removeEntities(array);
+        for (EntitySetListener listener : content.listeners) {
+            listener.removed(array);
+        }
         array.clear();
         tmp = array;
     }
 
-    /**
-     * Removes entities from this {@link EntitySet}. Note that this will trigger
-     * notifications for <b>all</b> entities in the given array; independent of
-     * whether or not they were already in the set. Throws an exception if this
-     * set cannot be modified.
-     *
-     * @param entities
-     *            indices of the entities to remove.
-     */
-    public void removeEntities(IntArray entities) {
-        checkModification();
-        if (entities.size > 0) {
-            int[] items = entities.items;
-            for (int i = 0, n = entities.size; i < n; i++)
-                content.entities.clear(items[i]);
-            for (EntitySetListener listener : content.listeners) {
-                listener.removed(entities);
-            }
-        }
-    }
-
     public void removeEntities(Mask entities) {
         checkModification();
-        content.entities.andNot(entities);
+        tmpMask.set(entities);
+        tmpMask.and(content.entities);
+        content.entities.andNot(tmpMask);
         IntArray array = tmp();
-        entities.getIndices(array);
+        tmpMask.getIndices(array);
         if (array.size > 0) {
             for (EntitySetListener listener : content.listeners) {
                 listener.removed(array);

@@ -154,9 +154,7 @@ public class EntitySetTest {
         TestEntitySetListener testListener = new TestEntitySetListener();
         EntitySet entitySet = new EntitySet();
         entitySet.addListener(testListener);
-        entitySet.addEntities(new IntArray());
         entitySet.addEntities(new Mask());
-        entitySet.removeEntities(new IntArray());
         entitySet.removeEntities(new Mask());
         testListener.verifyInserted(new int[0]);
         testListener.verifyRemoved(new int[0]);
@@ -210,31 +208,21 @@ public class EntitySetTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnmodifiable1() {
-        new EntitySet().unmodifiable().addEntities(new IntArray());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testUnmodifiable2() {
         new EntitySet().unmodifiable().addEntities(new Mask());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnmodifiable3() {
+    public void testUnmodifiable2() {
         new EntitySet().unmodifiable().removeEntity(0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnmodifiable4() {
-        new EntitySet().unmodifiable().removeEntities(new IntArray());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testUnmodifiable5() {
+    public void testUnmodifiable3() {
         new EntitySet().unmodifiable().removeEntities(new Mask());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testUnmodifiable6() {
+    public void testUnmodifiable4() {
         new EntitySet().unmodifiable().clear();
     }
 }
