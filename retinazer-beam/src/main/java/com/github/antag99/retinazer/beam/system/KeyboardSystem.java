@@ -26,7 +26,7 @@ import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Ignore;
+import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.component.Input;
 import com.github.antag99.retinazer.beam.component.Keyboard;
 import com.github.antag99.retinazer.beam.util.Control;
@@ -37,13 +37,13 @@ public final class KeyboardSystem extends EntityProcessorSystem implements Input
     private Mapper<Keyboard> mKeyboard;
     private Mapper<Input> mInput;
 
-    @Ignore
+    @Exclude
     private Mask activeKeys = new Mask();
 
-    @Ignore
+    @Exclude
     private Mask justPressedKeys = new Mask();
 
-    @Ignore
+    @Exclude
     private Mask justReleasedKeys = new Mask();
 
     public KeyboardSystem() {

@@ -30,7 +30,7 @@ import com.github.antag99.retinazer.EntitySetListener;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Ignore;
+import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.component.Location;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Room;
@@ -46,13 +46,13 @@ public final class SpatialSystem extends EntityProcessorSystem {
     private Mapper<Size> mSize;
     private Mapper<Spatial> mSpatial;
 
-    @Ignore
+    @Exclude
     private final int partitionWidth;
 
-    @Ignore
+    @Exclude
     private final int partitionHeight;
 
-    @Ignore
+    @Exclude
     private GridPoint2 lookup = new GridPoint2();
 
     public SpatialSystem(int partitionWidth, int partitionHeight) {

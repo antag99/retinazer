@@ -25,7 +25,7 @@ import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Ignore;
+import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.component.Velocity;
 import com.github.antag99.retinazer.beam.component.Weight;
 
@@ -35,13 +35,13 @@ public final class GravitySystem extends EntityProcessorSystem {
     private Mapper<Weight> mWeight;
     private Mapper<Velocity> mVelocity;
 
-    @Ignore
+    @Exclude
     private float gravityX;
-    @Ignore
+    @Exclude
     private float gravityY;
-    @Ignore
+    @Exclude
     private float maxGravityX;
-    @Ignore
+    @Exclude
     private float maxGravityY;
 
     public GravitySystem(float gravityX, float gravityY,
