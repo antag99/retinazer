@@ -28,11 +28,10 @@ import org.junit.Test;
 
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EngineConfig;
-import com.github.antag99.retinazer.EntitySystem;
 import com.github.antag99.retinazer.Handle;
 import com.github.antag99.retinazer.beam.component.Id;
 
-public final class IdSystemTest extends EntitySystem {
+public final class IdSystemTest {
     private Engine engine;
     private IdSystem idSystem;
 
