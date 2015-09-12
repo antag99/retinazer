@@ -5,10 +5,10 @@ import org.openjdk.jmh.infra.Blackhole;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
-import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.SkipWire;
 
-@Wire
 public final class RetrievalSystemB extends EntityProcessorSystem {
+    @SkipWire
     private Blackhole voidness = new Blackhole();
     private Mapper<ComponentB> mapper;
 
