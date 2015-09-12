@@ -29,9 +29,9 @@ import java.lang.annotation.Target;
 /**
  * Annotation that makes fields eligible for wiring. This can be applied either
  * to a whole class or to a single field. The {@link Exclude} annotation can be
- * used to revert the effect of {@link Wire}. If a field annotated with {@link Wire}
- * is not handled by a {@link WireResolver}, an exception is thrown. Fields not
- * handled when a class is annotated with {@link Wire} are ignored.
+ * used to revert the effect of {@link Wire}. If a field is not handled by any
+ * {@link WireResolver}, an exception is thrown. Always annotate fields that
+ * should not be handled with {@link Exclude}.
  *
  * @see WireResolver
  */

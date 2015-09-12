@@ -1,3 +1,4 @@
+/* @off
 package com.github.antag99.retinazer.beam.util;
 
 import static org.junit.Assert.assertSame;
@@ -111,3 +112,4 @@ public class DependencyTest {
         new DependencyConfig().addDependency((Class<Dummy3>) (Class<?>) Dummy4.class, new Dummy3());
     }
 }
+*/

@@ -28,6 +28,7 @@ import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Handle;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.command.Command;
 import com.github.antag99.retinazer.beam.component.Binding;
 import com.github.antag99.retinazer.beam.component.Input;
@@ -36,10 +37,12 @@ import com.github.antag99.retinazer.beam.util.Control;
 @Wire
 public final class BindingSystem extends EntityProcessorSystem {
     private Engine engine;
-    private Handle handle;
     private DeltaSystem deltaSystem;
     private Mapper<Binding> mBinding;
     private Mapper<Input> mInput;
+
+    @Exclude
+    private Handle handle;
 
     public BindingSystem() {
         super(Family.with(Binding.class, Input.class));

@@ -27,6 +27,7 @@ import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.component.Collision;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Size;
@@ -48,6 +49,7 @@ public final class CollisionSystem extends EntityProcessorSystem {
         CollisionListener listener;
     }
 
+    @Exclude
     private Array<CollisionListenerRegistration> collisionListeners = new Array<>();
 
     public CollisionSystem() {

@@ -288,8 +288,8 @@ public class GWTEngineTest extends RetinazerTestCase {
         public Mapper<FlagComponentA> mFlagA;
         public Mapper<FlagComponentB> mFlagB;
         public Mapper<FlagComponentC> mFlagC;
-        public Mapper<? extends Component> mBad;
-        public Mapper<? extends Component> mWorse;
+        // public Mapper<? extends Component> mBad;
+        // public Mapper<? extends Component> mWorse;
     }
 
     public void testEngineDependencyInjection() {
@@ -309,10 +309,8 @@ public class GWTEngineTest extends RetinazerTestCase {
         assertSame(engine.getMapper(FlagComponentA.class), system.mFlagA);
         assertSame(engine.getMapper(FlagComponentB.class), system.mFlagB);
         assertSame(engine.getMapper(FlagComponentC.class), system.mFlagC);
-//@off: Broken on GWT
-//        assertSame(null, system.mBad);
-//        assertSame(null, system.mWorse);
-//@on
+        // assertSame(null, system.mBad);
+        // assertSame(null, system.mWorse);
         engine.unwire(system);
         assertSame(null, system.flagSystemA);
         assertSame(null, system.flagSystemB);
@@ -320,16 +318,14 @@ public class GWTEngineTest extends RetinazerTestCase {
         assertSame(null, system.mFlagA);
         assertSame(null, system.mFlagB);
         assertSame(null, system.mFlagC);
-        assertSame(null, system.mBad);
-        assertSame(null, system.mWorse);
+        // assertSame(null, system.mBad);
+        // assertSame(null, system.mWorse);
         engine.wire(system);
         assertSame(engine, system.engine);
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
-//@off: Broken on GWT
-//      assertSame(null, system.mBad);
-//      assertSame(null, system.mWorse);
-//@on
+        // assertSame(null, system.mBad);
+        // assertSame(null, system.mWorse);
     }
 }

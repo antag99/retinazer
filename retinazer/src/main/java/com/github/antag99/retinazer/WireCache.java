@@ -27,28 +27,27 @@ import java.util.List;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.github.antag99.retinazer.Wire.Exclude;
-import com.github.antag99.retinazer.util.Mask;
 
 final class WireCache {
     private final Engine engine;
     private final Field[] fields;
-    private final Mask mandatoryFields;
     private final WireResolver[] wireResolvers;
 
     public WireCache(Engine engine, Class<?> type, WireResolver[] wireResolvers) {
         List<Field> fields = new ArrayList<>();
-        Mask mandatoryFields = new Mask();
         Class<?> current = type;
         while (current != Object.class) {
             boolean globalWire = ClassReflection.getDeclaredAnnotation(current, Wire.class) != null;
             for (Field field : ClassReflection.getDeclaredFields(current)) {
                 field.setAccessible(true);
 
+                if (field.isSynthetic())
+                    continue;
+
                 boolean wire = field.getDeclaredAnnotation(Wire.class) != null;
                 boolean exclude = field.getDeclaredAnnotation(Exclude.class) != null;
 
                 if ((wire || globalWire) && !exclude) {
-                    mandatoryFields.set(fields.size(), wire);
                     fields.add(field);
                 }
             }
@@ -57,13 +56,11 @@ final class WireCache {
         }
         this.engine = engine;
         this.fields = fields.toArray(new Field[0]);
-        this.mandatoryFields = mandatoryFields;
         this.wireResolvers = wireResolvers;
     }
 
     public void wire(Object object) {
         final Field[] fields = this.fields;
-        final Mask mandatoryFields = this.mandatoryFields;
         final WireResolver[] wireResolvers = this.wireResolvers;
 
         iterate: for (int i = 0; i < fields.length; i++) {
@@ -78,17 +75,14 @@ final class WireCache {
                 }
             }
 
-            if (mandatoryFields.get(i)) {
-                throw new RetinazerException("Failed to wire field " +
-                        field.getName() + " of " +
-                        field.getDeclaringClass().getName() + "; no resolver");
-            }
+            throw new RetinazerException("Failed to wire field " +
+                    field.getName() + " of " +
+                    field.getDeclaringClass().getName() + "; no resolver");
         }
     }
 
     public void unwire(Object object) {
         final Field[] fields = this.fields;
-        final Mask mandatoryFields = this.mandatoryFields;
         final WireResolver[] wireResolvers = this.wireResolvers;
 
         iterate: for (int i = 0; i < fields.length; i++) {
@@ -103,11 +97,9 @@ final class WireCache {
                 }
             }
 
-            if (mandatoryFields.get(i)) {
-                throw new RetinazerException("Failed to unwire field " +
-                        field.getName() + " of " +
-                        field.getDeclaringClass().getName() + "; no resolver");
-            }
+            throw new RetinazerException("Failed to unwire field " +
+                    field.getName() + " of " +
+                    field.getDeclaringClass().getName() + "; no resolver");
         }
     }
 }
