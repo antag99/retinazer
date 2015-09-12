@@ -26,17 +26,14 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.badlogic.gdx.math.GridPoint2;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EngineConfig;
 import com.github.antag99.retinazer.EntitySet;
 import com.github.antag99.retinazer.Handle;
-import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.beam.component.Location;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Room;
 import com.github.antag99.retinazer.beam.component.Size;
-import com.github.antag99.retinazer.beam.component.Spatial;
 
 public final class SpatialSystemTest {
     private static final int PARTITION_WIDTH = 32;
@@ -47,13 +44,11 @@ public final class SpatialSystemTest {
 
     Engine engine;
     SpatialSystem spatialSystem;
-    Mapper<Spatial> mSpatial;
 
     @Before
     public void initialize() {
         engine = new Engine(new EngineConfig()
                 .addSystem(spatialSystem = new SpatialSystem(PARTITION_WIDTH, PARTITION_HEIGHT)));
-        mSpatial = engine.getMapper(Spatial.class);
     }
 
     @Test
@@ -65,8 +60,6 @@ public final class SpatialSystemTest {
 
         EntitySet set = new EntitySet();
         set.addEntity(entity.idx());
-
-        EntitySet emptySet = new EntitySet();
 
         Position position = entity.create(Position.class);
         position.x = 0f;
@@ -87,7 +80,7 @@ public final class SpatialSystemTest {
         assertEquals(1, location.partitionEndX);
         assertEquals(1, location.partitionEndY);
 
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(0, 0), -1)).entities);
+        assertEquals(set, room.partitions.get(((long) 0 << 32) | (long) 0));
 
         engine.update();
 
@@ -97,7 +90,7 @@ public final class SpatialSystemTest {
         assertEquals(1, location.partitionEndX);
         assertEquals(1, location.partitionEndY);
 
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(0, 0), -1)).entities);
+        assertEquals(set, room.partitions.get(((long) 0 << 32) | (long) 0));
 
         position.x = PARTITION_WIDTH - ENTITY_WIDTH * 0.5f;
         position.y = PARTITION_HEIGHT - ENTITY_HEIGHT * 0.5f;
@@ -110,10 +103,10 @@ public final class SpatialSystemTest {
         assertEquals(2, location.partitionEndX);
         assertEquals(2, location.partitionEndY);
 
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(0, 0), -1)).entities);
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(1, 0), -1)).entities);
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(0, 1), -1)).entities);
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(1, 1), -1)).entities);
+        assertEquals(set, room.partitions.get(((long) 0 << 32) | (long) 0));
+        assertEquals(set, room.partitions.get(((long) 1 << 32) | (long) 0));
+        assertEquals(set, room.partitions.get(((long) 0 << 32) | (long) 1));
+        assertEquals(set, room.partitions.get(((long) 1 << 32) | (long) 1));
 
         position.x = PARTITION_WIDTH;
         position.y = PARTITION_HEIGHT;
@@ -126,18 +119,18 @@ public final class SpatialSystemTest {
         assertEquals(2, location.partitionEndX);
         assertEquals(2, location.partitionEndY);
 
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(0, 0), -1)).entities);
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(1, 0), -1)).entities);
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(0, 1), -1)).entities);
-        assertEquals(set, mSpatial.get(room.partitions.get(new GridPoint2(1, 1), -1)).entities);
+        assertEquals(null, room.partitions.get(((long) 0 << 32) | (long) 0));
+        assertEquals(null, room.partitions.get(((long) 1 << 32) | (long) 0));
+        assertEquals(null, room.partitions.get(((long) 0 << 32) | (long) 1));
+        assertEquals(set, room.partitions.get(((long) 1 << 32) | (long) 1));
 
         entity.destroy();
 
         engine.update();
 
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(0, 0), -1)).entities);
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(1, 0), -1)).entities);
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(0, 1), -1)).entities);
-        assertEquals(emptySet, mSpatial.get(room.partitions.get(new GridPoint2(1, 1), -1)).entities);
+        assertEquals(null, room.partitions.get(((long) 0 << 32) | (long) 0));
+        assertEquals(null, room.partitions.get(((long) 1 << 32) | (long) 0));
+        assertEquals(null, room.partitions.get(((long) 0 << 32) | (long) 1));
+        assertEquals(null, room.partitions.get(((long) 1 << 32) | (long) 1));
     }
 }

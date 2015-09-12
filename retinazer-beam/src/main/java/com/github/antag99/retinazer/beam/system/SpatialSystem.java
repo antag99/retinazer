@@ -21,11 +21,12 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.beam.system;
 
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Pool;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EntityProcessorSystem;
+import com.github.antag99.retinazer.EntitySet;
 import com.github.antag99.retinazer.EntitySetListener;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
@@ -34,7 +35,6 @@ import com.github.antag99.retinazer.beam.component.Location;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Room;
 import com.github.antag99.retinazer.beam.component.Size;
-import com.github.antag99.retinazer.beam.component.Spatial;
 
 public final class SpatialSystem extends EntityProcessorSystem {
     private Engine engine;
@@ -42,16 +42,20 @@ public final class SpatialSystem extends EntityProcessorSystem {
     private Mapper<Location> mLocation;
     private Mapper<Position> mPosition;
     private Mapper<Size> mSize;
-    private Mapper<Spatial> mSpatial;
+
+    @SkipWire
+    private Pool<EntitySet> sets = new Pool<EntitySet>() {
+        @Override
+        protected EntitySet newObject() {
+            return new EntitySet();
+        }
+    };
 
     @SkipWire
     private final int partitionWidth;
 
     @SkipWire
     private final int partitionHeight;
-
-    @SkipWire
-    private GridPoint2 lookup = new GridPoint2();
 
     public SpatialSystem(int partitionWidth, int partitionHeight) {
         super(Family.with(Location.class, Position.class, Size.class));
@@ -73,7 +77,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
                     Location location = mLocation.get(items[i]);
                     for (int ii = location.partitionStartX; ii < location.partitionEndX; ii++) {
                         for (int jj = location.partitionStartY; jj < location.partitionEndY; jj++) {
-                            mSpatial.get(getPartition(location.room, ii, jj)).entities.removeEntity(items[i]);
+                            removeEntity(location.room, ii, jj, items[i]);
                         }
                     }
                 }
@@ -97,17 +101,22 @@ public final class SpatialSystem extends EntityProcessorSystem {
         return MathUtils.ceil((position.y + size.height) / partitionHeight);
     }
 
-    private int getPartition(int entity, int x, int y) {
-        Room room = mRoom.get(entity);
-        int partition = room.partitions.get(lookup.set(x, y), -1);
-        if (partition == -1) {
-            partition = engine.createEntity().idx();
-            mSpatial.create(partition);
-
-            GridPoint2 pos = new GridPoint2(x, y);
-            room.partitions.put(pos, partition);
+    private void addEntity(int room, int x, int y, int entity) {
+        EntitySet set = mRoom.get(room).getPartition(x, y);
+        if (set == null) {
+            set = sets.obtain();
+            mRoom.get(room).setPartition(x, y, set);
         }
-        return partition;
+        set.addEntity(entity);
+    }
+
+    private void removeEntity(int room, int x, int y, int entity) {
+        EntitySet set = mRoom.get(room).getPartition(x, y);
+        set.removeEntity(entity);
+        if (set.getIndices().size == 0) {
+            mRoom.get(room).setPartition(x, y, null);
+            sets.free(set);
+        }
     }
 
     @Override
@@ -130,8 +139,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
             for (int j = oldPartitionStartY; j < oldPartitionEndY; j++) {
                 if (i < location.partitionStartX || j < location.partitionStartY ||
                         i >= location.partitionEndX || j >= location.partitionEndY) {
-                    int partition = getPartition(location.room, i, j);
-                    mSpatial.get(partition).entities.removeEntity(entity);
+                    removeEntity(location.room, i, j, entity);
                 }
             }
         }
@@ -140,8 +148,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
             for (int j = location.partitionStartY; j < location.partitionEndY; j++) {
                 if (i < oldPartitionStartX || i < oldPartitionStartY ||
                         i >= oldPartitionEndX || j >= oldPartitionEndY) {
-                    int partition = getPartition(location.room, i, j);
-                    mSpatial.get(partition).entities.addEntity(entity);
+                    addEntity(location.room, i, j, entity);
                 }
             }
         }

@@ -24,18 +24,19 @@ package com.github.antag99.retinazer.beam.system;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.github.antag99.retinazer.EntityProcessorSystem;
+import com.github.antag99.retinazer.EntitySet;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.beam.component.Collision;
 import com.github.antag99.retinazer.beam.component.Position;
+import com.github.antag99.retinazer.beam.component.Room;
 import com.github.antag99.retinazer.beam.component.Size;
-import com.github.antag99.retinazer.beam.component.Spatial;
 import com.github.antag99.retinazer.beam.util.Category;
 import com.github.antag99.retinazer.beam.util.CollisionListener;
 
 public final class CollisionSystem extends EntityProcessorSystem {
-    private Mapper<Spatial> mSpatial;
+    private Mapper<Room> mRoom;
 
     private Mapper<Position> mPosition;
     private Mapper<Size> mSize;
@@ -51,7 +52,7 @@ public final class CollisionSystem extends EntityProcessorSystem {
     private Array<CollisionListenerRegistration> collisionListeners = new Array<>();
 
     public CollisionSystem() {
-        super(Family.with(Spatial.class));
+        super(Family.with(Room.class));
     }
 
     public void addCollisionListener(Category a, Category b, CollisionListener listener) {
@@ -72,55 +73,56 @@ public final class CollisionSystem extends EntityProcessorSystem {
 
     @Override
     protected void process(int entity) {
-        Spatial spatial = mSpatial.get(entity);
+        Room room = mRoom.get(entity);
 
-        IntArray indices = spatial.entities.getIndices();
-        int[] items = indices.items;
+        for (EntitySet set : room.partitions.values()) {
+            IntArray indices = set.getIndices();
+            int[] items = indices.items;
 
-        for (int i = 0, n = indices.size; i < n; i++) {
-            int a = items[i];
-            Position aPosition = mPosition.get(a);
-            Size aSize = mSize.get(a);
-            Collision aCollision = mCollision.get(a);
+            for (int i = 0, n = indices.size; i < n; i++) {
+                int a = items[i];
+                Position aPosition = mPosition.get(a);
+                Size aSize = mSize.get(a);
+                Collision aCollision = mCollision.get(a);
 
-            if (aCollision == null)
-                continue;
-
-            for (int j = 0; j < i; j++) {
-                int b = items[j];
-                Position bPosition = mPosition.get(b);
-                Size bSize = mSize.get(b);
-                Collision bCollision = mCollision.get(b);
-
-                if (bCollision == null)
+                if (aCollision == null)
                     continue;
 
-                float aX = aPosition.x;
-                float aY = aPosition.y;
-                float aW = aSize.width;
-                float aH = aSize.height;
+                for (int j = 0; j < i; j++) {
+                    int b = items[j];
+                    Position bPosition = mPosition.get(b);
+                    Size bSize = mSize.get(b);
+                    Collision bCollision = mCollision.get(b);
 
-                float bX = bPosition.x;
-                float bY = bPosition.y;
-                float bW = bSize.width;
-                float bH = bSize.height;
+                    if (bCollision == null)
+                        continue;
 
-                if (aX + aW > bX && aY + aH > bY && bX + bW > aX && bY + bH > aY) {
-                    if (aCollision.category.intersects(bCollision.collidesWith) ||
-                            bCollision.category.intersects(aCollision.collidesWith)) {
-                        Object[] listeners = collisionListeners.items;
-                        for (int ii = 0, nn = collisionListeners.size; ii < nn; ii++) {
-                            CollisionListenerRegistration registration = (CollisionListenerRegistration) listeners[ii];
-                            if (aCollision.category.contains(registration.a) && bCollision.category.contains(registration.b)) {
-                                registration.listener.onCollison(a, b);
-                            } else if (aCollision.category.contains(registration.b) && bCollision.category.contains(registration.a)) {
-                                registration.listener.onCollison(b, a);
+                    float aX = aPosition.x;
+                    float aY = aPosition.y;
+                    float aW = aSize.width;
+                    float aH = aSize.height;
+
+                    float bX = bPosition.x;
+                    float bY = bPosition.y;
+                    float bW = bSize.width;
+                    float bH = bSize.height;
+
+                    if (aX + aW > bX && aY + aH > bY && bX + bW > aX && bY + bH > aY) {
+                        if (aCollision.category.intersects(bCollision.collidesWith) ||
+                                bCollision.category.intersects(aCollision.collidesWith)) {
+                            Object[] listeners = collisionListeners.items;
+                            for (int ii = 0, nn = collisionListeners.size; ii < nn; ii++) {
+                                CollisionListenerRegistration registration = (CollisionListenerRegistration) listeners[ii];
+                                if (aCollision.category.contains(registration.a) && bCollision.category.contains(registration.b)) {
+                                    registration.listener.onCollison(a, b);
+                                } else if (aCollision.category.contains(registration.b) && bCollision.category.contains(registration.a)) {
+                                    registration.listener.onCollison(b, a);
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
     }
 }

@@ -21,23 +21,29 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.beam.component;
 
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.utils.ObjectIntMap;
+import com.badlogic.gdx.utils.LongMap;
 import com.github.antag99.retinazer.Component;
+import com.github.antag99.retinazer.EntitySet;
 
 /**
  * Tracks the properties of a room. This includes the active partitions.
  *
- * Partitions are dynamically created when an entity enters a new region of the room.
+ * Partitions are dynamically created when an entity enters a new region of the
+ * room, and destroyed when there are no partitions available.
  */
 public final class Room implements Component {
 
     /**
-     * Mapping of partition position (in partition coordinates) to partition
-     * entity. The partition entity in turn has the {@link Spatial} component,
-     * which stores the entities inside the partition. The benefit of using
-     * entities for partitions is that users can extend partitions with support
-     * for storing geometry or other clever stuff.
+     * Mapping of partition position to the entities contained in a partition.
+     * A position is converted to {@code long} by {@code (x << 32) | y}
      */
-    public ObjectIntMap<GridPoint2> partitions = new ObjectIntMap<>();
+    public LongMap<EntitySet> partitions = new LongMap<>();
+
+    public EntitySet getPartition(int x, int y) {
+        return partitions.get(((long) x << 32) | (long) y);
+    }
+
+    public EntitySet setPartition(int x, int y, EntitySet set) {
+        return partitions.put(((long) x << 32) | (long) y, set);
+    }
 }
