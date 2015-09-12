@@ -23,11 +23,11 @@ package com.github.antag99.retinazer.beam.system;
 
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EntityProcessorSystem;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Handle;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.command.Command;
 import com.github.antag99.retinazer.beam.component.Script;
 
@@ -37,7 +37,7 @@ public final class ScriptSystem extends EntityProcessorSystem {
     private DeltaSystem deltaSystem;
     private Mapper<Script> mScript;
 
-    @Exclude
+    @SkipWire
     private Handle handle;
 
     public ScriptSystem() {

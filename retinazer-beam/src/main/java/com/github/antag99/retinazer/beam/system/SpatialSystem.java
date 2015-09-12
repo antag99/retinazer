@@ -27,10 +27,10 @@ import com.badlogic.gdx.utils.IntArray;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.EntitySetListener;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.component.Location;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Room;
@@ -46,13 +46,13 @@ public final class SpatialSystem extends EntityProcessorSystem {
     private Mapper<Size> mSize;
     private Mapper<Spatial> mSpatial;
 
-    @Exclude
+    @SkipWire
     private final int partitionWidth;
 
-    @Exclude
+    @SkipWire
     private final int partitionHeight;
 
-    @Exclude
+    @SkipWire
     private GridPoint2 lookup = new GridPoint2();
 
     public SpatialSystem(int partitionWidth, int partitionHeight) {

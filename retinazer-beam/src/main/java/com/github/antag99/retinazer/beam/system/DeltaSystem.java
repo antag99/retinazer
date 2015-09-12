@@ -22,12 +22,12 @@
 package com.github.antag99.retinazer.beam.system;
 
 import com.github.antag99.retinazer.EntitySystem;
-import com.github.antag99.retinazer.Wire.Exclude;
+import com.github.antag99.retinazer.SkipWire;
 
 public final class DeltaSystem extends EntitySystem {
-    @Exclude
+    @SkipWire
     private float deltaTime;
-    @Exclude
+    @SkipWire
     private float maxDeltaTime;
 
     public DeltaSystem() {

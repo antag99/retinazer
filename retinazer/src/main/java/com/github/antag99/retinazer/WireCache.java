@@ -26,7 +26,6 @@ import java.util.List;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
-import com.github.antag99.retinazer.Wire.Exclude;
 
 final class WireCache {
     private final Engine engine;
@@ -45,9 +44,9 @@ final class WireCache {
                     continue;
 
                 boolean wire = field.getDeclaredAnnotation(Wire.class) != null;
-                boolean exclude = field.getDeclaredAnnotation(Exclude.class) != null;
+                boolean skip = field.getDeclaredAnnotation(SkipWire.class) != null;
 
-                if ((wire || globalWire) && !exclude) {
+                if ((wire || globalWire) && !skip) {
                     fields.add(field);
                 }
             }

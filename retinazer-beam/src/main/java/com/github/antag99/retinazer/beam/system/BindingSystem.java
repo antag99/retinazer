@@ -24,11 +24,11 @@ package com.github.antag99.retinazer.beam.system;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EntityProcessorSystem;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Handle;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.command.Command;
 import com.github.antag99.retinazer.beam.component.Binding;
 import com.github.antag99.retinazer.beam.component.Input;
@@ -41,7 +41,7 @@ public final class BindingSystem extends EntityProcessorSystem {
     private Mapper<Binding> mBinding;
     private Mapper<Input> mInput;
 
-    @Exclude
+    @SkipWire
     private Handle handle;
 
     public BindingSystem() {

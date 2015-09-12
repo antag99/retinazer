@@ -26,10 +26,10 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EntitySetListener;
 import com.github.antag99.retinazer.EntitySystem;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.Wire;
-import com.github.antag99.retinazer.Wire.Exclude;
 import com.github.antag99.retinazer.beam.component.Id;
 
 @Wire
@@ -37,7 +37,7 @@ public final class IdSystem extends EntitySystem {
     private Engine engine;
     private Mapper<Id> mId;
 
-    @Exclude
+    @SkipWire
     private ObjectIntMap<String> idToEntity = new ObjectIntMap<>();
 
     @Override
