@@ -22,14 +22,12 @@
 package com.github.antag99.retinazer.beam.system;
 
 import com.github.antag99.retinazer.EntityProcessorSystem;
-import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
-import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.beam.component.Velocity;
 import com.github.antag99.retinazer.beam.component.Weight;
 
-@Wire
 public final class GravitySystem extends EntityProcessorSystem {
     private DeltaSystem deltaSystem;
     private Mapper<Weight> mWeight;

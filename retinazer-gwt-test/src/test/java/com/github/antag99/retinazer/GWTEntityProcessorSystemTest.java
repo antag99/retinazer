@@ -4,6 +4,7 @@ import com.github.antag99.retinazer.util.Mask;
 
 public class GWTEntityProcessorSystemTest extends RetinazerTestCase {
     public static final class TestEntityProcessorSystem extends EntityProcessorSystem {
+        @SkipWire
         public EntitySet processedEntities = new EntitySet();
 
         public TestEntityProcessorSystem() {

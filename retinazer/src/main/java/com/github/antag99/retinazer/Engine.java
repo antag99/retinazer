@@ -95,7 +95,7 @@ public final class Engine {
             wire(system);
 
         for (EntitySystem system : systems)
-            system.setEngine(this);
+            system.setup();
 
         for (EntitySystem system : systems)
             system.initialize();

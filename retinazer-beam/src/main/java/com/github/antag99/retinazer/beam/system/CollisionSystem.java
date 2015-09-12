@@ -24,10 +24,9 @@ package com.github.antag99.retinazer.beam.system;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntArray;
 import com.github.antag99.retinazer.EntityProcessorSystem;
-import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
-import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.beam.component.Collision;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Size;
@@ -35,7 +34,6 @@ import com.github.antag99.retinazer.beam.component.Spatial;
 import com.github.antag99.retinazer.beam.util.Category;
 import com.github.antag99.retinazer.beam.util.CollisionListener;
 
-@Wire
 public final class CollisionSystem extends EntityProcessorSystem {
     private Mapper<Spatial> mSpatial;
 

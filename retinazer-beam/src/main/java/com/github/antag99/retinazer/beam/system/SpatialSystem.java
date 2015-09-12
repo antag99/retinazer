@@ -27,17 +27,15 @@ import com.badlogic.gdx.utils.IntArray;
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.EntitySetListener;
-import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
-import com.github.antag99.retinazer.Wire;
+import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.beam.component.Location;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Room;
 import com.github.antag99.retinazer.beam.component.Size;
 import com.github.antag99.retinazer.beam.component.Spatial;
 
-@Wire
 public final class SpatialSystem extends EntityProcessorSystem {
     private Engine engine;
     private Mapper<Room> mRoom;

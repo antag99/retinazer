@@ -24,16 +24,15 @@ package com.github.antag99.retinazer;
 /**
  * Base class for system implementations.
  */
+@Wire
 public abstract class EntitySystem {
     protected Engine engine;
 
     /**
-     * Sets the engine instance tied to this system.
-     *
-     * @param engine The engine instance tied to this system.
+     * Framework-side initialization method. End users should not override
+     * this method. Always call {@code super.setup()} when overriding this.
      */
-    protected void setEngine(Engine engine) {
-        this.engine = engine;
+    protected void setup() {
     }
 
     /**

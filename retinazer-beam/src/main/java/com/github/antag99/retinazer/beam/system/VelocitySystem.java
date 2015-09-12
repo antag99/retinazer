@@ -24,11 +24,9 @@ package com.github.antag99.retinazer.beam.system;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
-import com.github.antag99.retinazer.Wire;
 import com.github.antag99.retinazer.beam.component.Position;
 import com.github.antag99.retinazer.beam.component.Velocity;
 
-@Wire
 public final class VelocitySystem extends EntityProcessorSystem {
     private DeltaSystem deltaSystem;
     private Mapper<Position> mPosition;

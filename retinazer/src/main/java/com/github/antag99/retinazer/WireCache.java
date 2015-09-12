@@ -34,25 +34,37 @@ final class WireCache {
 
     public WireCache(Engine engine, Class<?> type, WireResolver[] wireResolvers) {
         List<Field> fields = new ArrayList<>();
-        Class<?> current = type;
-        while (current != Object.class) {
-            boolean globalWire = ClassReflection.getDeclaredAnnotation(current, Wire.class) != null;
-            for (Field field : ClassReflection.getDeclaredFields(current)) {
+
+        List<Class<?>> hierarchy = new ArrayList<>();
+        for (Class<?> current = type; current != Object.class; current = current.getSuperclass())
+            hierarchy.add(current);
+
+        boolean inheritWire = false;
+
+        for (int i = hierarchy.size() - 1; i >= 0; i--) {
+            Class<?> cls = hierarchy.get(i);
+            boolean classWire = inheritWire;
+            classWire |= ClassReflection.getDeclaredAnnotation(cls, Wire.class) != null;
+            classWire &= ClassReflection.getDeclaredAnnotation(cls, SkipWire.class) == null;
+
+            for (Field field : ClassReflection.getDeclaredFields(cls)) {
                 field.setAccessible(true);
 
                 if (field.isSynthetic())
                     continue;
 
-                boolean wire = field.getDeclaredAnnotation(Wire.class) != null;
-                boolean skip = field.getDeclaredAnnotation(SkipWire.class) != null;
+                boolean fieldWire = classWire;
+                fieldWire |= field.getDeclaredAnnotation(Wire.class) != null;
+                fieldWire &= field.getDeclaredAnnotation(SkipWire.class) == null;
 
-                if ((wire || globalWire) && !skip) {
+                if (fieldWire) {
                     fields.add(field);
                 }
             }
 
-            current = current.getSuperclass();
+            inheritWire = classWire;
         }
+
         this.engine = engine;
         this.fields = fields.toArray(new Field[0]);
         this.wireResolvers = wireResolvers;
