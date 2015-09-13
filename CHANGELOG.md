@@ -17,6 +17,7 @@
   - `Wire` is inherited from superclass
   - An exception is always thrown when a field is not handled by a resolver
   - `Wire.Ignore` -> `SkipWire`
+- `EntitySystem.setEngine(Engine)` is now `EntitySystem.setup()`
 - Reset method for `Engine` (`Engine.reset()`)
 - Enhanced `Mask` API
   - `Mask.getWord(int)`
