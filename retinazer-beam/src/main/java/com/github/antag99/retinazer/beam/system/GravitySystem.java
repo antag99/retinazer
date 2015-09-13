@@ -26,11 +26,11 @@ import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.SkipWire;
 import com.github.antag99.retinazer.beam.component.Velocity;
-import com.github.antag99.retinazer.beam.component.Weight;
+import com.github.antag99.retinazer.beam.component.Gravity;
 
 public final class GravitySystem extends EntityProcessorSystem {
     private DeltaSystem deltaSystem;
-    private Mapper<Weight> mWeight;
+    private Mapper<Gravity> mGravity;
     private Mapper<Velocity> mVelocity;
 
     @SkipWire
@@ -44,7 +44,7 @@ public final class GravitySystem extends EntityProcessorSystem {
 
     public GravitySystem(float gravityX, float gravityY,
             float maxGravityX, float maxGravityY) {
-        super(Family.with(Weight.class, Velocity.class));
+        super(Family.with(Gravity.class, Velocity.class));
 
         this.gravityX = gravityX;
         this.gravityY = gravityY;
@@ -70,15 +70,15 @@ public final class GravitySystem extends EntityProcessorSystem {
 
     @Override
     protected void process(int entity) {
-        Weight weight = mWeight.get(entity);
+        Gravity gravity = mGravity.get(entity);
         Velocity velocity = mVelocity.get(entity);
 
         float deltaTime = deltaSystem.getDeltaTime();
 
-        float gravityX = this.gravityX * weight.gravityScaleX;
-        float gravityY = this.gravityY * weight.gravityScaleY;
-        float maxGravityX = this.maxGravityX * weight.gravityScaleX;
-        float maxGravityY = this.maxGravityY * weight.gravityScaleY;
+        float gravityX = this.gravityX * gravity.gravityScaleX;
+        float gravityY = this.gravityY * gravity.gravityScaleY;
+        float maxGravityX = this.maxGravityX * gravity.gravityScaleX;
+        float maxGravityY = this.maxGravityY * gravity.gravityScaleY;
 
         if (velocity.x * maxGravityX < maxGravityX * maxGravityX) {
             velocity.x += gravityX * deltaTime;

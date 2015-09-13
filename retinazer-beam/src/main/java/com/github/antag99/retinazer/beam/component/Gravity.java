@@ -23,15 +23,15 @@ package com.github.antag99.retinazer.beam.component;
 
 import com.github.antag99.retinazer.Component;
 
-public final class Weight implements Component {
+public final class Gravity implements Component {
     public float gravityScaleX;
     public float gravityScaleY;
 
-    public Weight() {
+    public Gravity() {
         this(1f, 1f);
     }
 
-    public Weight(float gravityX, float gravityY) {
+    public Gravity(float gravityX, float gravityY) {
         this.gravityScaleX = gravityX;
         this.gravityScaleY = gravityY;
     }

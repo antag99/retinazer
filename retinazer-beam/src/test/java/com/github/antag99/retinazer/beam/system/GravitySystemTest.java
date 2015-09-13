@@ -38,7 +38,7 @@ import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EngineConfig;
 import com.github.antag99.retinazer.Handle;
 import com.github.antag99.retinazer.beam.component.Velocity;
-import com.github.antag99.retinazer.beam.component.Weight;
+import com.github.antag99.retinazer.beam.component.Gravity;
 
 @RunWith(Parameterized.class)
 public final class GravitySystemTest {
@@ -90,9 +90,9 @@ public final class GravitySystemTest {
     public void testGravity() {
         Handle entity = engine.createEntity();
         Velocity velocity = entity.create(Velocity.class);
-        Weight weight = entity.create(Weight.class);
-        weight.gravityScaleX = 1f;
-        weight.gravityScaleY = 1f;
+        Gravity gravity = entity.create(Gravity.class);
+        gravity.gravityScaleX = 1f;
+        gravity.gravityScaleY = 1f;
 
         deltaSystem.setDeltaTime(1f);
 
