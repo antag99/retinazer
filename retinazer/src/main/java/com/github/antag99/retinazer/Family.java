@@ -38,6 +38,15 @@ public final class Family {
         this.index = index;
     }
 
+    /**
+     * Gets the entities matching the criteria of this family.
+     *
+     * @return entities of this family.
+     */
+    public EntitySet getEntities() {
+        return entities.unmodifiable();
+    }
+
     @Override
     public int hashCode() {
         return index;

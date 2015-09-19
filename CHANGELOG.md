@@ -18,6 +18,7 @@
   - An exception is always thrown when a field is not handled by a resolver
   - `Wire.Ignore` -> `SkipWire`
 - `EntitySystem.setEngine(Engine)` is now `EntitySystem.setup()`
+- `Engine.getEntitiesFor(FamilyConfig)` is now `Engine.getFamily(FamilyConfig).getEntities()`
 - Reset method for `Engine` (`Engine.reset()`)
 - Enhanced `Mask` API
   - `Mask.getWord(int)`

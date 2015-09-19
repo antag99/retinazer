@@ -65,7 +65,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
 
     @Override
     protected void initialize() {
-        engine.getEntitiesFor(getFamily()).addListener(new EntitySetListener() {
+        engine.getFamily(getFamily()).getEntities().addListener(new EntitySetListener() {
             @Override
             public void inserted(IntArray entities) {
             }

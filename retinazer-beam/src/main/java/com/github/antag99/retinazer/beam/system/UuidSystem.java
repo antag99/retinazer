@@ -48,7 +48,7 @@ public final class UuidSystem extends EntitySystem {
 
     @Override
     protected void initialize() {
-        engine.getEntitiesFor(Family.with(Uuid.class)).addListener(new EntitySetListener() {
+        engine.getFamily(Family.with(Uuid.class)).getEntities().addListener(new EntitySetListener() {
             @Override
             public void inserted(IntArray entities) {
                 int[] items = entities.items;

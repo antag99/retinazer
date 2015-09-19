@@ -38,7 +38,7 @@ public final class IdSystem extends EntitySystem {
 
     @Override
     protected void initialize() {
-        engine.getEntitiesFor(Family.with(Id.class)).addListener(new EntitySetListener() {
+        engine.getFamily(Family.with(Id.class)).getEntities().addListener(new EntitySetListener() {
             @Override
             public void inserted(IntArray entities) {
                 int[] items = entities.items;

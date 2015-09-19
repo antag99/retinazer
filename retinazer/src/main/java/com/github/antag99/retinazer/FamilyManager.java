@@ -65,13 +65,9 @@ final class FamilyManager {
 
     public EntitySet getEntities() {
         if (entities == null) {
-            entities = getEntitiesFor(new FamilyConfig());
+            entities = getFamily(new FamilyConfig()).getEntities();
         }
         return entities;
-    }
-
-    public EntitySet getEntitiesFor(FamilyConfig family) {
-        return getFamily(family).entities.unmodifiable();
     }
 
     public Family getFamily(FamilyConfig config) {

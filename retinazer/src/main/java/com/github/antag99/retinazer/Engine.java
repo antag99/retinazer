@@ -227,19 +227,6 @@ public final class Engine {
     }
 
     /**
-     * Gets all entities matching the given family that has been added to
-     * this engine.
-     *
-     * @param family
-     *            the family.
-     * @return {@link EntitySet} containing all entities added to this engine
-     *         that matches the given family.
-     */
-    public EntitySet getEntitiesFor(FamilyConfig family) {
-        return familyManager.getEntitiesFor(family);
-    }
-
-    /**
      * Gets or creates a family for the given configuration. Typically, it's
      * not necessary to retrieve a family directly, but rather only use
      * {@link FamilyConfig}.

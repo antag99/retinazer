@@ -63,8 +63,8 @@ public class GWTEntitySetTest extends RetinazerTestCase {
         engine.update();
         assertTrue(Arrays.equals(engine.getEntities().getIndices().toArray(),
                 new int[] { entity0, entity1, entity2, entity3, entity4 }));
-        assertTrue(Arrays.equals(engine.getEntitiesFor(
-                Family.with(FlagComponentA.class)).getIndices().toArray(),
+        assertTrue(Arrays.equals(engine.getFamily(
+                Family.with(FlagComponentA.class)).getEntities().getIndices().toArray(),
                 new int[] { entity1 }));
     }
 

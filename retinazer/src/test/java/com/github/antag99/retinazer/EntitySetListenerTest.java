@@ -83,8 +83,8 @@ public class EntitySetListenerTest {
         EntitySetListenerMock listenerB = new EntitySetListenerMock();
         EntitySetListenerMock listenerC = new EntitySetListenerMock();
         Engine engine = new Engine(new EngineConfig());
-        engine.getEntitiesFor(Family.with(FlagComponentB.class)).addListener(listenerB);
-        engine.getEntitiesFor(Family.with(FlagComponentC.class)).addListener(listenerC);
+        engine.getFamily(Family.with(FlagComponentB.class)).getEntities().addListener(listenerB);
+        engine.getFamily(Family.with(FlagComponentC.class)).getEntities().addListener(listenerC);
         Handle entity = engine.createEntity().cpy();
         engine.update();
         listenerB.verifyInserted(new int[0]);
