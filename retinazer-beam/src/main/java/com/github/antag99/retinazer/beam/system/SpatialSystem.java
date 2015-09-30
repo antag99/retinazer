@@ -112,6 +112,9 @@ public final class SpatialSystem extends EntityProcessorSystem {
 
     private void removeEntity(int room, int x, int y, int entity) {
         EntitySet set = mRoom.get(room).getPartition(x, y);
+        if (set == null) {
+            return;
+        }
         set.removeEntity(entity);
         if (set.getIndices().size == 0) {
             mRoom.get(room).setPartition(x, y, null);
