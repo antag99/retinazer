@@ -39,11 +39,19 @@ public final class Room implements Component {
      */
     public LongMap<EntitySet> partitions = new LongMap<>();
 
-    public EntitySet getPartition(int x, int y) {
-        return partitions.get(((long) x << 32) | (long) y);
+    private static long toLong(int x, int y) {
+        return ((long) x << 32) | (long) y;
     }
 
-    public EntitySet setPartition(int x, int y, EntitySet set) {
-        return partitions.put(((long) x << 32) | (long) y, set);
+    public EntitySet getPartition(int x, int y) {
+        return partitions.get(toLong(x, y));
+    }
+
+    public void setPartition(int x, int y, EntitySet set) {
+        if (set != null)
+            partitions.put(toLong(x, y), set);
+        else
+            partitions.remove(toLong(x, y));
+
     }
 }
