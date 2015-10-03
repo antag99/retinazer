@@ -21,6 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.beam.system;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Pool;
 import com.github.antag99.retinazer.Engine;
@@ -49,6 +50,9 @@ public final class SpatialSystem extends EntityProcessorSystem {
             return new EntitySet();
         }
     };
+
+    @SkipWire
+    private GridPoint2 lookup = new GridPoint2();
 
     @SkipWire
     private final int partitionWidth;
@@ -101,22 +105,22 @@ public final class SpatialSystem extends EntityProcessorSystem {
     }
 
     private void addEntity(int room, int x, int y, int entity) {
-        EntitySet set = mRoom.get(room).getPartition(x, y);
+        EntitySet set = mRoom.get(room).partitions.get(lookup.set(x, y));
         if (set == null) {
             set = sets.obtain();
-            mRoom.get(room).setPartition(x, y, set);
+            mRoom.get(room).partitions.put(new GridPoint2(x, y), set);
         }
         set.edit().addEntity(entity);
     }
 
     private void removeEntity(int room, int x, int y, int entity) {
-        EntitySet set = mRoom.get(room).getPartition(x, y);
+        EntitySet set = mRoom.get(room).partitions.get(lookup.set(x, y));
         if (set == null) {
             return;
         }
         set.edit().removeEntity(entity);
         if (set.isEmpty()) {
-            mRoom.get(room).setPartition(x, y, null);
+            mRoom.get(room).partitions.remove(lookup.set(x, y));
             sets.free(set);
         }
     }

@@ -21,7 +21,8 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.beam.component;
 
-import com.badlogic.gdx.utils.LongMap;
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.github.antag99.retinazer.Component;
 import com.github.antag99.retinazer.EntitySet;
 
@@ -35,23 +36,6 @@ public final class Room implements Component {
 
     /**
      * Mapping of partition position to the entities contained in a partition.
-     * A position is converted to {@code long} by {@code (x << 32) | y}
      */
-    public LongMap<EntitySet> partitions = new LongMap<>();
-
-    private static long toLong(int x, int y) {
-        return ((long) x << 32) | (long) y;
-    }
-
-    public EntitySet getPartition(int x, int y) {
-        return partitions.get(toLong(x, y));
-    }
-
-    public void setPartition(int x, int y, EntitySet set) {
-        if (set != null)
-            partitions.put(toLong(x, y), set);
-        else
-            partitions.remove(toLong(x, y));
-
-    }
+    public ObjectMap<GridPoint2, EntitySet> partitions = new ObjectMap<>();
 }
