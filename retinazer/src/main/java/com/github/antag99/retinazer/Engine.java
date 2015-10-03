@@ -99,6 +99,8 @@ public final class Engine {
 
         for (EntitySystem system : systems)
             system.initialize();
+
+        flush();
     }
 
     public void wire(Object object) {
