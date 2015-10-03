@@ -21,49 +21,46 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import com.badlogic.gdx.utils.IntArray;
-
-public class EntitySetListenerTest {
-    private static class EntitySetListenerMock implements EntitySetListener {
-        private IntArray insertedEntities = new IntArray();
-        private IntArray removedEntities = new IntArray();
+public class GWTEntityListenerTest extends RetinazerTestCase {
+    private static class EntityListenerMock implements EntityListener {
+        private EntitySet insertedEntities = new EntitySet();
+        private EntitySet removedEntities = new EntitySet();
 
         @Override
-        public void inserted(IntArray entities) {
-            if (insertedEntities.size != 0)
+        public void inserted(EntitySet entities) {
+            if (insertedEntities.size() != 0)
                 throw new AssertionError();
-            this.insertedEntities = new IntArray(entities);
+            this.insertedEntities = new EntitySet(entities);
         }
 
         @Override
-        public void removed(IntArray entities) {
-            if (removedEntities.size != 0)
+        public void removed(EntitySet entities) {
+            if (removedEntities.size() != 0)
                 throw new AssertionError();
-            this.removedEntities = new IntArray(entities);
+            this.removedEntities = new EntitySet(entities);
         }
 
         public void verifyInserted(int... entities) {
-            IntArray array = IntArray.with(entities);
-            assertEquals(array, insertedEntities);
-            insertedEntities.clear();
+            EntitySet set = new EntitySet();
+            for (int e : entities)
+                set.edit().addEntity(e);
+            assertEquals(set, insertedEntities);
+            insertedEntities = new EntitySet();
         }
 
         public void verifyRemoved(int... entities) {
-            IntArray array = IntArray.with(entities);
-            assertEquals(array, removedEntities);
-            removedEntities.clear();
+            EntitySet set = new EntitySet();
+            for (int e : entities)
+                set.edit().addEntity(e);
+            assertEquals(set, removedEntities);
+            removedEntities = new EntitySet();
         }
     }
 
-    @Test
     public void testEntityListener() {
-        EntitySetListenerMock listener = new EntitySetListenerMock();
+        EntityListenerMock listener = new EntityListenerMock();
         Engine engine = new Engine(new EngineConfig());
-        engine.getEntities().addListener(listener);
+        engine.addEntityListener(listener);
         int entity = engine.createEntity().idx();
         listener.verifyInserted(new int[0]);
         listener.verifyRemoved(new int[0]);
@@ -78,13 +75,12 @@ public class EntitySetListenerTest {
         listener.verifyRemoved(entity);
     }
 
-    @Test
     public void testFamilyListener() {
-        EntitySetListenerMock listenerB = new EntitySetListenerMock();
-        EntitySetListenerMock listenerC = new EntitySetListenerMock();
+        EntityListenerMock listenerB = new EntityListenerMock();
+        EntityListenerMock listenerC = new EntityListenerMock();
         Engine engine = new Engine(new EngineConfig());
-        engine.getFamily(Family.with(FlagComponentB.class)).getEntities().addListener(listenerB);
-        engine.getFamily(Family.with(FlagComponentC.class)).getEntities().addListener(listenerC);
+        engine.getFamily(Family.with(FlagComponentB.class)).addListener(listenerB);
+        engine.getFamily(Family.with(FlagComponentC.class)).addListener(listenerC);
         Handle entity = engine.createEntity().cpy();
         engine.update();
         listenerB.verifyInserted(new int[0]);

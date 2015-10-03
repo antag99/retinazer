@@ -59,7 +59,7 @@ public final class SpatialSystemTest {
         Handle entity = engine.createEntity().cpy();
 
         EntitySet set = new EntitySet();
-        set.addEntity(entity.idx());
+        set.edit().addEntity(entity.idx());
 
         Position position = entity.create(Position.class);
         position.x = 0f;

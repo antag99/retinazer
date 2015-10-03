@@ -54,6 +54,7 @@ final class FamilyManager {
     private Engine engine;
     private Key lookup = new Key();
     private EntitySet entities;
+    private EntitySet argument = new EntitySet();
     private Mask tmpMask = new Mask();
     private Mask tmpMatchedEntities = new Mask();
     private Mask tmpInsertFamilyEntities = new Mask();
@@ -106,7 +107,8 @@ final class FamilyManager {
                 matchedEntities.andNot(mappers[excludedComponent].componentsMask);
             }
 
-            family.entities.addEntities(matchedEntities);
+            // No notifications to dispatch here
+            family.entities.edit().addEntities(matchedEntities);
         }
 
         return families.get(index);
@@ -126,9 +128,10 @@ final class FamilyManager {
         Mask tmpRemoveFamilyEntities = this.tmpRemoveFamilyEntities;
 
         for (int i = 0, n = familyIndices.size; i < n; i++) {
-            int[] components = families.get(i).components;
-            int[] excludedComponents = families.get(i).excludedComponents;
-            EntitySet entities = families.get(i).entities;
+            Family family = families.get(i);
+            int[] components = family.components;
+            int[] excludedComponents = family.excludedComponents;
+            EntitySet entities = family.entities;
 
             Mask matchedEntities = tmpMatchedEntities.set(engine.entityManager.entities);
 
@@ -148,11 +151,31 @@ final class FamilyManager {
 
             Mask insertFamilyEntities = tmpInsertFamilyEntities.set(matchedEntities);
             insertFamilyEntities.andNot(entities.getMask());
-            entities.addEntities(insertFamilyEntities);
+            entities.edit().addEntities(insertFamilyEntities);
+
+            if (!insertFamilyEntities.isEmpty()) {
+                argument.edit().addEntities(insertFamilyEntities);
+
+                for (EntityListener listener : family.listeners) {
+                    listener.inserted(argument.view());
+                }
+
+                argument.edit().clear();
+            }
 
             Mask removeFamilyEntities = tmpRemoveFamilyEntities.set(entities.getMask());
             removeFamilyEntities.andNot(matchedEntities);
-            entities.removeEntities(removeFamilyEntities);
+            entities.edit().removeEntities(removeFamilyEntities);
+
+            if (!removeFamilyEntities.isEmpty()) {
+                argument.edit().addEntities(removeFamilyEntities);
+
+                for (EntityListener listener : family.listeners) {
+                    listener.removed(argument.view());
+                }
+
+                argument.edit().clear();
+            }
         }
     }
 }

@@ -422,6 +422,16 @@ public final class Mask implements Poolable {
         return words;
     }
 
+    public boolean isEmpty() {
+        final long[] words = this.words;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i] != 0L) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         char[] value = new char[length()];

@@ -19,7 +19,7 @@ public class EntityProcessorSystemTest {
         protected void process(int entity) {
             if (processedEntities.contains(entity))
                 throw new AssertionError("entity already processed: " + entity);
-            processedEntities.addEntity(entity);
+            processedEntities.edit().addEntity(entity);
         }
     }
 
@@ -34,16 +34,16 @@ public class EntityProcessorSystemTest {
         entities.set(c = engine.createEntity().idx());
         engine.update();
         assertEquals(system.processedEntities.getMask(), entities);
-        system.processedEntities.clear();
+        system.processedEntities.edit().clear();
         engine.destroyEntity(b);
         entities.clear(b);
         engine.update();
         assertEquals(system.processedEntities.getMask(), entities);
-        system.processedEntities.clear();
+        system.processedEntities.edit().clear();
         entities.set(b = engine.createEntity().idx());
         engine.update();
         assertEquals(system.processedEntities.getMask(), entities);
-        system.processedEntities.clear();
+        system.processedEntities.edit().clear();
         engine.destroyEntity(a);
         engine.destroyEntity(b);
         engine.destroyEntity(c);

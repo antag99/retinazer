@@ -109,6 +109,14 @@ public final class Engine {
         wireManager.unwire(object);
     }
 
+    public void addEntityListener(EntityListener entityListener) {
+        getFamily(new FamilyConfig()).addListener(entityListener);
+    }
+
+    public void removeEntityListener(EntityListener entityListener) {
+        getFamily(new FamilyConfig()).removeListener(entityListener);
+    }
+
     /**
      * Updates all systems, interleaved by inserting/removing entities to/from
      * entity sets.
@@ -201,9 +209,7 @@ public final class Engine {
      * @see #createHandle()
      */
     public Handle createHandle(int index) {
-        Handle handle = createHandle();
-        handle.idx(index);
-        return handle;
+        return createHandle().idx(index);
     }
 
     /**

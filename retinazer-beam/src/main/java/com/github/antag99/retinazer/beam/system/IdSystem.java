@@ -21,9 +21,9 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.beam.system;
 
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectIntMap;
-import com.github.antag99.retinazer.EntitySetListener;
+import com.github.antag99.retinazer.EntityListener;
+import com.github.antag99.retinazer.EntitySet;
 import com.github.antag99.retinazer.EntitySystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
@@ -38,11 +38,11 @@ public final class IdSystem extends EntitySystem {
 
     @Override
     protected void initialize() {
-        engine.getFamily(Family.with(Id.class)).getEntities().addListener(new EntitySetListener() {
+        engine.getFamily(Family.with(Id.class)).addListener(new EntityListener() {
             @Override
-            public void inserted(IntArray entities) {
-                int[] items = entities.items;
-                for (int i = 0, n = entities.size; i < n; i++) {
+            public void inserted(EntitySet entities) {
+                int[] items = entities.getIndices().items;
+                for (int i = 0, n = entities.size(); i < n; i++) {
                     String id = mId.get(items[i]).id;
                     if (id == null) {
                         throw new IllegalStateException("Entity " + items[i] +
@@ -58,9 +58,9 @@ public final class IdSystem extends EntitySystem {
             }
 
             @Override
-            public void removed(IntArray entities) {
-                int[] items = entities.items;
-                for (int i = 0, n = entities.size; i < n; i++) {
+            public void removed(EntitySet entities) {
+                int[] items = entities.getIndices().items;
+                for (int i = 0, n = entities.size(); i < n; i++) {
                     int removed = idToEntity.remove(mId.get(items[i]).id, -1);
                     if (removed != items[i]) {
                         idToEntity.put(mId.get(items[i]).id, removed);

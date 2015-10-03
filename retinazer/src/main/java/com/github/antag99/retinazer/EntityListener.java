@@ -21,26 +21,24 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.IntArray;
-
 /**
- * Listener for {@link EntitySet}.
+ * Listener for a {@link Family} or {@link Engine}.
  */
-public interface EntitySetListener {
+public interface EntityListener {
 
     /**
-     * Called when entities are inserted into the {@link EntitySet}.
+     * Called when entities are inserted.
      *
      * @param entities
-     *            indices of the entities that were inserted.
+     *            the entities that were inserted.
      */
-    public void inserted(IntArray entities);
+    public void inserted(EntitySet entities);
 
     /**
-     * Called when entities are removed from the {@link EntitySet}.
+     * Called when entities are removed.
      *
      * @param entities
-     *            indices of the entities that were removed.
+     *            the entities that were removed.
      */
-    public void removed(IntArray entities);
+    public void removed(EntitySet entities);
 }

@@ -25,52 +25,40 @@ import com.badlogic.gdx.utils.IntArray;
 import com.github.antag99.retinazer.util.Mask;
 
 public final class EntitySet {
-    private static class Content {
-        Mask entities = new Mask();
-        int modCount = 0;
-        EntitySetListener[] listeners = new EntitySetListener[0];
-    }
 
-    private Content content;
+    private final EntitySetContent content;
 
-    // Unmodifiable view of this entity set. If the value is *this* object,
-    // indicates that this set may not be modified.
-    private EntitySet view = null;
+    private final EntitySetEdit edit;
 
-    private IntArray indices = new IntArray();
-    private int indicesModCount = 0;
-
-    // Temporary IntArray to minimize allocations - not using Pool because it is
-    // not thread safe. Note that this *does* perform allocation if more than
-    // one temporary array is needed at a time, which generally shouldn't happen.
-    private IntArray tmp = null;
-
-    private IntArray tmp() {
-        if (tmp == null) {
-            return new IntArray();
-        }
-
-        IntArray value = tmp;
-        tmp = null;
-        return value;
-    }
-
-    private Mask tmpMask = new Mask();
+    private final EntitySet view;
 
     public EntitySet() {
-        this.content = new Content();
+        this.content = new EntitySetContent();
+        this.edit = new EntitySetEdit(content);
+        this.view = new EntitySet(content);
     }
 
-    private EntitySet(EntitySet source) {
-        this.content = source.content;
+    public EntitySet(EntitySet set) {
+        this();
+
+        edit().addEntities(set.getMask());
+    }
+
+    /**
+     * Creates an unmodifiable view of the given content.
+     */
+    private EntitySet(EntitySetContent content) {
+        this.content = content;
+        this.edit = null;
         this.view = this;
     }
 
-    private void checkModification() {
-        if (view == this) {
+    public EntitySetEdit edit() {
+        if (edit == null) {
             throw new RetinazerException("Cannot modify the entities of this set");
         }
-        content.modCount++;
+
+        return edit;
     }
 
     /**
@@ -78,120 +66,8 @@ public final class EntitySet {
      *
      * @return Unmodifiable view of this entity set.
      */
-    public EntitySet unmodifiable() {
-        return view != null ? view : (view = new EntitySet(this));
-    }
-
-    /**
-     * Adds a listener to this entity set.
-     *
-     * @param listener The listener to add.
-     */
-    public void addListener(EntitySetListener listener) {
-        EntitySetListener[] listeners = content.listeners;
-        for (int i = 0, n = listeners.length; i < n; i++) {
-            if (listeners[i] == listener) {
-                System.arraycopy(listeners, 0, listeners, 1, i);
-                listeners[0] = listener;
-                return;
-            }
-        }
-        EntitySetListener[] newListeners = new EntitySetListener[listeners.length + 1];
-        System.arraycopy(listeners, 0, newListeners, 1, listeners.length);
-        newListeners[0] = listener;
-        content.listeners = newListeners;
-    }
-
-    /**
-     * Removes a listener from this entity set.
-     *
-     * @param listener The listener to remove.
-     */
-    public void removeListener(EntitySetListener listener) {
-        EntitySetListener[] listeners = content.listeners;
-        for (int i = 0, n = listeners.length; i < n; i++) {
-            if (listeners[i] == listener) {
-                EntitySetListener[] newListeners = new EntitySetListener[listeners.length - 1];
-                System.arraycopy(listeners, 0, newListeners, 0, i);
-                System.arraycopy(listeners, i + 1, newListeners, i, listeners.length - i - 1);
-                content.listeners = newListeners;
-                return;
-            }
-        }
-    }
-
-    /**
-     * Adds the given entity to this set. Throws an exception if this set
-     * cannot be modified.
-     *
-     * @param entity
-     *            the entity to add.
-     */
-    public void addEntity(int entity) {
-        checkModification();
-        if (content.entities.get(entity))
-            return;
-        content.entities.set(entity);
-        IntArray array = tmp();
-        array.add(entity);
-        for (EntitySetListener listener : content.listeners) {
-            listener.inserted(array);
-        }
-        array.clear();
-        tmp = array;
-    }
-
-    public void addEntities(Mask entities) {
-        checkModification();
-        tmpMask.set(entities);
-        tmpMask.andNot(content.entities);
-        content.entities.or(tmpMask);
-        IntArray array = tmp();
-        tmpMask.getIndices(array);
-        if (array.size > 0) {
-            for (EntitySetListener listener : content.listeners) {
-                listener.inserted(array);
-            }
-        }
-        array.clear();
-        tmp = array;
-    }
-
-    /**
-     * Removes the given entity from this set. Throws an exception if this set
-     * cannot be modified.
-     *
-     * @param entity
-     *            the entity to remove.
-     */
-    public void removeEntity(int entity) {
-        checkModification();
-        if (!content.entities.get(entity))
-            return;
-        content.entities.clear(entity);
-        IntArray array = tmp();
-        array.add(entity);
-        for (EntitySetListener listener : content.listeners) {
-            listener.removed(array);
-        }
-        array.clear();
-        tmp = array;
-    }
-
-    public void removeEntities(Mask entities) {
-        checkModification();
-        tmpMask.set(entities);
-        tmpMask.and(content.entities);
-        content.entities.andNot(tmpMask);
-        IntArray array = tmp();
-        tmpMask.getIndices(array);
-        if (array.size > 0) {
-            for (EntitySetListener listener : content.listeners) {
-                listener.removed(array);
-            }
-        }
-        array.clear();
-        tmp = array;
+    public EntitySet view() {
+        return view;
     }
 
     /**
@@ -206,8 +82,8 @@ public final class EntitySet {
     }
 
     /**
-     * Returns the entities contained in this entity set. Do <b>not</b> modify
-     * this, as it inevitably leads to undefined behavior.
+     * Returns the entities contained in this entity set.
+     * Do <b>not</b> modify this.
      *
      * @return the entities contained in this set.
      */
@@ -218,25 +94,25 @@ public final class EntitySet {
     /**
      * Returns an array containing the indices of all entities in this set.
      * Note that whenever the entity set changes, this array must be
-     * reconstructed. Do <b>not</b> modify this, as it inevitably leads to
-     * undefined behavior.
+     * reconstructed. Do <b>not</b> modify this.
      *
      * @return the indices of all entities in this set.
      */
     public IntArray getIndices() {
-        if (indicesModCount != content.modCount) {
-            indices.clear();
-            content.entities.getIndices(indices);
-            indicesModCount = content.modCount;
+        if (content.indicesDirty) {
+            content.indices.clear();
+            content.entities.getIndices(content.indices);
+            content.indicesDirty = false;
         }
-        return indices;
+        return content.indices;
     }
 
-    /**
-     * Removes all entities from this set.
-     */
-    public void clear() {
-        removeEntities(getMask());
+    public int size() {
+        return content.indicesDirty ? content.entities.cardinality() : content.indices.size;
+    }
+
+    public boolean isEmpty() {
+        return size() == 0;
     }
 
     @Override

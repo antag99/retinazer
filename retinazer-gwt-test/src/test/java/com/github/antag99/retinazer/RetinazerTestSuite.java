@@ -54,7 +54,7 @@ public class RetinazerTestSuite extends TestCase {
         for (Class<? extends TestCase> tc : Arrays.<Class<? extends GWTTestCase>> asList(
                 GWTEngineTest.class,
                 GWTEntityProcessorSystemTest.class,
-                GWTEntitySetListenerTest.class,
+                GWTEntityListenerTest.class,
                 GWTEntitySetTest.class,
                 GWTFamilyTest.class,
                 GWTHandleTest.class,

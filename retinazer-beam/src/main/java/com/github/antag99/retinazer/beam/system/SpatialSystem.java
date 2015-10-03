@@ -22,12 +22,11 @@
 package com.github.antag99.retinazer.beam.system;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Pool;
 import com.github.antag99.retinazer.Engine;
+import com.github.antag99.retinazer.EntityListener;
 import com.github.antag99.retinazer.EntityProcessorSystem;
 import com.github.antag99.retinazer.EntitySet;
-import com.github.antag99.retinazer.EntitySetListener;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Mapper;
 import com.github.antag99.retinazer.SkipWire;
@@ -65,15 +64,15 @@ public final class SpatialSystem extends EntityProcessorSystem {
 
     @Override
     protected void initialize() {
-        engine.getFamily(getFamily()).getEntities().addListener(new EntitySetListener() {
+        engine.getFamily(getFamily()).addListener(new EntityListener() {
             @Override
-            public void inserted(IntArray entities) {
+            public void inserted(EntitySet entities) {
             }
 
             @Override
-            public void removed(IntArray entities) {
-                int[] items = entities.items;
-                for (int i = 0, n = entities.size; i < n; i++) {
+            public void removed(EntitySet entities) {
+                int[] items = entities.getIndices().items;
+                for (int i = 0, n = entities.size(); i < n; i++) {
                     Location location = mLocation.get(items[i]);
                     for (int ii = location.partitionStartX; ii < location.partitionEndX; ii++) {
                         for (int jj = location.partitionStartY; jj < location.partitionEndY; jj++) {
@@ -107,7 +106,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
             set = sets.obtain();
             mRoom.get(room).setPartition(x, y, set);
         }
-        set.addEntity(entity);
+        set.edit().addEntity(entity);
     }
 
     private void removeEntity(int room, int x, int y, int entity) {
@@ -115,8 +114,8 @@ public final class SpatialSystem extends EntityProcessorSystem {
         if (set == null) {
             return;
         }
-        set.removeEntity(entity);
-        if (set.getIndices().size == 0) {
+        set.edit().removeEntity(entity);
+        if (set.isEmpty()) {
             mRoom.get(room).setPartition(x, y, null);
             sets.free(set);
         }

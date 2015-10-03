@@ -21,9 +21,9 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.beam.system;
 
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.LongMap;
-import com.github.antag99.retinazer.EntitySetListener;
+import com.github.antag99.retinazer.EntityListener;
+import com.github.antag99.retinazer.EntitySet;
 import com.github.antag99.retinazer.EntitySystem;
 import com.github.antag99.retinazer.Family;
 import com.github.antag99.retinazer.Handle;
@@ -48,11 +48,11 @@ public final class UuidSystem extends EntitySystem {
 
     @Override
     protected void initialize() {
-        engine.getFamily(Family.with(Uuid.class)).getEntities().addListener(new EntitySetListener() {
+        engine.getFamily(Family.with(Uuid.class)).addListener(new EntityListener() {
             @Override
-            public void inserted(IntArray entities) {
-                int[] items = entities.items;
-                for (int i = 0, n = entities.size; i < n; i++) {
+            public void inserted(EntitySet entities) {
+                int[] items = entities.getIndices().items;
+                for (int i = 0, n = entities.size(); i < n; i++) {
                     long uuid = mUuid.get(items[i]).uuid;
                     if (entitiesByUuid.containsKey(uuid))
                         throw new RetinazerException("both " + items[i] +
@@ -63,9 +63,9 @@ public final class UuidSystem extends EntitySystem {
             }
 
             @Override
-            public void removed(IntArray entities) {
-                int[] items = entities.items;
-                for (int i = 0, n = entities.size; i < n; i++) {
+            public void removed(EntitySet entities) {
+                int[] items = entities.getIndices().items;
+                for (int i = 0, n = entities.size(); i < n; i++) {
                     long uuid = mUuid.get(items[i]).uuid;
                     Integer entity = entitiesByUuid.remove(uuid);
                     if (entity == null || entity.intValue() != items[i])

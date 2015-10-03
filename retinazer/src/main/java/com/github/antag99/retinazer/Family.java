@@ -27,6 +27,7 @@ public final class Family {
     final int[] excludedComponents;
     final int index;
     final EntitySet entities = new EntitySet();
+    EntityListener[] listeners = new EntityListener[0];
 
     Family(Engine engine,
             int[] components,
@@ -39,12 +40,47 @@ public final class Family {
     }
 
     /**
-     * Gets the entities matching the criteria of this family.
+     * Adds a listener to this entity set.
      *
-     * @return entities of this family.
+     * @param listener The listener to add.
      */
+    public void addListener(EntityListener listener) {
+        int n = listeners.length;
+        for (int i = 0; i < n; i++) {
+            if (listeners[i] == listener) {
+                EntityListener[] newListeners = new EntityListener[n];
+                System.arraycopy(listeners, 0, newListeners, 1, i);
+                System.arraycopy(listeners, i + 1, newListeners, i, n - i - 1);
+                newListeners[0] = listener;
+                this.listeners = newListeners;
+                return;
+            }
+        }
+        EntityListener[] newListeners = new EntityListener[n + 1];
+        System.arraycopy(listeners, 0, newListeners, 1, n);
+        newListeners[0] = listener;
+        this.listeners = newListeners;
+    }
+
+    /**
+     * Removes a listener from this entity set.
+     *
+     * @param listener The listener to remove.
+     */
+    public void removeListener(EntityListener listener) {
+        for (int i = 0, n = listeners.length; i < n; i++) {
+            if (listeners[i] == listener) {
+                EntityListener[] newListeners = new EntityListener[listeners.length - 1];
+                System.arraycopy(listeners, 0, newListeners, 0, i);
+                System.arraycopy(listeners, i + 1, newListeners, i, listeners.length - i - 1);
+                this.listeners = newListeners;
+                return;
+            }
+        }
+    }
+
     public EntitySet getEntities() {
-        return entities.unmodifiable();
+        return entities.view();
     }
 
     @Override
