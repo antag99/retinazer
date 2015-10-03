@@ -148,7 +148,7 @@ public final class SpatialSystem extends EntityProcessorSystem {
 
         for (int i = location.partitionStartX; i < location.partitionEndX; i++) {
             for (int j = location.partitionStartY; j < location.partitionEndY; j++) {
-                if (i < oldPartitionStartX || i < oldPartitionStartY ||
+                if (i < oldPartitionStartX || j < oldPartitionStartY ||
                         i >= oldPartitionEndX || j >= oldPartitionEndY) {
                     addEntity(location.room, i, j, entity);
                 }
