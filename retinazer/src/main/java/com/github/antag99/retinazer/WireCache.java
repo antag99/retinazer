@@ -50,6 +50,9 @@ final class WireCache {
             for (Field field : ClassReflection.getDeclaredFields(cls)) {
                 field.setAccessible(true);
 
+                if (field.isStatic())
+                    continue;
+
                 if (field.isSynthetic())
                     continue;
 
