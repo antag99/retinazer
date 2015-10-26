@@ -46,8 +46,7 @@
   - `EntitySet.size()`
   - `EntitySet.isEmpty()`
   - Listeners are no longer supported, `EntityListener` is used for family events.
-- Support library for prototyping/jamming ("retinazer-beam")
-  - `DependencyConfig` and `DependencyResolver` moved to retinazer-beam
+- `DependencyConfig` and `DependencyResolver` removed
 - `toString()` implementation for `EntitySet`
 - `RetinazerException` as a general-purpose runtime exception
 - Fix: EntitySet indices were invalidated even when there was no change
