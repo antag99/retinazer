@@ -28,13 +28,15 @@
 - `Engine.removeEntityListener(EntityListener)`
 - `Family.addListener(EntityListener)`
 - `Family.removeListener(EntityListener)`
-- Enhanced `Mask` API
+- Revised `Mask` API
   - `Mask.getWord(int)`
   - `Mask.getWordCount()`
   - `Mask.set(long[])`
   - `Mask.setWord(int, long)`
   - `Mask.getWords()`
   - `Mask.isEmpty()`
+  - Removed 'Mask.push(int)'
+  - Removed 'Mask.pop(int)'
 - Revised `EntitySet` API
   - Modification delegated to `EntitySetEdit`
     - `EntitySet.addEntities(IntArray)` removed

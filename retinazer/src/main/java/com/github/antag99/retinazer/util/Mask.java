@@ -194,57 +194,6 @@ public final class Mask implements Poolable {
     }
 
     /**
-     * Inserts a zero bit at the given index; this shifts up the whole mask
-     *
-     * @param index The index to insert the bit
-     */
-    public void push(int index) {
-        int wordIndex = index >> 6;
-        if (wordIndex >= words.length) {
-            return;
-        }
-        long word = words[wordIndex];
-        words[wordIndex] = (word & ((1L << index) - 1)) |
-                ((word & ~((1L << index) - 1)) << 1);
-        boolean carry = (word >>> 63) != 0;
-        for (int i = wordIndex + 1, n = words.length; i < n; i++) {
-            word = words[i];
-            words[i] = (word << 1) | (carry ? 1 : 0);
-            carry = (word >>> 63) != 0;
-        }
-        if (carry) {
-            int wordCount = words.length;
-            long[] newWords = new long[words.length * 2];
-            System.arraycopy(words, 0, newWords, 0, words.length);
-            this.words = newWords;
-            words[wordCount] = 1;
-        }
-    }
-
-    /**
-     * Pops the bit at the given index; this shifts down the whole mask
-     *
-     * @param index The index of the bit to pop
-     */
-    public void pop(int index) {
-        long[] words = this.words;
-        int wordIndex = index >> 6;
-        if (wordIndex >= words.length) {
-            return;
-        }
-        long word = words[wordIndex];
-        words[wordIndex] = (word & ((1L << index) - 1)) |
-                (((word >> 1) & ~((1L << index) - 1)));
-        for (int i = wordIndex + 1, n = words.length; i < n; i++) {
-            // Carry bit
-            if ((words[i] & 1) != 0)
-                words[i - 1] |= 1L << 63;
-            // Shift down
-            words[i] >>>= 1;
-        }
-    }
-
-    /**
      * Returns the index of the set bit that is higher than or equal to the
      * given index. Returns -1 in case no such bit exists.
      *

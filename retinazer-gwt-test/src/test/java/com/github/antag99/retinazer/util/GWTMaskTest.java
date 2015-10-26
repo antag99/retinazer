@@ -27,39 +27,6 @@ import com.github.antag99.retinazer.RetinazerTestCase;
 import com.github.antag99.retinazer.util.Mask;
 
 public class GWTMaskTest extends RetinazerTestCase {
-    public void testPushAndPop() {
-        Mask mask = new Mask();
-        mask.set(0);
-
-        for (int i = 0; i < 128; i++) {
-            mask.push(i);
-            assertTrue(mask.get(i + 1));
-            mask.pop(i);
-            assertTrue(mask.get(i));
-            mask.push(0);
-            assertTrue(mask.get(i + 1));
-        }
-    }
-
-    public void testPush() {
-        Mask mask = new Mask();
-        for (int i = 0; i < 128; i++) {
-            mask.set(i);
-            mask.push(0);
-            assertFalse(String.valueOf(i), mask.get(i));
-            assertTrue(String.valueOf(i), mask.get(i + 1));
-        }
-    }
-
-    public void testPop() {
-        Mask mask = new Mask();
-        for (int i = 0; i < 128; i++)
-            mask.set(i);
-        for (int i = 0; i < 128; i++) {
-            mask.pop(0);
-            assertTrue(String.valueOf(i), mask.get(0));
-        }
-    }
 
     public void testLength() {
         Mask mask;
