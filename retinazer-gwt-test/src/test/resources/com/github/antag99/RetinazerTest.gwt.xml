@@ -4,7 +4,6 @@
     <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt"/>
     <inherits name="com.badlogic.gwtref.GwtReflect"/>
     <inherits name="com.github.antag99.retinazer_gwt"/>
-    <inherits name="com.github.antag99.retinazer_beam"/>
     <source path="retinazer"/>
     <set-configuration-property name="gdx.assetpath" value="./assets" />
     <super-source path="retinazer/gwt/emu"/>
