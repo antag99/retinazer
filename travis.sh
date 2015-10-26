@@ -31,6 +31,7 @@ printf "%s" "https://${GH_TOKEN}:@github.com" > .git/credentials
 # Update lines of code badge
 if [ "$LINES_OF_CODE" != "$OLD_LINES_OF_CODE" ]; then
     echo "$LINES_OF_CODE" > loc/retinazer.txt
+    rm loc/retinazer.svg
     wget https://img.shields.io/badge/lines_of_code-${LINES_OF_CODE}-orange.svg -O loc/retinazer.svg
     git add loc/retinazer.txt
     git add loc/retinazer.svg
