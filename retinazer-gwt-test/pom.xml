@@ -6,9 +6,7 @@
         <version>0.1.3-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.github.antag99.retinazer</groupId>
     <artifactId>retinazer-gwt-test</artifactId>
-    <version>0.1.3-SNAPSHOT</version>
 
     <properties>
         <junit.version>3.8</junit.version>
@@ -30,20 +28,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.antag99.retinazer</groupId>
-            <artifactId>retinazer-beam</artifactId>
-            <version>0.1.3-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>com.github.antag99.retinazer</groupId>
-            <artifactId>retinazer-beam</artifactId>
-            <version>0.1.3-SNAPSHOT</version>
-            <classifier>sources</classifier>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

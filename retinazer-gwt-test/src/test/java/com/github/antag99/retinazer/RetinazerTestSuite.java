@@ -23,18 +23,6 @@ package com.github.antag99.retinazer;
 
 import java.util.Arrays;
 
-import com.github.antag99.retinazer.beam.command.GWTCommandTest;
-import com.github.antag99.retinazer.beam.system.GWTBindingSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTCollisionSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTDeltaSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTGravitySystemTest;
-import com.github.antag99.retinazer.beam.system.GWTIdSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTKeyboardSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTScriptSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTSpatialSystemTest;
-import com.github.antag99.retinazer.beam.system.GWTVelocitySystemTest;
-import com.github.antag99.retinazer.beam.util.GWTOrdinalSetTest;
-import com.github.antag99.retinazer.beam.util.GWTOrdinalTest;
 import com.github.antag99.retinazer.util.GWTBagTest;
 import com.github.antag99.retinazer.util.GWTByteBagTest;
 import com.github.antag99.retinazer.util.GWTDoubleBagTest;
@@ -66,20 +54,7 @@ public class RetinazerTestSuite extends TestCase {
                 GWTIntBagTest.class,
                 GWTLongBagTest.class,
                 GWTMaskTest.class,
-                GWTShortBagTest.class,
-                // retinazer-beam tests
-                GWTCommandTest.class,
-                GWTBindingSystemTest.class,
-                GWTCollisionSystemTest.class,
-                GWTDeltaSystemTest.class,
-                GWTGravitySystemTest.class,
-                GWTIdSystemTest.class,
-                GWTKeyboardSystemTest.class,
-                GWTScriptSystemTest.class,
-                GWTSpatialSystemTest.class,
-                GWTVelocitySystemTest.class,
-                GWTOrdinalSetTest.class,
-                GWTOrdinalTest.class)) {
+                GWTShortBagTest.class)) {
             suite.addTestSuite(tc);
         }
         return suite;
