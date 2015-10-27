@@ -57,9 +57,10 @@ public class EntitySetTest {
     @Test
     public void testIndices() {
         Engine engine = new Engine(new EngineConfig());
+        Mapper<FlagComponentA> mapper = engine.getMapper(FlagComponentA.class);
         int entity0 = engine.createEntity();
-        int entity1 = engine.createHandle(engine.createEntity())
-                .add(new FlagComponentA()).get();
+        int entity1 = engine.createEntity();
+        mapper.create(entity1);
         int entity2 = engine.createEntity();
         int entity3 = engine.createEntity();
         int entity4 = engine.createEntity();

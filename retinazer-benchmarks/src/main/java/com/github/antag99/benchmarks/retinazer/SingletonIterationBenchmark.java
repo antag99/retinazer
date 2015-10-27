@@ -5,21 +5,20 @@ import org.openjdk.jmh.annotations.Setup;
 
 import com.github.antag99.retinazer.Engine;
 import com.github.antag99.retinazer.EngineConfig;
-import com.github.antag99.retinazer.Handle;
+import com.github.antag99.retinazer.Mapper;
 
 public class SingletonIterationBenchmark extends RetinazerBenchmark {
     private Engine engine;
-    private Handle handle;
 
     @Setup
     public void setup() {
         engine = new Engine(new EngineConfig()
                 .addSystem(new SingletonIterationSystem()));
-        handle = engine.createHandle();
+        Mapper<SingletonComponent> mSingleton = engine.getMapper(SingletonComponent.class);
         for (int i = 0, n = getEntityCount(); i < n; i++) {
-            Handle entity = handle.set(engine.createEntity());
+            int entity = engine.createEntity();
             if ((i % 8) == 0)
-                entity.add(SingletonComponent.INSTANCE);
+                mSingleton.add(entity, SingletonComponent.INSTANCE);
         }
     }
 

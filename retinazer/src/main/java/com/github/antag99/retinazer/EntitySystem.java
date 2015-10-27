@@ -33,17 +33,10 @@ public abstract class EntitySystem {
     protected Engine engine;
 
     /**
-     * Temporary handle for entities in the engine, for convenience.
-     */
-    @SkipWire
-    protected Handle handle;
-
-    /**
      * Framework-side initialization method. End users should not override
      * this method. Always call {@code super.setup()} when overriding this.
      */
     protected void setup() {
-        handle = engine.createHandle();
     }
 
     /**

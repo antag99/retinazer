@@ -191,29 +191,6 @@ public final class Engine {
     }
 
     /**
-     * Creates a handle for accessing the components of entities. Note that
-     * this handle can be reused by changing the index it points to; it is
-     * recommended to keep or pool handles in order to avoid garbage collection.
-     *
-     * @return an entity handle associated with this engine.
-     */
-    public Handle createHandle() {
-        return new Handle(this);
-    }
-
-    /**
-     * Creates a handle initially set to the given entity.
-     *
-     * @param index
-     *            index of the entity.
-     * @return handle for accessing components.
-     * @see #createHandle()
-     */
-    public Handle createHandle(int index) {
-        return createHandle().set(index);
-    }
-
-    /**
      * Destroys the entity with the given index. This will not remove the entity
      * immediately; only after the current system processing,
      *

@@ -111,42 +111,37 @@ public class GWTEngineTest extends RetinazerTestCase {
 
     public void testEntityRetrieval() {
         Engine engine = new Engine(new EngineConfig());
-        Handle h = engine.createHandle();
+        Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
+        Mapper<FlagComponentB> mFlagB = engine.getMapper(FlagComponentB.class);
+        Mapper<FlagComponentC> mFlagC = engine.getMapper(FlagComponentC.class);
 
-        int entity0 = h.set(engine.createEntity()).get();
+        int entity0 = engine.createEntity();
 
-        int entity1 = h.set(engine.createEntity())
-                .add(new FlagComponentA())
-                .get();
+        int entity1 = engine.createEntity();
+        mFlagA.create(entity1);
 
-        int entity2 = h.set(engine.createEntity())
-                .add(new FlagComponentB())
-                .get();
+        int entity2 = engine.createEntity();
+        mFlagB.create(entity2);
 
-        int entity3 = h.set(engine.createEntity())
-                .add(new FlagComponentC())
-                .get();
+        int entity3 = engine.createEntity();
+        mFlagC.create(entity3);
 
-        int entity4 = h.set(engine.createEntity())
-                .add(new FlagComponentA())
-                .add(new FlagComponentB())
-                .get();
+        int entity4 = engine.createEntity();
+        mFlagA.create(entity4);
+        mFlagB.create(entity4);
 
-        int entity5 = h.set(engine.createEntity())
-                .add(new FlagComponentB())
-                .add(new FlagComponentC())
-                .get();
+        int entity5 = engine.createEntity();
+        mFlagB.create(entity5);
+        mFlagC.create(entity5);
 
-        int entity6 = h.set(engine.createEntity())
-                .add(new FlagComponentA())
-                .add(new FlagComponentC())
-                .get();
+        int entity6 = engine.createEntity();
+        mFlagA.create(entity6);
+        mFlagC.create(entity6);
 
-        int entity7 = h.set(engine.createEntity())
-                .add(new FlagComponentA())
-                .add(new FlagComponentB())
-                .add(new FlagComponentC())
-                .get();
+        int entity7 = engine.createEntity();
+        mFlagA.create(entity7);
+        mFlagB.create(entity7);
+        mFlagC.create(entity7);
 
         engine.update();
 

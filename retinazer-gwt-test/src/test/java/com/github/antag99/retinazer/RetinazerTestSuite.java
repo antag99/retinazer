@@ -45,7 +45,6 @@ public class RetinazerTestSuite extends TestCase {
                 GWTEntityListenerTest.class,
                 GWTEntitySetTest.class,
                 GWTFamilyTest.class,
-                GWTHandleTest.class,
                 GWTMapperTest.class,
                 GWTBagTest.class,
                 GWTByteBagTest.class,
