@@ -1,18 +1,6 @@
 ## Changelog
 
 # Version 0.1.3-SNAPSHOT
-- Enhanced `Handle` API
-  - `Handle.getIndex()` -> `Handle.idx()`
-  - `Handle.setIndex(int)` -> `Handle.idx(int)`
-  - `Handle.duplicate()` -> `Handle.cpy()`
-  - `Handle.get(Class<? extends Component>)`
-  - `Handle.has(Class<? extends Component>)`
-- Enhanced `Mapper` API
-  - `Mapper.get(Handle)`
-  - `Mapper.has(Handle)`
-  - `Mapper.create(Handle)`
-  - `Mapper.add(Handle, Component)`
-  - `Mapper.remove(Handle)`
 - Revised `Wire` API and semantics
   - `Wire` is inherited from superclass
   - An exception is always thrown when a field is not handled by a resolver
@@ -49,6 +37,7 @@
   - `EntitySet.isEmpty()`
   - Listeners are no longer supported, `EntityListener` is used for family events.
 - `DependencyConfig` and `DependencyResolver` removed
+- `Handle` removed
 - `toString()` implementation for `EntitySet`
 - `RetinazerException` as a general-purpose runtime exception
 - Fix: EntitySet indices were invalidated even when there was no change
