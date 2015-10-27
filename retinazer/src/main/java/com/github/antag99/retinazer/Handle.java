@@ -25,7 +25,7 @@ package com.github.antag99.retinazer;
  * <p>
  * Handles are used for accessing the composition (components) of an entity. Each
  * handle internally manages an {@link Engine} reference along with an entity
- * index, which can be retrieved via {@link #idx()} and changed via {@link #idx(int)}.
+ * index, which can be retrieved via {@link #get()} and changed via {@link #set(int)}.
  * </p>
  *
  * <p>
@@ -64,7 +64,7 @@ public final class Handle {
      *            index of the entity referenced by this handle.
      * @return this handle for chaining.
      */
-    public Handle idx(int index) {
+    public Handle set(int index) {
         this.index = index;
         return this;
     }
@@ -74,7 +74,7 @@ public final class Handle {
      *
      * @return index of the entity referenced by this handle.
      */
-    public int idx() {
+    public int get() {
         return index;
     }
 

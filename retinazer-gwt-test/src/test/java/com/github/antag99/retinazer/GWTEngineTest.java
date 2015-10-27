@@ -113,40 +113,40 @@ public class GWTEngineTest extends RetinazerTestCase {
         Engine engine = new Engine(new EngineConfig());
         Handle h = engine.createHandle();
 
-        int entity0 = h.idx(engine.createEntity()).idx();
+        int entity0 = h.set(engine.createEntity()).get();
 
-        int entity1 = h.idx(engine.createEntity())
+        int entity1 = h.set(engine.createEntity())
                 .add(new FlagComponentA())
-                .idx();
+                .get();
 
-        int entity2 = h.idx(engine.createEntity())
+        int entity2 = h.set(engine.createEntity())
                 .add(new FlagComponentB())
-                .idx();
+                .get();
 
-        int entity3 = h.idx(engine.createEntity())
+        int entity3 = h.set(engine.createEntity())
                 .add(new FlagComponentC())
-                .idx();
+                .get();
 
-        int entity4 = h.idx(engine.createEntity())
-                .add(new FlagComponentA())
-                .add(new FlagComponentB())
-                .idx();
-
-        int entity5 = h.idx(engine.createEntity())
-                .add(new FlagComponentB())
-                .add(new FlagComponentC())
-                .idx();
-
-        int entity6 = h.idx(engine.createEntity())
-                .add(new FlagComponentA())
-                .add(new FlagComponentC())
-                .idx();
-
-        int entity7 = h.idx(engine.createEntity())
+        int entity4 = h.set(engine.createEntity())
                 .add(new FlagComponentA())
                 .add(new FlagComponentB())
+                .get();
+
+        int entity5 = h.set(engine.createEntity())
+                .add(new FlagComponentB())
                 .add(new FlagComponentC())
-                .idx();
+                .get();
+
+        int entity6 = h.set(engine.createEntity())
+                .add(new FlagComponentA())
+                .add(new FlagComponentC())
+                .get();
+
+        int entity7 = h.set(engine.createEntity())
+                .add(new FlagComponentA())
+                .add(new FlagComponentB())
+                .add(new FlagComponentC())
+                .get();
 
         engine.update();
 

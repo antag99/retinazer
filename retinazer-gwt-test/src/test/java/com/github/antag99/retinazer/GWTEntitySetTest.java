@@ -54,7 +54,7 @@ public class GWTEntitySetTest extends RetinazerTestCase {
         Engine engine = new Engine(new EngineConfig());
         int entity0 = engine.createEntity();
         int entity1 = engine.createHandle(engine.createEntity())
-                .add(new FlagComponentA()).idx();
+                .add(new FlagComponentA()).get();
         int entity2 = engine.createEntity();
         int entity3 = engine.createEntity();
         int entity4 = engine.createEntity();

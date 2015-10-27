@@ -168,7 +168,7 @@ public final class Mapper<T extends Component> {
      * @return the component; may be {@code null}.
      */
     public T get(Handle handle) {
-        return get(handle.idx());
+        return get(handle.get());
     }
 
     /**
@@ -180,7 +180,7 @@ public final class Mapper<T extends Component> {
      * @return whether the entity has the component of the type handled by this mapper.
      */
     public boolean has(Handle handle) {
-        return has(handle.idx());
+        return has(handle.get());
     }
 
     /**
@@ -191,7 +191,7 @@ public final class Mapper<T extends Component> {
      * @return the created component.
      */
     public T create(Handle handle) {
-        return create(handle.idx());
+        return create(handle.get());
     }
 
     /**
@@ -207,7 +207,7 @@ public final class Mapper<T extends Component> {
      *            the component instance.
      */
     public void add(Handle handle, T instance) {
-        add(handle.idx(), instance);
+        add(handle.get(), instance);
     }
 
     /**
@@ -220,7 +220,7 @@ public final class Mapper<T extends Component> {
      *            handle pointing to the entity.
      */
     public void remove(Handle handle) {
-        remove(handle.idx());
+        remove(handle.get());
     }
 
 }

@@ -29,7 +29,7 @@ public class RetrievalBenchmark extends RetinazerBenchmark {
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
         for (int i = 0, n = getEntityCount(); i < n; ++i) {
-            Handle entity = handle.idx(engine.createEntity());
+            Handle entity = handle.set(engine.createEntity());
             // equivalent to mask = i % (2 ^ componentTypes.length)
             int mask = i & ((1 << componentTypes.length) - 1);
             for (int ii = 0, nn = componentTypes.length; ii < nn; ++ii) {

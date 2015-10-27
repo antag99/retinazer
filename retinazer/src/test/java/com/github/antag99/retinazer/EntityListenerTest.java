@@ -99,27 +99,27 @@ public class EntityListenerTest {
         listenerC.verifyInserted(new int[0]);
         listenerC.verifyRemoved(new int[0]);
         engine.update();
-        listenerB.verifyInserted(entity.idx());
+        listenerB.verifyInserted(entity.get());
         listenerB.verifyRemoved(new int[0]);
         listenerC.verifyInserted(new int[0]);
         listenerC.verifyRemoved(new int[0]);
         entity.remove(FlagComponentB.class);
         engine.update();
         listenerB.verifyInserted(new int[0]);
-        listenerB.verifyRemoved(entity.idx());
+        listenerB.verifyRemoved(entity.get());
         listenerC.verifyInserted(new int[0]);
         listenerC.verifyRemoved(new int[0]);
         entity.add(new FlagComponentC());
         engine.update();
         listenerB.verifyInserted(new int[0]);
         listenerB.verifyRemoved(new int[0]);
-        listenerC.verifyInserted(entity.idx());
+        listenerC.verifyInserted(entity.get());
         listenerC.verifyRemoved(new int[0]);
         entity.destroy();
         engine.update();
         listenerB.verifyInserted(new int[0]);
         listenerB.verifyRemoved(new int[0]);
         listenerC.verifyInserted(new int[0]);
-        listenerC.verifyRemoved(entity.idx());
+        listenerC.verifyRemoved(entity.get());
     }
 }

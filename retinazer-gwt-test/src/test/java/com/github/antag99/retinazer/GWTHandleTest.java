@@ -5,18 +5,18 @@ public class GWTHandleTest extends RetinazerTestCase {
         Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createHandle(engine.createEntity());
         entity.create(FlagComponentA.class);
-        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
         engine.update();
-        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
     }
 
     public void testAdd() {
         Engine engine = new Engine(new EngineConfig());
         Handle entity = engine.createHandle(engine.createEntity());
         entity.add(new FlagComponentA());
-        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
         engine.update();
-        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
     }
 
     public void testRemove() {
@@ -24,11 +24,11 @@ public class GWTHandleTest extends RetinazerTestCase {
         Handle entity = engine.createHandle(engine.createEntity());
         entity.add(new FlagComponentA());
         entity.remove(FlagComponentA.class);
-        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNotNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
         engine.update();
-        assertNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
         engine.update();
-        assertNull(engine.getMapper(FlagComponentA.class).get(entity.idx()));
+        assertNull(engine.getMapper(FlagComponentA.class).get(entity.get()));
     }
 
     public void testDuplicate() {
@@ -37,8 +37,8 @@ public class GWTHandleTest extends RetinazerTestCase {
         Handle reference = entity.cpy();
         assertEquals(entity.getEngine(), reference.getEngine());
         assertNotNull(reference.getEngine());
-        assertEquals(0, entity.idx());
-        assertEquals(0, reference.idx());
+        assertEquals(0, entity.get());
+        assertEquals(0, reference.get());
     }
 
     public void testDestroy() {
@@ -46,6 +46,6 @@ public class GWTHandleTest extends RetinazerTestCase {
         Handle entity = engine.createHandle(engine.createEntity());
         entity.destroy();
         engine.update();
-        assertFalse(engine.getEntities().contains(entity.idx()));
+        assertFalse(engine.getEntities().contains(entity.get()));
     }
 }

@@ -210,7 +210,7 @@ public final class Engine {
      * @see #createHandle()
      */
     public Handle createHandle(int index) {
-        return createHandle().idx(index);
+        return createHandle().set(index);
     }
 
     /**

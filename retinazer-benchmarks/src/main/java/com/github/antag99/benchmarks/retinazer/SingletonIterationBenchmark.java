@@ -17,7 +17,7 @@ public class SingletonIterationBenchmark extends RetinazerBenchmark {
                 .addSystem(new SingletonIterationSystem()));
         handle = engine.createHandle();
         for (int i = 0, n = getEntityCount(); i < n; i++) {
-            Handle entity = handle.idx(engine.createEntity());
+            Handle entity = handle.set(engine.createEntity());
             if ((i % 8) == 0)
                 entity.add(SingletonComponent.INSTANCE);
         }
