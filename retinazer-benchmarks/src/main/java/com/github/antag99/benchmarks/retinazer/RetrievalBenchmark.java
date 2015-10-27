@@ -10,6 +10,7 @@ import com.github.antag99.retinazer.Handle;
 
 public class RetrievalBenchmark extends RetinazerBenchmark {
     private Engine engine;
+    private Handle handle;
 
     @Setup
     public void setup() {
@@ -24,10 +25,11 @@ public class RetrievalBenchmark extends RetinazerBenchmark {
                 .addSystem(new RetrievalSystemG())
                 .addSystem(new RetrievalSystemH()));
         // @on
+        handle = engine.createHandle();
 
         Class<? extends Component>[] componentTypes = getComponentTypes();
         for (int i = 0, n = getEntityCount(); i < n; ++i) {
-            Handle entity = engine.createEntity();
+            Handle entity = handle.idx(engine.createEntity());
             // equivalent to mask = i % (2 ^ componentTypes.length)
             int mask = i & ((1 << componentTypes.length) - 1);
             for (int ii = 0, nn = componentTypes.length; ii < nn; ++ii) {

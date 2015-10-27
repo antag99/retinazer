@@ -111,37 +111,38 @@ public class GWTEngineTest extends RetinazerTestCase {
 
     public void testEntityRetrieval() {
         Engine engine = new Engine(new EngineConfig());
+        Handle h = engine.createHandle();
 
-        int entity0 = engine.createEntity().idx();
+        int entity0 = h.idx(engine.createEntity()).idx();
 
-        int entity1 = engine.createEntity()
+        int entity1 = h.idx(engine.createEntity())
                 .add(new FlagComponentA())
                 .idx();
 
-        int entity2 = engine.createEntity()
+        int entity2 = h.idx(engine.createEntity())
                 .add(new FlagComponentB())
                 .idx();
 
-        int entity3 = engine.createEntity()
+        int entity3 = h.idx(engine.createEntity())
                 .add(new FlagComponentC())
                 .idx();
 
-        int entity4 = engine.createEntity()
+        int entity4 = h.idx(engine.createEntity())
                 .add(new FlagComponentA())
                 .add(new FlagComponentB())
                 .idx();
 
-        int entity5 = engine.createEntity()
+        int entity5 = h.idx(engine.createEntity())
                 .add(new FlagComponentB())
                 .add(new FlagComponentC())
                 .idx();
 
-        int entity6 = engine.createEntity()
+        int entity6 = h.idx(engine.createEntity())
                 .add(new FlagComponentA())
                 .add(new FlagComponentC())
                 .idx();
 
-        int entity7 = engine.createEntity()
+        int entity7 = h.idx(engine.createEntity())
                 .add(new FlagComponentA())
                 .add(new FlagComponentB())
                 .add(new FlagComponentC())

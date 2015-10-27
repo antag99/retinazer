@@ -25,21 +25,19 @@ import com.github.antag99.retinazer.util.Mask;
 
 final class EntityManager {
     private Engine engine;
-    private Handle tmpHandle;
 
     Mask entities = new Mask();
     Mask removeEntities = new Mask();
 
     public EntityManager(Engine engine, EngineConfig config) {
         this.engine = engine;
-        this.tmpHandle = engine.createHandle();
     }
 
-    public Handle createEntity() {
+    public int createEntity() {
         engine.dirty = true;
         int entity = entities.nextClearBit(0);
         entities.set(entity);
-        return tmpHandle.idx(entity);
+        return entity;
     }
 
     public void destroyEntity(int entity) {

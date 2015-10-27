@@ -184,10 +184,9 @@ public final class Engine {
      * entity is no longer active. The entity is immediately inserted into the
      * engine, but it won't show up in entity sets until the next system processing.
      *
-     * @return reused handle for accessing the entity; don't hold on to this as
-     *         it will be invalid once the next entity is created.
+     * @return index of the created entity.
      */
-    public Handle createEntity() {
+    public int createEntity() {
         return entityManager.createEntity();
     }
 
@@ -216,7 +215,7 @@ public final class Engine {
 
     /**
      * Destroys the entity with the given index. This will not remove the entity
-     * immediately; after the current system processing,
+     * immediately; only after the current system processing,
      *
      * @param entity
      *            the entity to destroy.

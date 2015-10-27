@@ -61,7 +61,7 @@ public class GWTEntityListenerTest extends RetinazerTestCase {
         EntityListenerMock listener = new EntityListenerMock();
         Engine engine = new Engine(new EngineConfig());
         engine.addEntityListener(listener);
-        int entity = engine.createEntity().idx();
+        int entity = engine.createEntity();
         listener.verifyInserted(new int[0]);
         listener.verifyRemoved(new int[0]);
         engine.update();
@@ -81,7 +81,7 @@ public class GWTEntityListenerTest extends RetinazerTestCase {
         Engine engine = new Engine(new EngineConfig());
         engine.getFamily(Family.with(FlagComponentB.class)).addListener(listenerB);
         engine.getFamily(Family.with(FlagComponentC.class)).addListener(listenerC);
-        Handle entity = engine.createEntity().cpy();
+        Handle entity = engine.createHandle(engine.createEntity());
         engine.update();
         listenerB.verifyInserted(new int[0]);
         listenerB.verifyRemoved(new int[0]);

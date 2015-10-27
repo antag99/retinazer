@@ -24,9 +24,9 @@ public class GWTEntityProcessorSystemTest extends RetinazerTestCase {
         Engine engine = new Engine(new EngineConfig().addSystem(system));
         Mask entities = new Mask();
         int a, b, c;
-        entities.set(a = engine.createEntity().idx());
-        entities.set(b = engine.createEntity().idx());
-        entities.set(c = engine.createEntity().idx());
+        entities.set(a = engine.createEntity());
+        entities.set(b = engine.createEntity());
+        entities.set(c = engine.createEntity());
         engine.update();
         assertEquals(system.processedEntities.getMask(), entities);
         system.processedEntities.edit().clear();
@@ -35,7 +35,7 @@ public class GWTEntityProcessorSystemTest extends RetinazerTestCase {
         engine.update();
         assertEquals(system.processedEntities.getMask(), entities);
         system.processedEntities.edit().clear();
-        entities.set(b = engine.createEntity().idx());
+        entities.set(b = engine.createEntity());
         engine.update();
         assertEquals(system.processedEntities.getMask(), entities);
         system.processedEntities.edit().clear();
