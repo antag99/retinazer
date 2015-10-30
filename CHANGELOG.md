@@ -1,6 +1,8 @@
 ## Changelog
 
-# Version 0.1.3-SNAPSHOT
+# Version 0.2.1-SNAPSHOT
+
+# Version 0.2.0 (released 2015-10-30)
 - Revised `Wire` API and semantics
   - `Wire` is inherited from superclass
   - An exception is always thrown when a field is not handled by a resolver
