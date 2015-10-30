@@ -43,8 +43,6 @@ public final class Mapper<T extends Component> {
     Mask componentsMask = new Mask();
     IntArray removeComponents = new IntArray();
     Mask removeComponentsMask = new Mask();
-    IntArray insertComponents = new IntArray();
-    Mask insertComponentsMask = new Mask();
 
     Mapper(Engine engine, Class<T> type, int typeIndex) {
         this.engine = engine;
@@ -131,8 +129,6 @@ public final class Mapper<T extends Component> {
 
         engine.dirty = true;
         components.set(entity, instance);
-        insertComponents.add(entity);
-        insertComponentsMask.set(entity);
         componentsMask.set(entity);
     }
 
