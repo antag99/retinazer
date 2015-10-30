@@ -1,6 +1,9 @@
 ## Changelog
 
-# Version 0.2.1-SNAPSHOT
+# Version 0.2.2-SNAPSHOT
+
+# Version 0.2.1 (released 2015-10-30)
+- Fix: `OutOfMemoryError` due to never-reset inserted component list
 
 # Version 0.2.0 (released 2015-10-30)
 - Revised `Wire` API and semantics
