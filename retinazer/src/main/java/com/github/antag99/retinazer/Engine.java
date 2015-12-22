@@ -167,12 +167,17 @@ public final class Engine {
     private void flush() {
         while (dirty) {
             dirty = false;
+
+            entityManager.remove.set(entityManager.removeQueue);
+            entityManager.entities.andNot(entityManager.remove);
+            entityManager.removeQueue.clear();
+
             for (Mapper<?> mapper : componentManager.array) {
-                entityManager.removeEntities.getIndices(mapper.removeComponents);
-                mapper.removeComponentsMask.or(entityManager.removeEntities);
+                entityManager.removeQueue.getIndices(mapper.remove);
+                mapper.removeQueueMask.or(entityManager.remove);
+                mapper.removeCount = mapper.remove.size;
             }
-            entityManager.entities.andNot(entityManager.removeEntities);
-            entityManager.removeEntities.clear();
+
             familyManager.updateFamilyMembership();
             componentManager.applyComponentChanges();
         }

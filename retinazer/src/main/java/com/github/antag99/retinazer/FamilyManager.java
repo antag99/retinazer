@@ -57,8 +57,6 @@ final class FamilyManager {
     private EntitySet argument = new EntitySet();
     private Mask tmpMask = new Mask();
     private Mask tmpMatchedEntities = new Mask();
-    private Mask tmpInsertFamilyEntities = new Mask();
-    private Mask tmpRemoveFamilyEntities = new Mask();
 
     public FamilyManager(Engine engine, EngineConfig config) {
         this.engine = engine;
@@ -124,56 +122,54 @@ final class FamilyManager {
 
         Mask tmpMask = this.tmpMask;
         Mask tmpMatchedEntities = this.tmpMatchedEntities;
-        Mask tmpInsertFamilyEntities = this.tmpInsertFamilyEntities;
-        Mask tmpRemoveFamilyEntities = this.tmpRemoveFamilyEntities;
 
         for (int i = 0, n = familyIndices.size; i < n; i++) {
             Family family = families.get(i);
-            int[] components = family.components;
-            int[] excludedComponents = family.excludedComponents;
             EntitySet entities = family.entities;
 
             Mask matchedEntities = tmpMatchedEntities.set(engine.entityManager.entities);
 
+            int[] components = family.components;
             for (int component : components) {
                 Mapper<?> mapper = mappers[component];
                 tmpMask.set(mapper.componentsMask);
-                tmpMask.andNot(mapper.removeComponentsMask);
+                tmpMask.andNot(mapper.removeQueueMask);
                 matchedEntities.and(tmpMask);
             }
 
+            int[] excludedComponents = family.excludedComponents;
             for (int excludedComponent : excludedComponents) {
                 Mapper<?> mapper = mappers[excludedComponent];
                 tmpMask.set(mapper.componentsMask);
-                tmpMask.andNot(mapper.removeComponentsMask);
+                tmpMask.andNot(mapper.removeQueueMask);
                 matchedEntities.andNot(tmpMask);
             }
 
-            Mask insertFamilyEntities = tmpInsertFamilyEntities.set(matchedEntities);
-            insertFamilyEntities.andNot(entities.getMask());
-            entities.edit().addEntities(insertFamilyEntities);
+            family.insertEntities.set(matchedEntities);
+            family.insertEntities.andNot(entities.getMask());
+            entities.edit().addEntities(family.insertEntities);
 
-            if (!insertFamilyEntities.isEmpty()) {
-                argument.edit().addEntities(insertFamilyEntities);
+            family.removeEntities.set(entities.getMask());
+            family.removeEntities.andNot(matchedEntities);
+            entities.edit().removeEntities(family.removeEntities);
+        }
 
+        for (int i = 0, n = familyIndices.size; i < n; i++) {
+            Family family = families.get(i);
+
+            if (!family.insertEntities.isEmpty()) {
+                argument.edit().addEntities(family.insertEntities);
                 for (EntityListener listener : family.listeners) {
                     listener.inserted(argument.view());
                 }
-
                 argument.edit().clear();
             }
 
-            Mask removeFamilyEntities = tmpRemoveFamilyEntities.set(entities.getMask());
-            removeFamilyEntities.andNot(matchedEntities);
-            entities.edit().removeEntities(removeFamilyEntities);
-
-            if (!removeFamilyEntities.isEmpty()) {
-                argument.edit().addEntities(removeFamilyEntities);
-
+            if (!family.removeEntities.isEmpty()) {
+                argument.edit().addEntities(family.removeEntities);
                 for (EntityListener listener : family.listeners) {
                     listener.removed(argument.view());
                 }
-
                 argument.edit().clear();
             }
         }

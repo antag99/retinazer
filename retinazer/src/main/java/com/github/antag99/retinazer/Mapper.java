@@ -35,14 +35,27 @@ import com.github.antag99.retinazer.util.Mask;
  * @param <T> the component type.
  */
 public final class Mapper<T extends Component> {
+    /** The engine instance this mapper is tied to */
     Engine engine;
+    /** The component type */
     Class<T> type;
+    /** Unique index for the component type */
     int typeIndex;
+    /** Zero-arg constructor for the component */
     Constructor constructor;
+    /** Stores components */
     Bag<T> components = new Bag<T>();
+    /** Mask of current components */
     Mask componentsMask = new Mask();
-    IntArray removeComponents = new IntArray();
-    Mask removeComponentsMask = new Mask();
+
+    /** Indices of components to be removed later */
+    IntArray remove = new IntArray();
+    /** Amount of components that will be removed */
+    int removeCount = 0;
+    /** Mask of components to be removed later */
+    Mask removeQueueMask = new Mask();
+    /** Mask of components that will be removed */
+    Mask removeMask = new Mask();
 
     Mapper(Engine engine, Class<T> type, int typeIndex) {
         this.engine = engine;
@@ -146,12 +159,12 @@ public final class Mapper<T extends Component> {
             return;
         }
 
-        if (removeComponentsMask.get(entity)) {
+        if (removeQueueMask.get(entity)) {
             return;
         }
 
         engine.dirty = true;
-        removeComponents.add(entity);
-        removeComponentsMask.set(entity);
+        remove.add(entity);
+        removeQueueMask.set(entity);
     }
 }

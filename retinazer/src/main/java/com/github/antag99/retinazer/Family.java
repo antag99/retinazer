@@ -21,6 +21,8 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import com.github.antag99.retinazer.util.Mask;
+
 public final class Family {
     final Engine engine;
     final int[] components;
@@ -28,6 +30,9 @@ public final class Family {
     final int index;
     final EntitySet entities = new EntitySet();
     EntityListener[] listeners = new EntityListener[0];
+
+    Mask removeEntities = new Mask();
+    Mask insertEntities = new Mask();
 
     Family(Engine engine,
             int[] components,

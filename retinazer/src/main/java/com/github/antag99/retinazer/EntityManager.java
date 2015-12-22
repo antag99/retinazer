@@ -27,7 +27,8 @@ final class EntityManager {
     private Engine engine;
 
     Mask entities = new Mask();
-    Mask removeEntities = new Mask();
+    Mask removeQueue = new Mask();
+    Mask remove = new Mask();
 
     public EntityManager(Engine engine, EngineConfig config) {
         this.engine = engine;
@@ -42,6 +43,6 @@ final class EntityManager {
 
     public void destroyEntity(int entity) {
         engine.dirty = true;
-        removeEntities.set(entity);
+        removeQueue.set(entity);
     }
 }
