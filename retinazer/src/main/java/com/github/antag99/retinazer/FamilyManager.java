@@ -128,12 +128,13 @@ final class FamilyManager {
             EntitySet entities = family.entities;
 
             Mask matchedEntities = tmpMatchedEntities.set(engine.entityManager.entities);
+            matchedEntities.andNot(engine.entityManager.remove);
 
             int[] components = family.components;
             for (int component : components) {
                 Mapper<?> mapper = mappers[component];
                 tmpMask.set(mapper.componentsMask);
-                tmpMask.andNot(mapper.removeQueueMask);
+                tmpMask.andNot(mapper.removeMask);
                 matchedEntities.and(tmpMask);
             }
 
@@ -141,7 +142,7 @@ final class FamilyManager {
             for (int excludedComponent : excludedComponents) {
                 Mapper<?> mapper = mappers[excludedComponent];
                 tmpMask.set(mapper.componentsMask);
-                tmpMask.andNot(mapper.removeQueueMask);
+                tmpMask.andNot(mapper.removeMask);
                 matchedEntities.andNot(tmpMask);
             }
 

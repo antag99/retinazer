@@ -169,17 +169,20 @@ public final class Engine {
             dirty = false;
 
             entityManager.remove.set(entityManager.removeQueue);
-            entityManager.entities.andNot(entityManager.remove);
             entityManager.removeQueue.clear();
 
             for (Mapper<?> mapper : componentManager.array) {
-                entityManager.removeQueue.getIndices(mapper.remove);
-                mapper.removeQueueMask.or(entityManager.remove);
+                mapper.removeMask.set(mapper.removeQueueMask);
+                mapper.removeMask.or(entityManager.remove);
+                entityManager.remove.getIndices(mapper.remove);
+                mapper.removeQueueMask.clear();
                 mapper.removeCount = mapper.remove.size;
             }
 
             familyManager.updateFamilyMembership();
             componentManager.applyComponentChanges();
+
+            entityManager.entities.andNot(entityManager.remove);
         }
     }
 

@@ -152,7 +152,7 @@ final class ComponentManager {
                 int entity = mapper.remove.get(ii);
                 components.set(entity, null);
                 mapper.componentsMask.clear(entity);
-                mapper.removeQueueMask.clear(entity);
+                mapper.removeMask.clear(entity);
             }
             if (nn > 0)
                 mapper.remove.removeRange(0, nn - 1);
