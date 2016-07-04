@@ -33,6 +33,15 @@ public final class LongBag {
         buffer = new long[capacity];
     }
 
+    public void ensureCapacity(int capacity) {
+        if (this.buffer.length >= capacity)
+            return;
+        int newCapacity = Bag.nextPowerOfTwo(capacity);
+        long[] newBuffer = new long[newCapacity];
+        System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+        this.buffer = newBuffer;
+    }
+
     public long get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
@@ -51,13 +60,7 @@ public final class LongBag {
         }
 
         if (index >= buffer.length) {
-            if (value == 0L) {
-                return;
-            }
-            int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            long[] newBuffer = new long[newCapacity];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-            this.buffer = newBuffer;
+            ensureCapacity(index + 1);
         }
 
         buffer[index] = value;

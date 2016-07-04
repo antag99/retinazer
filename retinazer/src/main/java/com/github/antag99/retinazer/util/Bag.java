@@ -46,6 +46,15 @@ public final class Bag<E> {
         buffer = new Object[capacity];
     }
 
+    public void ensureCapacity(int capacity) {
+        if (this.buffer.length >= capacity)
+            return;
+        int newCapacity = Bag.nextPowerOfTwo(capacity);
+        Object[] newBuffer = new Object[newCapacity];
+        System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+        this.buffer = newBuffer;
+    }
+
     @SuppressWarnings("unchecked")
     public E get(int index) {
         if (index < 0) {
@@ -65,13 +74,7 @@ public final class Bag<E> {
         }
 
         if (index >= buffer.length) {
-            if (value == null) {
-                return;
-            }
-            int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            Object[] newBuffer = new Object[newCapacity];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-            this.buffer = newBuffer;
+            ensureCapacity(index + 1);
         }
 
         buffer[index] = value;

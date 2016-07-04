@@ -33,6 +33,15 @@ public final class ShortBag {
         buffer = new short[capacity];
     }
 
+    public void ensureCapacity(int capacity) {
+        if (this.buffer.length >= capacity)
+            return;
+        int newCapacity = Bag.nextPowerOfTwo(capacity);
+        short[] newBuffer = new short[newCapacity];
+        System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+        this.buffer = newBuffer;
+    }
+
     public short get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
@@ -51,13 +60,7 @@ public final class ShortBag {
         }
 
         if (index >= buffer.length) {
-            if (value == 0) {
-                return;
-            }
-            int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            short[] newBuffer = new short[newCapacity];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-            this.buffer = newBuffer;
+            ensureCapacity(index + 1);
         }
 
         buffer[index] = value;

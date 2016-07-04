@@ -1,6 +1,8 @@
 ## Changelog
 
 # Version 0.2.2-SNAPSHOT
+- `ensureCapacity(int)` for all `Bag` implementations
+- Fix: `Bag.set(int)` no longer treats the `0` value specially
 
 # Version 0.2.1 (released 2015-10-30)
 - Fix: `OutOfMemoryError` due to never-reset inserted component list

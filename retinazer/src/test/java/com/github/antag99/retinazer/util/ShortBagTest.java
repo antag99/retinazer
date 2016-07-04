@@ -174,14 +174,6 @@ public class ShortBagTest {
         }
         bag.get(Integer.MAX_VALUE);
         assertEquals(0, bag.buffer.length);
-
-        bag = new ShortBag();
-        for (int i = 0; i < 31; i++) {
-            bag.set((1 << i) - 1, (short) 0);
-            assertEquals(0, bag.buffer.length);
-        }
-        bag.set(Integer.MAX_VALUE, (short) 0);
-        assertEquals(0, bag.buffer.length);
     }
 
     /**

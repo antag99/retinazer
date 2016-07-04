@@ -33,6 +33,15 @@ public final class FloatBag {
         buffer = new float[capacity];
     }
 
+    public void ensureCapacity(int capacity) {
+        if (this.buffer.length >= capacity)
+            return;
+        int newCapacity = Bag.nextPowerOfTwo(capacity);
+        float[] newBuffer = new float[newCapacity];
+        System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+        this.buffer = newBuffer;
+    }
+
     public float get(int index) {
         if (index < 0) {
             throw new IndexOutOfBoundsException("index < 0: " + index);
@@ -51,13 +60,7 @@ public final class FloatBag {
         }
 
         if (index >= buffer.length) {
-            if (value == 0f) {
-                return;
-            }
-            int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            float[] newBuffer = new float[newCapacity];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-            this.buffer = newBuffer;
+            ensureCapacity(index + 1);
         }
 
         buffer[index] = value;

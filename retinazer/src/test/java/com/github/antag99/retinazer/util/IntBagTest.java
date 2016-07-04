@@ -174,14 +174,6 @@ public class IntBagTest {
         }
         bag.get(Integer.MAX_VALUE);
         assertEquals(0, bag.buffer.length);
-
-        bag = new IntBag();
-        for (int i = 0; i < 31; i++) {
-            bag.set((1 << i) - 1, 0);
-            assertEquals(0, bag.buffer.length);
-        }
-        bag.set(Integer.MAX_VALUE, 0);
-        assertEquals(0, bag.buffer.length);
     }
 
     /**
