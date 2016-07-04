@@ -1,6 +1,8 @@
 ## Changelog
 
-# Version 0.2.2-SNAPSHOT
+# Version 0.3.1-SNAPSHOT
+
+# Version 0.3.0 (release 2015-07-04)
 - `ensureCapacity(int)` for all `Bag` implementations
 - Removed GWT support (for now at least)
 - Removed libGDX dependency

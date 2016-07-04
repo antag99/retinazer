@@ -28,7 +28,7 @@ for instructions; alternatively add this to your `pom.xml`;
   <dependency>
     <groupId>com.github.antag99.retinazer</groupId>
     <artifactId>retinazer</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
   </dependency>
 </dependencies>
 ```
@@ -42,10 +42,10 @@ repositories {
 }
 
 dependencies {
-  compile "com.github.antag99.retinazer:retinazer:0.2.1"
+  compile "com.github.antag99.retinazer:retinazer:0.3.0"
 }
 ```
-Nightly builds can be obtained via `https://jitpack.io/` using `-SNAPSHOT` as
+Snapshot builds can be obtained via `https://jitpack.io/` using `-SNAPSHOT` as
 version.
 
 ## Contributing
