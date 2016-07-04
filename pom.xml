@@ -4,7 +4,7 @@
 
     <groupId>com.github.antag99.retinazer</groupId>
     <artifactId>retinazer-parent</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>retinazer parent</name>
     <description>An entity-component-system implementation for Java</description>
@@ -21,7 +21,7 @@
         <url>https://github.com/antag99/retinazer/</url>
         <connection>scm:git:git@github.com:antag99/retinazer.git</connection>
         <developerConnection>scm:git:git@github.com:antag99/retinazer.git</developerConnection>
-        <tag>retinazer-0.3.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
