@@ -2,6 +2,7 @@
 
 # Version 0.2.2-SNAPSHOT
 - `ensureCapacity(int)` for all `Bag` implementations
+- Removed GWT support (for now at least)
 - Fix: `Bag.set(int)` no longer treats the `0` value specially
 
 # Version 0.2.1 (released 2015-10-30)

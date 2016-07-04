@@ -74,8 +74,6 @@
 
     <modules>
         <module>retinazer</module>
-        <module>retinazer-gwt</module>
-        <module>retinazer-gwt-test</module>
     </modules>
 
     <profiles>
