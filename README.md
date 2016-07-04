@@ -2,7 +2,6 @@
 [![Build Status][build_badge]][build]
 [![Coverage Status][coverage_badge]][coverage]
 [![License][license_badge]][license]
-![Lacking documentation and unit tests][debt_badge]
 [![Join the chat at https://gitter.im/antag99/retinazer][gitter_badge]][gitter]
 [![Download][bintray_badge]][bintray]
 
@@ -64,5 +63,4 @@ so I can provide input.
 [gitter_badge]: https://img.shields.io/badge/GITTER-JOIN_CHAT_%E2%86%92-1dce73.svg
 [bintray]: https://bintray.com/antag99/maven/retinazer/_latestVersion
 [bintray_badge]: https://api.bintray.com/packages/antag99/maven/retinazer/images/download.svg
-[debt_badge]: https://img.shields.io/badge/technical_debt-considerable-orange.svg
 [ecs]: https://en.wikipedia.org/wiki/Entity_component_system
