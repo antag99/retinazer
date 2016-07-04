@@ -65,7 +65,7 @@ public final class Engine {
 
         List<EntitySystemRegistration> systemRegistrations = new ArrayList<>(config.systems);
 
-        systemRegistrations.sort(new Comparator<EntitySystemRegistration>() {
+        Collections.sort(systemRegistrations, new Comparator<EntitySystemRegistration>() {
             @Override
             public int compare(EntitySystemRegistration o1, EntitySystemRegistration o2) {
                 return o1.priority.ordinal() - o2.priority.ordinal();
