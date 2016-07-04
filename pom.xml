@@ -15,9 +15,6 @@
         <gdx.version>1.6.5</gdx.version>
         <junit.version>4.12</junit.version>
         <autoVersionSubmodules>true</autoVersionSubmodules>
-        <bintray.subject>antag99</bintray.subject>
-        <bintray.repo>maven</bintray.repo>
-        <bintray.package>retinazer</bintray.package>
     </properties>
 
     <scm>
@@ -42,8 +39,9 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-repo-antag99</id>
-            <url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}</url>
+            <id>bintray-antag99-maven</id>
+            <name>antag99-maven</name>
+            <url>https://api.bintray.com/maven/antag99/maven/retinazer/;publish=1</url>
         </repository>
     </distributionManagement>
 
@@ -66,9 +64,6 @@
                 <role>owner</role>
                 <role>developer</role>
             </roles>
-            <properties>
-                <twitter>@antag99</twitter>
-            </properties>
         </developer>
     </developers>
 
