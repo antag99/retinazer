@@ -147,15 +147,11 @@ final class ComponentManager {
             @SuppressWarnings("unchecked")
             Mapper<Component> mapper = (Mapper<Component>) array[i];
             Bag<Component> components = mapper.components;
-            int nn = mapper.removeCount;
-            for (int ii = 0; ii < nn; ii++) {
-                int entity = mapper.remove.get(ii);
-                components.set(entity, null);
-                mapper.componentsMask.clear(entity);
-                mapper.removeMask.clear(entity);
+            Mask mask = mapper.removeMask;
+            for (int ii = mask.nextSetBit(0); ii != -1; ii = mask.nextSetBit(ii + 1)) {
+                components.set(ii, null);
             }
-            if (nn > 0)
-                mapper.remove.removeRange(0, nn - 1);
+            mapper.componentsMask.andNot(mapper.removeMask);
         }
     }
 }

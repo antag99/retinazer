@@ -21,11 +21,11 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Constructor;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import com.github.antag99.retinazer.util.Bag;
+import com.github.antag99.retinazer.util.IntBag;
 import com.github.antag99.retinazer.util.Mask;
 
 /**
@@ -42,31 +42,29 @@ public final class Mapper<T extends Component> {
     /** Unique index for the component type */
     int typeIndex;
     /** Zero-arg constructor for the component */
-    Constructor constructor;
+    Constructor<T> constructor;
+
     /** Stores components */
     Bag<T> components = new Bag<T>();
     /** Mask of current components */
     Mask componentsMask = new Mask();
 
-    /** Indices of components to be removed later */
-    IntArray remove = new IntArray();
-    /** Amount of components that will be removed */
-    int removeCount = 0;
-    /** Mask of components to be removed later */
-    Mask removeQueueMask = new Mask();
     /** Mask of components that will be removed */
     Mask removeMask = new Mask();
+    /** Mask of components to be removed later */
+    Mask removeQueueMask = new Mask();
+
+    /** Temporary buffer that stores the set bits of removeMask */
+    IntBag tmpRemove = new IntBag();
 
     Mapper(Engine engine, Class<T> type, int typeIndex) {
         this.engine = engine;
         this.type = type;
         this.typeIndex = typeIndex;
         try {
-            this.constructor = ClassReflection.getConstructor(type);
+            this.constructor = type.getConstructor();
             this.constructor.setAccessible(true);
-        } catch (ReflectionException ex) {
-            if (ex.getCause() instanceof RuntimeException)
-                throw (RuntimeException) ex.getCause();
+        } catch (NoSuchMethodException ex) {
             this.constructor = null;
         }
     }
@@ -109,16 +107,15 @@ public final class Mapper<T extends Component> {
         }
 
         try {
-            @SuppressWarnings("unchecked")
-            T instance = (T) constructor.newInstance();
+            T instance = constructor.newInstance();
             add(entity, instance);
             return instance;
-        } catch (ReflectionException ex) {
-            // GWT compatibility hack - no InvocationTargetException emulation
-            if ("java.lang.reflect.InvocationTargetException".equals(
-                    ex.getCause().getClass().getName()))
-                throw Internal.sneakyThrow(ex.getCause().getCause());
+        } catch (InstantiationException ex) {
             throw new AssertionError(ex);
+        } catch (IllegalAccessException ex) {
+            throw new AssertionError(ex);
+        } catch (InvocationTargetException ex) {
+            throw Internal.sneakyThrow(ex.getCause());
         }
     }
 
@@ -164,7 +161,6 @@ public final class Mapper<T extends Component> {
         }
 
         engine.dirty = true;
-        remove.add(entity);
         removeQueueMask.set(entity);
     }
 }

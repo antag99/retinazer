@@ -21,9 +21,9 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
-import com.badlogic.gdx.utils.Array;
 
 /**
  * Stores configuration for an {@link Engine} instance.
@@ -47,8 +47,8 @@ public final class EngineConfig {
         wireResolvers.add(new MapperWireResolver());
     }
 
-    Array<EntitySystemRegistration> systems = new Array<>();
-    Array<WireResolver> wireResolvers = new Array<>(WireResolver.class);
+    List<EntitySystemRegistration> systems = new ArrayList<>();
+    List<WireResolver> wireResolvers = new ArrayList<>();
 
     /**
      * Registers a system.
@@ -75,7 +75,7 @@ public final class EngineConfig {
         Objects.requireNonNull(priority, "priority cannot be null");
         Class<? extends EntitySystem> systemType = system.getClass();
 
-        for (int i = 0, n = systems.size; i < n; i++) {
+        for (int i = 0, n = systems.size(); i < n; i++) {
             if (systems.get(i).system.getClass() == systemType) {
                 throw new IllegalArgumentException(
                         "System of type " + systemType.getName() + " has already been registered");

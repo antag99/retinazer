@@ -1,12 +1,11 @@
 package com.github.antag99.retinazer;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-
 import org.junit.Test;
 
 import com.github.antag99.retinazer.util.Mask;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class EntitySetTest {
     public static final class TestEntitySetListener implements EntityListener {
@@ -65,11 +64,10 @@ public class EntitySetTest {
         int entity3 = engine.createEntity();
         int entity4 = engine.createEntity();
         engine.update();
-        assertTrue(Arrays.equals(engine.getEntities().getIndices().toArray(),
-                new int[] { entity0, entity1, entity2, entity3, entity4 }));
-        assertTrue(Arrays.equals(engine.getFamily(
-                Family.with(FlagComponentA.class)).getEntities().getIndices().toArray(),
-                new int[] { entity1 }));
+        assertEquals(EngineTest.asSet(entity0, entity1, entity2, entity3, entity4),
+                EngineTest.asSet(engine.getEntities()));
+        assertEquals(EngineTest.asSet(entity1), EngineTest.asSet(
+                engine.getFamily(Family.with(FlagComponentA.class)).getEntities()));
     }
 
     @Test

@@ -21,7 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.IntArray;
+import com.github.antag99.retinazer.util.IntBag;
 import com.github.antag99.retinazer.util.Mask;
 
 public final class EntitySet {
@@ -98,17 +98,17 @@ public final class EntitySet {
      *
      * @return the indices of all entities in this set.
      */
-    public IntArray getIndices() {
+    public IntBag getIndices() {
         if (content.indicesDirty) {
             content.indices.clear();
-            content.entities.getIndices(content.indices);
+            content.entities.getIndices(content.indices, 0);
             content.indicesDirty = false;
         }
         return content.indices;
     }
 
     public int size() {
-        return content.indicesDirty ? content.entities.cardinality() : content.indices.size;
+        return content.entities.cardinality();
     }
 
     public boolean isEmpty() {
@@ -129,18 +129,18 @@ public final class EntitySet {
 
     @Override
     public String toString() {
-        IntArray indices = getIndices();
-        if (indices.size == 0) {
+        IntBag indices = getIndices();
+        if (size() == 0) {
             return "[]";
         }
         StringBuilder builder = new StringBuilder();
         builder.append('[');
-        int[] items = indices.items;
-        builder.append(items[0]);
-        for (int i = 1, n = indices.size; i < n; i++) {
+        int[] buffer = indices.buffer;
+        builder.append(buffer[0]);
+        for (int i = 1, n = size(); i < n; i++) {
             builder.append(',');
             builder.append(' ');
-            builder.append(items[i]);
+            builder.append(buffer[i]);
         }
         builder.append(']');
         return builder.toString();

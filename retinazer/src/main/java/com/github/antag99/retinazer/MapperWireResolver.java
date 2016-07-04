@@ -21,14 +21,21 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.reflect.Field;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public final class MapperWireResolver implements WireResolver {
-    @SuppressWarnings("unchecked")
     private Class<? extends Component> getType(Field field) {
         if (field.getType() != Mapper.class)
             return null;
-        return field.getElementType(0);
+        Type type = field.getGenericType();
+        if (!(type instanceof ParameterizedType))
+            return null;
+        Type param = ((ParameterizedType) type).getActualTypeArguments()[0];
+        if (!(param instanceof Class<?>))
+            return null;
+        return ((Class<?>) param).asSubclass(Component.class);
     }
 
     @Override

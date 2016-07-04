@@ -21,11 +21,13 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.github.antag99.retinazer.EngineConfig.EntitySystemRegistration;
 
 /**
@@ -35,8 +37,7 @@ import com.github.antag99.retinazer.EngineConfig.EntitySystemRegistration;
 public final class Engine {
 
     private final EntitySystem[] systems;
-    private final ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType;
-    private final ObjectMap.Values<EntitySystem> systemsView;
+    private final Map<Class<? extends EntitySystem>, EntitySystem> systemsByType;
 
     final EntityManager entityManager;
     final ComponentManager componentManager;
@@ -62,10 +63,7 @@ public final class Engine {
         familyManager = new FamilyManager(this, config);
         wireManager = new WireManager(this, config);
 
-        Array<EntitySystemRegistration> systemRegistrations = new Array<>();
-        for (EntitySystemRegistration system : config.systems) {
-            systemRegistrations.add(system);
-        }
+        List<EntitySystemRegistration> systemRegistrations = new ArrayList<>(config.systems);
 
         systemRegistrations.sort(new Comparator<EntitySystemRegistration>() {
             @Override
@@ -74,22 +72,16 @@ public final class Engine {
             }
         });
 
-        EntitySystem[] systems = new EntitySystem[systemRegistrations.size];
-        ObjectMap<Class<? extends EntitySystem>, EntitySystem> systemsByType = new ObjectMap<>();
+        EntitySystem[] systems = new EntitySystem[systemRegistrations.size()];
+        Map<Class<? extends EntitySystem>, EntitySystem> systemsByType = new HashMap<>();
 
-        for (int i = 0, n = systemRegistrations.size; i < n; i++) {
+        for (int i = 0, n = systemRegistrations.size(); i < n; i++) {
             systems[i] = systemRegistrations.get(i).system;
             systemsByType.put(systems[i].getClass(), systems[i]);
         }
 
         this.systems = systems;
-        this.systemsByType = systemsByType;
-        this.systemsView = new ObjectMap.Values<EntitySystem>(systemsByType) {
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
+        this.systemsByType = Collections.unmodifiableMap(systemsByType);
 
         for (EntitySystem system : systems)
             wire(system);
@@ -153,10 +145,9 @@ public final class Engine {
 
         flush();
 
-        IntArray entities = getEntities().getIndices();
-        int[] items = entities.items;
-        for (int i = 0, n = entities.size; i < n; i++) {
-            destroyEntity(items[i]);
+        int[] buffer = getEntities().getIndices().buffer;
+        for (int i = 0, n = getEntities().size(); i < n; i++) {
+            destroyEntity(buffer[i]);
         }
 
         flush();
@@ -174,9 +165,7 @@ public final class Engine {
             for (Mapper<?> mapper : componentManager.array) {
                 mapper.removeMask.set(mapper.removeQueueMask);
                 mapper.removeMask.or(entityManager.remove);
-                entityManager.remove.getIndices(mapper.remove);
                 mapper.removeQueueMask.clear();
-                mapper.removeCount = mapper.remove.size;
             }
 
             familyManager.updateFamilyMembership();
@@ -279,8 +268,7 @@ public final class Engine {
      * @return all systems registered during configuration of the engine.
      */
     public Iterable<EntitySystem> getSystems() {
-        systemsView.reset();
-        return systemsView;
+        return systemsByType.values();
     }
 
     /**

@@ -21,8 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.IntArray;
-
 public abstract class EntityProcessorSystem extends EntitySystem {
     @SkipWire
     private FamilyConfig family;
@@ -54,10 +52,9 @@ public abstract class EntityProcessorSystem extends EntitySystem {
     }
 
     protected void processEntities() {
-        IntArray indices = getEntities().getIndices();
-        int[] items = indices.items;
-        for (int i = 0, n = indices.size; i < n; i++) {
-            process(items[i]);
+        int[] buffer = getEntities().getIndices().buffer;
+        for (int i = 0, n = getEntities().size(); i < n; i++) {
+            process(buffer[i]);
         }
     }
 

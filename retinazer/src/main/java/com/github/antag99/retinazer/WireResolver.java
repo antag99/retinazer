@@ -21,7 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.reflect.Field;
+import java.lang.reflect.Field;
 
 /**
  * WireResolver is used for wiring/un-wiring fields marked with {@link Wire}.

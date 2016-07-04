@@ -21,11 +21,10 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
 
 final class WireCache {
     private final Engine engine;
@@ -44,13 +43,16 @@ final class WireCache {
         for (int i = hierarchy.size() - 1; i >= 0; i--) {
             Class<?> cls = hierarchy.get(i);
             boolean classWire = inheritWire;
-            classWire |= ClassReflection.getDeclaredAnnotation(cls, Wire.class) != null;
-            classWire &= ClassReflection.getDeclaredAnnotation(cls, SkipWire.class) == null;
+            classWire |= cls.getDeclaredAnnotation(Wire.class) != null;
+            classWire &= cls.getDeclaredAnnotation(SkipWire.class) == null;
 
-            for (Field field : ClassReflection.getDeclaredFields(cls)) {
+            for (Field field : cls.getDeclaredFields()) {
                 field.setAccessible(true);
 
-                if (field.isStatic())
+                if (Modifier.isStatic(field.getModifiers()))
+                    continue;
+
+                if (Modifier.isFinal(field.getModifiers()))
                     continue;
 
                 if (field.isSynthetic())

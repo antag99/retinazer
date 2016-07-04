@@ -21,18 +21,19 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.ObjectSet;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class FamilyConfig {
-    ObjectSet<Class<? extends Component>> components = new ObjectSet<>();
-    ObjectSet<Class<? extends Component>> excludedComponents = new ObjectSet<>();
+    Set<Class<? extends Component>> components = new HashSet<>();
+    Set<Class<? extends Component>> excludedComponents = new HashSet<>();
 
     public FamilyConfig() {
     }
 
     @SafeVarargs
     public final FamilyConfig with(Class<? extends Component>... componentTypes) {
-        ObjectSet<Class<? extends Component>> newComponents = new ObjectSet<>();
+        Set<Class<? extends Component>> newComponents = new HashSet<>();
         newComponents.addAll(components);
         for (Class<? extends Component> componentType : componentTypes) {
             if (newComponents.contains(componentType))
@@ -47,7 +48,7 @@ public final class FamilyConfig {
 
     @SafeVarargs
     public final FamilyConfig exclude(Class<? extends Component>... componentTypes) {
-        ObjectSet<Class<? extends Component>> newExcludedComponents = new ObjectSet<>();
+        Set<Class<? extends Component>> newExcludedComponents = new HashSet<>();
         newExcludedComponents.addAll(excludedComponents);
         for (Class<? extends Component> componentType : componentTypes) {
             if (newExcludedComponents.contains(componentType))

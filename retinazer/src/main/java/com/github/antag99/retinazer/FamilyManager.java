@@ -21,15 +21,17 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.badlogic.gdx.utils.ObjectIntMap;
-import com.badlogic.gdx.utils.ObjectSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.github.antag99.retinazer.util.Bag;
 import com.github.antag99.retinazer.util.Mask;
 
 final class FamilyManager {
     private static class Key {
-        ObjectSet<Class<? extends Component>> components = null;
-        ObjectSet<Class<? extends Component>> excludedComponents = null;
+        Set<Class<? extends Component>> components = null;
+        Set<Class<? extends Component>> excludedComponents = null;
 
         @Override
         public boolean equals(Object obj) {
@@ -49,7 +51,7 @@ final class FamilyManager {
         }
     }
 
-    private ObjectIntMap<Key> familyIndices = new ObjectIntMap<>();
+    private Map<Key, Integer> familyIndices = new HashMap<>();
     private Bag<Family> families = new Bag<>();
     private Engine engine;
     private Key lookup = new Key();
@@ -72,11 +74,12 @@ final class FamilyManager {
     public Family getFamily(FamilyConfig config) {
         lookup.components = config.components;
         lookup.excludedComponents = config.excludedComponents;
-        int index = familyIndices.get(lookup, familyIndices.size);
-        if (index == familyIndices.size) {
+        Integer index = familyIndices.get(lookup);
+        if (index == null) {
+            index = familyIndices.size();
             int i;
-            int[] components = new int[config.components.size];
-            int[] excludedComponents = new int[config.excludedComponents.size];
+            int[] components = new int[config.components.size()];
+            int[] excludedComponents = new int[config.excludedComponents.size()];
 
             i = 0;
             for (Class<? extends Component> componentType : config.components)
@@ -123,7 +126,7 @@ final class FamilyManager {
         Mask tmpMask = this.tmpMask;
         Mask tmpMatchedEntities = this.tmpMatchedEntities;
 
-        for (int i = 0, n = familyIndices.size; i < n; i++) {
+        for (int i = 0, n = familyIndices.size(); i < n; i++) {
             Family family = families.get(i);
             EntitySet entities = family.entities;
 
@@ -155,7 +158,7 @@ final class FamilyManager {
             entities.edit().removeEntities(family.removeEntities);
         }
 
-        for (int i = 0, n = familyIndices.size; i < n; i++) {
+        for (int i = 0, n = familyIndices.size(); i < n; i++) {
             Family family = families.get(i);
 
             if (!family.insertEntities.isEmpty()) {

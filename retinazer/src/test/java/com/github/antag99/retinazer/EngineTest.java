@@ -21,20 +21,20 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntArray;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class EngineTest {
-    private Array<EntitySystem> initializedSystems = new Array<>();
-    private Array<EntitySystem> updatedSystems = new Array<>();
+    private List<EntitySystem> initializedSystems = new ArrayList<>();
+    private List<EntitySystem> updatedSystems = new ArrayList<>();
 
     public abstract class OrderSystem extends EntitySystem {
         @Override
@@ -104,14 +104,14 @@ public class EngineTest {
                 .addSystem(entitySystemC, Priority.HIGH)
                 .addSystem(entitySystemD, Priority.LOWEST)
                 .addSystem(entitySystemE, Priority.DEFAULT));
-        assertEquals(Array.with(entitySystemC,
+        assertEquals(Arrays.asList(entitySystemC,
                 entitySystemA,
                 entitySystemB,
                 entitySystemE,
                 entitySystemD), initializedSystems);
         initializedSystems.clear();
         engine.update();
-        assertEquals(Array.with(entitySystemC,
+        assertEquals(Arrays.asList(entitySystemC,
                 entitySystemA,
                 entitySystemB,
                 entitySystemE,
@@ -119,15 +119,19 @@ public class EngineTest {
         updatedSystems.clear();
     }
 
-    private Set<Integer> asSet(int... entities) {
+    public static Set<Integer> asSet(int... entities) {
         HashSet<Integer> set = new HashSet<>();
         for (int entity : entities)
             set.add(entity);
         return set;
     }
 
-    private Set<Integer> asSet(IntArray entities) {
-        return asSet(entities.toArray());
+    public static  Set<Integer> asSet(EntitySet entities) {
+        HashSet<Integer> set = new HashSet<>();
+        int[] buffer = entities.getIndices().buffer;
+        for (int i = 0, n = entities.size(); i < n; i++)
+            set.add(buffer[i]);
+        return set;
     }
 
     @Test
@@ -169,115 +173,115 @@ public class EngineTest {
 
         assertEquals(
                 asSet(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                asSet(engine.getEntities().getIndices()));
+                asSet(engine.getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                asSet(engine.getFamily(Family.with()).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with()).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                asSet(engine.getFamily(Family.exclude()).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude()).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity2, entity3, entity4, entity5, entity6, entity7),
-                asSet(engine.getFamily(Family.with().exclude()).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with().exclude()).getEntities()));
 
         assertEquals(
                 asSet(entity1, entity4, entity6, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2, entity4, entity5, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3, entity5, entity6, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity4, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentB.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity6, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity5, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class, FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity2, entity3, entity5),
-                asSet(engine.getFamily(Family.exclude(FlagComponentA.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude(FlagComponentA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity3, entity6),
-                asSet(engine.getFamily(Family.exclude(FlagComponentB.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude(FlagComponentB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity2, entity4),
-                asSet(engine.getFamily(Family.exclude(FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude(FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity3),
-                asSet(engine.getFamily(Family.exclude(FlagComponentA.class, FlagComponentB.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity2),
-                asSet(engine.getFamily(Family.exclude(FlagComponentA.class, FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude(FlagComponentA.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1),
-                asSet(engine.getFamily(Family.exclude(FlagComponentB.class, FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.exclude(FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0),
                 asSet(engine.getFamily(
-                        Family.exclude(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities().getIndices()));
+                        Family.exclude(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity1, entity6),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class).exclude(FlagComponentB.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentA.class).exclude(FlagComponentB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity1, entity4),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class).exclude(FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentA.class).exclude(FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2, entity5),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class).exclude(FlagComponentA.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentB.class).exclude(FlagComponentA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2, entity4),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class).exclude(FlagComponentC.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentB.class).exclude(FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3, entity5),
-                asSet(engine.getFamily(Family.with(FlagComponentC.class).exclude(FlagComponentA.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentC.class).exclude(FlagComponentA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3, entity6),
-                asSet(engine.getFamily(Family.with(FlagComponentC.class).exclude(FlagComponentB.class)).getEntities().getIndices()));
+                asSet(engine.getFamily(Family.with(FlagComponentC.class).exclude(FlagComponentB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity1),
                 asSet(engine.getFamily(
-                        Family.with(FlagComponentA.class).exclude(FlagComponentB.class, FlagComponentC.class)).getEntities().getIndices()));
+                        Family.with(FlagComponentA.class).exclude(FlagComponentB.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2),
                 asSet(engine.getFamily(
-                        Family.with(FlagComponentB.class).exclude(FlagComponentA.class, FlagComponentC.class)).getEntities().getIndices()));
+                        Family.with(FlagComponentB.class).exclude(FlagComponentA.class, FlagComponentC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3),
                 asSet(engine.getFamily(
-                        Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)).getEntities().getIndices()));
+                        Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
     }
 
     public static class MissingService {
