@@ -21,6 +21,7 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -30,6 +31,13 @@ final class WireCache {
     private final Engine engine;
     private final Field[] fields;
     private final WireResolver[] wireResolvers;
+
+    private static <A extends Annotation> A findAnnotation(Annotation[] annotations, Class<A> annotationType) {
+        for (Annotation annotation : annotations)
+            if (annotation.annotationType() == annotationType)
+                return annotationType.cast(annotation);
+        return null;
+    }
 
     public WireCache(Engine engine, Class<?> type, WireResolver[] wireResolvers) {
         List<Field> fields = new ArrayList<>();
@@ -43,8 +51,8 @@ final class WireCache {
         for (int i = hierarchy.size() - 1; i >= 0; i--) {
             Class<?> cls = hierarchy.get(i);
             boolean classWire = inheritWire;
-            classWire |= cls.getDeclaredAnnotation(Wire.class) != null;
-            classWire &= cls.getDeclaredAnnotation(SkipWire.class) == null;
+            classWire |= findAnnotation(cls.getDeclaredAnnotations(), Wire.class) != null;
+            classWire &= findAnnotation(cls.getDeclaredAnnotations(), SkipWire.class) == null;
 
             for (Field field : cls.getDeclaredFields()) {
                 field.setAccessible(true);
@@ -59,8 +67,8 @@ final class WireCache {
                     continue;
 
                 boolean fieldWire = classWire;
-                fieldWire |= field.getDeclaredAnnotation(Wire.class) != null;
-                fieldWire &= field.getDeclaredAnnotation(SkipWire.class) == null;
+                fieldWire |= findAnnotation(field.getDeclaredAnnotations(), Wire.class) != null;
+                fieldWire &= findAnnotation(field.getDeclaredAnnotations(), SkipWire.class) == null;
 
                 if (fieldWire) {
                     fields.add(field);

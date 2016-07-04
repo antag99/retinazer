@@ -126,7 +126,7 @@ public class EngineTest {
         return set;
     }
 
-    public static  Set<Integer> asSet(EntitySet entities) {
+    public static Set<Integer> asSet(EntitySet entities) {
         HashSet<Integer> set = new HashSet<>();
         int[] buffer = entities.getIndices().buffer;
         for (int i = 0, n = entities.size(); i < n; i++)
