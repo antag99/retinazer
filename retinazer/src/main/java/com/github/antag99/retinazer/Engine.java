@@ -163,9 +163,9 @@ public final class Engine {
             entityManager.removeQueue.clear();
 
             for (Mapper<?> mapper : componentManager.array) {
-                mapper.removeMask.set(mapper.removeQueueMask);
-                mapper.removeMask.or(entityManager.remove);
-                mapper.removeQueueMask.clear();
+                mapper.remove.set(mapper.removeQueue);
+                mapper.remove.or(entityManager.remove);
+                mapper.removeQueue.clear();
             }
 
             familyManager.updateFamilyMembership();

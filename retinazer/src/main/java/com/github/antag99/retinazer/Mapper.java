@@ -25,7 +25,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import com.github.antag99.retinazer.util.Bag;
-import com.github.antag99.retinazer.util.IntBag;
 import com.github.antag99.retinazer.util.Mask;
 
 /**
@@ -50,12 +49,9 @@ public final class Mapper<T extends Component> {
     Mask componentsMask = new Mask();
 
     /** Mask of components that will be removed */
-    Mask removeMask = new Mask();
+    Mask remove = new Mask();
     /** Mask of components to be removed later */
-    Mask removeQueueMask = new Mask();
-
-    /** Temporary buffer that stores the set bits of removeMask */
-    IntBag tmpRemove = new IntBag();
+    Mask removeQueue = new Mask();
 
     Mapper(Engine engine, Class<T> type, int typeIndex) {
         this.engine = engine;
@@ -156,11 +152,11 @@ public final class Mapper<T extends Component> {
             return;
         }
 
-        if (removeQueueMask.get(entity)) {
+        if (removeQueue.get(entity)) {
             return;
         }
 
         engine.dirty = true;
-        removeQueueMask.set(entity);
+        removeQueue.set(entity);
     }
 }

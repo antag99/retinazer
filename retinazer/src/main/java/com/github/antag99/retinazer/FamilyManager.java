@@ -137,7 +137,7 @@ final class FamilyManager {
             for (int component : components) {
                 Mapper<?> mapper = mappers[component];
                 tmpMask.set(mapper.componentsMask);
-                tmpMask.andNot(mapper.removeMask);
+                tmpMask.andNot(mapper.remove);
                 matchedEntities.and(tmpMask);
             }
 
@@ -145,7 +145,7 @@ final class FamilyManager {
             for (int excludedComponent : excludedComponents) {
                 Mapper<?> mapper = mappers[excludedComponent];
                 tmpMask.set(mapper.componentsMask);
-                tmpMask.andNot(mapper.removeMask);
+                tmpMask.andNot(mapper.remove);
                 matchedEntities.andNot(tmpMask);
             }
 
