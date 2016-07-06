@@ -21,7 +21,6 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import com.github.antag99.retinazer.util.Bag;
 import com.github.antag99.retinazer.util.Mask;
 
 final class ComponentManager {
@@ -144,14 +143,7 @@ final class ComponentManager {
 
     void applyComponentChanges() {
         for (int i = 0, n = array.length; i < n; ++i) {
-            @SuppressWarnings("unchecked")
-            Mapper<Component> mapper = (Mapper<Component>) array[i];
-            Bag<Component> components = mapper.components;
-            Mask mask = mapper.remove;
-            for (int ii = mask.nextSetBit(0); ii != -1; ii = mask.nextSetBit(ii + 1)) {
-                components.set(ii, null);
-            }
-            mapper.componentsMask.andNot(mapper.remove);
+            array[i].applyComponentChanges();
         }
     }
 }

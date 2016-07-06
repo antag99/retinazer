@@ -159,4 +159,13 @@ public final class Mapper<T extends Component> {
         engine.dirty = true;
         removeQueue.set(entity);
     }
+
+    void applyComponentChanges() {
+        Bag<T> components = this.components;
+        Mask remove = this.remove;
+        for (int ii = remove.nextSetBit(0); ii != -1; ii = remove.nextSetBit(ii + 1)) {
+            components.set(ii, null);
+        }
+        componentsMask.andNot(remove);
+    }
 }
