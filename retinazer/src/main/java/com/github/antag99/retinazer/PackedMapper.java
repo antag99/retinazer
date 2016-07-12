@@ -21,17 +21,26 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.github.antag99.retinazer.util.Experimental;
+import com.github.antag99.retinazer.util.Property;
 
 /**
- * Annotation that reverts the effect of {@link Wire}.
+ * Mapper implementation for packed components.
+ *
+ * @param <T> the component type
  */
-@Target({ ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SkipWire {
+@Experimental
+public abstract class PackedMapper<T extends Component> extends Mapper<T> {
+
+    // Note: Weaver-generated subclasses omit the 'type' parameter.
+    public PackedMapper(Engine engine, Class<T> type, int typeIndex) {
+        super(engine, type, typeIndex);
+    }
+
+    /**
+     * Gets the properties of the packed component type.
+     *
+     * @return the properties of the packed component type.
+     */
+    public abstract Property<?, ?>[] getProperties();
 }

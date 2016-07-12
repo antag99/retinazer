@@ -67,7 +67,15 @@ public final class IntBag {
     }
 
     public void clear() {
+        int[] buffer = this.buffer;
         for (int i = 0, n = buffer.length; i < n; ++i) {
+            buffer[i] = 0;
+        }
+    }
+
+    public void clear(Mask mask) {
+        int[] buffer = this.buffer;
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
             buffer[i] = 0;
         }
     }

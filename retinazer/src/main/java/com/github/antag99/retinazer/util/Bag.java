@@ -81,7 +81,15 @@ public final class Bag<E> {
     }
 
     public void clear() {
+        Object[] buffer = this.buffer;
         for (int i = 0, n = buffer.length; i < n; ++i) {
+            buffer[i] = null;
+        }
+    }
+
+    public void clear(Mask mask) {
+        Object[] buffer = this.buffer;
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
             buffer[i] = null;
         }
     }

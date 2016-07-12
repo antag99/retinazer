@@ -23,6 +23,8 @@ package com.github.antag99.retinazer;
 
 import com.github.antag99.retinazer.util.Mask;
 
+import java.lang.reflect.InvocationTargetException;
+
 final class ComponentManager {
     private Engine engine;
 
@@ -70,10 +72,32 @@ final class ComponentManager {
      *            component type to add to the map.
      */
     private <T extends Component> void rebuild(Class<T> additionalType) {
+        if (!PackedComponent.class.isAssignableFrom(additionalType))
+            rebuild(new PlainMapper<T>(engine, additionalType, array.length));
+        else {
+            String componentName = additionalType.getName();
+            String mapperName = componentName + "$Mapper";
+            try {
+                Class<?> mapperType = Class.forName(mapperName, true, additionalType.getClassLoader());
+                PackedMapper<?> mapper = (PackedMapper<?>) mapperType
+                        .getConstructor(Engine.class, Integer.TYPE)
+                        .newInstance(engine, array.length);
+                rebuild(mapper);
+            } catch (ClassNotFoundException ex) {
+                throw new RetinazerException(String.format("Component class %s is packed, " +
+                        "but mapper %s was not found", componentName, mapperName), ex);
+            } catch (NoSuchMethodException | InstantiationException | /**/
+                    IllegalAccessException | InvocationTargetException ex) {
+                throw new RetinazerException(String.format("Failed to initialize mapper %s", mapperName), ex);
+            }
+        }
+    }
+
+    private <T extends Component> void rebuild(Mapper<T> additionalMapper) {
         // Copy the array and add the new type
         Mapper<?>[] newArray = new Mapper<?>[array.length + 1];
         System.arraycopy(array, 0, newArray, 0, array.length);
-        newArray[array.length] = new Mapper<T>(engine, additionalType, array.length);
+        newArray[array.length] = additionalMapper;
         this.array = newArray;
 
         // Create backing hash table filled to about 25%; this is done to

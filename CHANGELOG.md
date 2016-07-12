@@ -1,6 +1,16 @@
 ## Changelog
 
 # Version 0.3.1-SNAPSHOT
+- Implemented experimental bytecode weaving
+  - Classes can be weaved at compile-time using the command-line interface,
+      or at runtime using a custom `ClassLoader` implementation.
+  - The weaver packs components into arrays, which improves cache locality;
+      this currently yields a 15% performance boost, but will hopefully improve
+      as more optimizations are introduced.
+  - `PackedMapper` that allows access to the backing arrays for fast access
+  - `Property` classes that represent properties of packed components
+- Added `clear(Mask)` implementation to all `Bag` implementations
+- Removed `Mapper.add(int, Component)`, `create` should be used instead
 
 # Version 0.3.0 (released 2016-07-04)
 - `ensureCapacity(int)` for all `Bag` implementations

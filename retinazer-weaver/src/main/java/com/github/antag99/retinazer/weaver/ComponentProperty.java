@@ -19,19 +19,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.weaver;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.objectweb.asm.Type;
 
-/**
- * Annotation that reverts the effect of {@link Wire}.
- */
-@Target({ ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SkipWire {
+final class ComponentProperty {
+    /** Type of this property */
+    public final Type type;
+
+    /** Name of this property */
+    public final String name;
+
+    public ComponentProperty(Type type, String name) {
+        this.type = type;
+        this.name = name;
+    }
+
+    public String getGetterName() {
+        return "$get_" + name;
+    }
+
+    public String getGetterDesc() {
+        return "()" + type.getDescriptor();
+    }
+
+    public String getSetterName() {
+        return "$set_" + name;
+    }
+
+    public String getSetterDesc() {
+        return "(" + type.getDescriptor() + ")V";
+    }
+
+    public String getMetadataName() {
+        return "$metadata_" + name;
+    }
+
+    public String getMetadataDesc() {
+        return "L" + WeaverConstants.getMetadataName(type) + ";";
+    }
+
+    public String getBagName() {
+        return "$bag_" + name;
+    }
+
+    public String getBagDesc() {
+        return "L" + WeaverConstants.getBagName(type) + ";";
+    }
 }

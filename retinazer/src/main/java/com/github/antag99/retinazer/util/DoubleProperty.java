@@ -19,19 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.util;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Objects;
 
-/**
- * Annotation that reverts the effect of {@link Wire}.
- */
-@Target({ ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SkipWire {
+@Experimental
+public final class DoubleProperty implements Property<DoubleBag, Double> {
+    private String name;
+    private DoubleBag bag;
+
+    public DoubleProperty(String name) {
+        this.name = Objects.requireNonNull(name);
+        this.bag = new DoubleBag();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public DoubleBag getBag() {
+        return bag;
+    }
+
+    @Override
+    public Class<Double> getType() {
+        return Double.TYPE;
+    }
 }

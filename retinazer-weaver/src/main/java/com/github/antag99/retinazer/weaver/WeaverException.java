@@ -19,19 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.weaver;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+@SuppressWarnings("serial")
+public final class WeaverException extends RuntimeException {
+    public WeaverException() {
+    }
 
-/**
- * Annotation that reverts the effect of {@link Wire}.
- */
-@Target({ ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SkipWire {
+    public WeaverException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public WeaverException(String message) {
+        super(message);
+    }
+
+    public WeaverException(Throwable cause) {
+        super(cause);
+    }
 }

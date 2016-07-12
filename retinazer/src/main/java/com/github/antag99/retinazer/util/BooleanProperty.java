@@ -19,19 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.util;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Objects;
 
-/**
- * Annotation that reverts the effect of {@link Wire}.
- */
-@Target({ ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SkipWire {
+@Experimental
+public final class BooleanProperty implements Property<Mask, Boolean> {
+    private String name;
+    private Mask bag;
+
+    public BooleanProperty(String name) {
+        this.name = Objects.requireNonNull(name);
+        this.bag = new Mask();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Mask getBag() {
+        return bag;
+    }
+
+    @Override
+    public Class<Boolean> getType() {
+        return Boolean.TYPE;
+    }
 }

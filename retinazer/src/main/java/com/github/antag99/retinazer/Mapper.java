@@ -21,72 +21,45 @@
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import com.github.antag99.retinazer.util.Bag;
 import com.github.antag99.retinazer.util.Mask;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * {@code Mapper} is used for accessing the components of a specific type. This
- * offers better performance than looking up the type of a component on the fly.
+ * Mappers are used for accessing and modifying components efficiently.
  *
  * @param <T> the component type.
  */
-public final class Mapper<T extends Component> {
+public abstract class Mapper<T extends Component> {
     /** The engine instance this mapper is tied to */
-    Engine engine;
+    protected final Engine engine;
     /** The component type */
-    Class<T> type;
+    protected final Class<T> type;
     /** Unique index for the component type */
-    int typeIndex;
-    /** Zero-arg constructor for the component */
-    Constructor<T> constructor;
-
-    /** Stores components */
-    Bag<T> components = new Bag<T>();
+    protected final int typeIndex;
     /** Mask of current components */
-    Mask componentsMask = new Mask();
-
+    protected final Mask componentsMask = new Mask();
     /** Mask of components that will be removed */
-    Mask remove = new Mask();
+    protected final Mask removeMask = new Mask();
     /** Mask of components to be removed later */
-    Mask removeQueue = new Mask();
+    protected final Mask removeQueueMask = new Mask();
 
-    Mapper(Engine engine, Class<T> type, int typeIndex) {
-        this.engine = engine;
-        this.type = type;
+    protected Mapper(Engine engine, Class<T> type, int typeIndex) {
+        this.engine = requireNonNull(engine, "engine must not be null");
+        this.type = requireNonNull(type, "type must not be null");
         this.typeIndex = typeIndex;
-        try {
-            this.constructor = type.getConstructor();
-            this.constructor.setAccessible(true);
-        } catch (NoSuchMethodException ex) {
-            this.constructor = null;
+    }
+
+    protected abstract void applyComponentChanges();
+
+    protected final void checkCreate(int entity) {
+        if (has(entity)) {
+            throw new IllegalArgumentException("Cannot create a component that "
+                    + "already exists: " + type.getName());
         }
-    }
 
-    /**
-     * Retrieves a component of the type handled by this mapper. Returns {@code null}
-     * if the specified entity does not have a component of the type.
-     *
-     * @param entity
-     *            the index of the entity.
-     * @return the component; may be {@code null}.
-     */
-    public T get(int entity) {
-        return components.get(entity);
-    }
-
-    /**
-     * Checks whether the specified entity has a component of the type handled by
-     * this mapper.
-     *
-     * @param entity
-     *            the index of the entity.
-     * @return whether the entity has the component of the type handled by this mapper.
-     */
-    public boolean has(int entity) {
-        return components.get(entity) != null;
+        engine.dirty = true;
+        componentsMask.set(entity);
     }
 
     /**
@@ -96,46 +69,28 @@ public final class Mapper<T extends Component> {
      *            the index of the entity.
      * @return the created component.
      */
-    public T create(int entity) {
-        if (constructor == null) {
-            throw new RetinazerException("Component type " + type.getName()
-                    + " does not expose a zero-argument constructor");
-        }
-
-        try {
-            T instance = constructor.newInstance();
-            add(entity, instance);
-            return instance;
-        } catch (InstantiationException ex) {
-            throw new AssertionError(ex);
-        } catch (IllegalAccessException ex) {
-            throw new AssertionError(ex);
-        } catch (InvocationTargetException ex) {
-            throw Internal.sneakyThrow(ex.getCause());
-        }
-    }
+    public abstract T create(int entity);
 
     /**
-     * Adds a component of the type represented by this mapper. The operation
-     * will take effect immediately, but notifications will be delayed until
-     * the next call to {@link Engine#flush()}. Note that it is <b>not</b>
-     * permitted to replace an existing component; {@link #remove(int)} must
-     * be called first (and bear in mind that removals are delayed).
+     * Retrieves a component of the type handled by this mapper. This method should
+     * not be called on entities that do not have this component type.
      *
      * @param entity
      *            the index of the entity.
-     * @param instance
-     *            the component instance.
+     * @return the component
      */
-    public void add(int entity, T instance) {
-        if (has(entity)) {
-            throw new IllegalArgumentException("Cannot insert a component that "
-                    + "already exists: " + instance.getClass().getName());
-        }
+    public abstract T get(int entity);
 
-        engine.dirty = true;
-        components.set(entity, instance);
-        componentsMask.set(entity);
+    /**
+     * Checks whether the specified entity has a component of the type handled by
+     * this mapper.
+     *
+     * @param entity
+     *            the index of the entity.
+     * @return whether the entity has the component of the type handled by this mapper.
+     */
+    public final boolean has(int entity) {
+        return componentsMask.get(entity);
     }
 
     /**
@@ -147,25 +102,16 @@ public final class Mapper<T extends Component> {
      * @param entity
      *            the index of the entity.
      */
-    public void remove(int entity) {
+    public final void remove(int entity) {
         if (!has(entity)) {
             return;
         }
 
-        if (removeQueue.get(entity)) {
+        if (removeQueueMask.get(entity)) {
             return;
         }
 
         engine.dirty = true;
-        removeQueue.set(entity);
-    }
-
-    void applyComponentChanges() {
-        Bag<T> components = this.components;
-        Mask remove = this.remove;
-        for (int ii = remove.nextSetBit(0); ii != -1; ii = remove.nextSetBit(ii + 1)) {
-            components.set(ii, null);
-        }
-        componentsMask.andNot(remove);
+        removeQueueMask.set(entity);
     }
 }

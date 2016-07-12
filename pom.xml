@@ -69,6 +69,8 @@
 
     <modules>
         <module>retinazer</module>
+        <module>retinazer-weaver</module>
+        <module>retinazer-weaver-cli</module>
     </modules>
 
     <profiles>

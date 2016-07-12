@@ -22,8 +22,7 @@
 package com.github.antag99.retinazer;
 
 /**
- * Components are used as plain bags of data. As a matter of style, always
- * declare them {@code final}.
+ * Components are used as plain bags of data.
  */
 public interface Component {
 }

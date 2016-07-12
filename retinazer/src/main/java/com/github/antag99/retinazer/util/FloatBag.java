@@ -67,8 +67,16 @@ public final class FloatBag {
     }
 
     public void clear() {
+        float[] buffer = this.buffer;
         for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0f;
+            buffer[i] = 0;
+        }
+    }
+
+    public void clear(Mask mask) {
+        float[] buffer = this.buffer;
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
+            buffer[i] = 0;
         }
     }
 }

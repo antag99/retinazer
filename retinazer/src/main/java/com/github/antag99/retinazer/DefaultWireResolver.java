@@ -22,8 +22,21 @@
 package com.github.antag99.retinazer;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public final class DefaultWireResolver implements WireResolver {
+
+    private Class<? extends Component> getParamType(Field field) {
+        Type type = field.getGenericType();
+        if (!(type instanceof ParameterizedType))
+            return null;
+        Type param = ((ParameterizedType) type).getActualTypeArguments()[0];
+        if (!(param instanceof Class<?>))
+            return null;
+        return ((Class<?>) param).asSubclass(Component.class);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public boolean wire(Engine engine, Object object, Field field) throws Throwable {
@@ -32,6 +45,8 @@ public final class DefaultWireResolver implements WireResolver {
             field.set(object, engine);
         } else if (EntitySystem.class.isAssignableFrom(type)) {
             field.set(object, engine.getSystem((Class<? extends EntitySystem>) type));
+        } else if (Mapper.class.isAssignableFrom(type)) {
+            field.set(object, engine.getMapper(getParamType(field)));
         } else {
             return false;
         }
@@ -42,6 +57,8 @@ public final class DefaultWireResolver implements WireResolver {
     public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
         Class<?> type = field.getType();
         if (type == Engine.class || EntitySystem.class.isAssignableFrom(type)) {
+            field.set(object, null);
+        } else if (Mapper.class.isAssignableFrom(type)) {
             field.set(object, null);
         } else {
             return false;

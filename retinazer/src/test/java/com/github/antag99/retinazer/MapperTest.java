@@ -51,7 +51,7 @@ public class MapperTest {
         Engine engine = new Engine(new EngineConfig());
         Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
         int entity = engine.createEntity();
-        mFlagA.add(entity, new FlagComponentA());
-        mFlagA.add(entity, new FlagComponentA());
+        mFlagA.create(entity);
+        mFlagA.create(entity);
     }
 }

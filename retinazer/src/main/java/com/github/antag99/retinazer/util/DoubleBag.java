@@ -67,8 +67,16 @@ public final class DoubleBag {
     }
 
     public void clear() {
+        double[] buffer = this.buffer;
         for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0d;
+            buffer[i] = 0;
+        }
+    }
+
+    public void clear(Mask mask) {
+        double[] buffer = this.buffer;
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
+            buffer[i] = 0;
         }
     }
 }

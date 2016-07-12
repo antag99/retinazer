@@ -19,19 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.weaver;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.File;
 
-/**
- * Annotation that reverts the effect of {@link Wire}.
- */
-@Target({ ElementType.TYPE, ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface SkipWire {
+import com.beust.jcommander.Parameter;
+
+final class WeaverParameters {
+
+    @Parameter(names = { "--help", "-h" }, description = "Display this help message and exit")
+    public boolean help = false;
+
+    @Parameter(names = { "--classesDirectory", "-i" }, description = "Classes directory")
+    public File classesDirectory = null;
+
+    @Parameter(names = { "--outputDirectory", "-o" }, description = "Output directory", required = false)
+    public File outputDirectory = null;
+
+    @Parameter(names = { "--filter", "-f" }, description = "Pattern for internal names of classes to be included")
+    public String filterPattern = null;
 }

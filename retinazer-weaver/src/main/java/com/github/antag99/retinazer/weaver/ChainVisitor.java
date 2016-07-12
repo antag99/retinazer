@@ -19,41 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.weaver;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import org.objectweb.asm.ClassVisitor;
 
-public final class MapperWireResolver implements WireResolver {
-    private Class<? extends Component> getType(Field field) {
-        if (field.getType() != Mapper.class)
-            return null;
-        Type type = field.getGenericType();
-        if (!(type instanceof ParameterizedType))
-            return null;
-        Type param = ((ParameterizedType) type).getActualTypeArguments()[0];
-        if (!(param instanceof Class<?>))
-            return null;
-        return ((Class<?>) param).asSubclass(Component.class);
+class ChainVisitor extends ClassVisitor {
+    public ChainVisitor(int api) {
+        super(api);
     }
 
-    @Override
-    public boolean wire(Engine engine, Object object, Field field) throws Throwable {
-        Class<? extends Component> type = getType(field);
-        if (type != null) {
-            field.set(object, engine.getMapper(type));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean unwire(Engine engine, Object object, Field field) throws Throwable {
-        if (getType(field) != null) {
-            field.set(object, null);
-            return true;
-        }
-        return false;
+    public void setClassVisitor(ClassVisitor visitor) {
+        cv = visitor;
     }
 }
