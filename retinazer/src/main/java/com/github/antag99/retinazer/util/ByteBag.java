@@ -21,59 +21,96 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-public final class ByteBag {
+/**
+ * A bag is an automatically expanding array.
+ */
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class ByteBag implements AnyBag<ByteBag> {
+
+    /**
+     * Backing buffer of this bag.
+     */
     @Experimental
     public byte[] buffer;
 
+    /**
+     * Creates a new {@code ByteBag} with an initial capacity of {@code 0}.
+     */
     public ByteBag() {
-        this(0);
+        buffer = new byte[0];
     }
 
-    public ByteBag(int capacity) {
-        buffer = new byte[capacity];
+    @Override
+    public void copyFrom(ByteBag bag) {
+        copyFrom(bag, true);
     }
 
+    @Override
+    public void copyFrom(ByteBag bag, boolean clearExceeding) {
+        if (buffer.length < bag.buffer.length)
+            buffer = new byte[bag.buffer.length];
+        System.arraycopy(bag.buffer, 0, buffer, 0, bag.buffer.length);
+        if (clearExceeding && buffer.length > bag.buffer.length) {
+            byte[] buffer = this.buffer;
+            for (int i = bag.buffer.length, n = buffer.length; i < n; i++)
+                buffer[i] = (byte) 0;
+        }
+    }
+
+    @Override
+    public void ensureCapacity(int capacity) {
+        if (capacity < 0)
+            throw new NegativeArraySizeException(String.valueOf(capacity));
+        if (this.buffer.length >= capacity)
+            return;
+        int newCapacity = Bag.nextPowerOfTwo(capacity);
+        byte[] newBuffer = new byte[newCapacity];
+        System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+        this.buffer = newBuffer;
+    }
+
+    /**
+     * Gets the element at the given index. Returns {@code (byte) 0} if it does not exist.
+     *
+     * @param index
+     *            Index of the element. The size of the buffer will not be increased if the index is greater.
+     */
     public byte get(int index) {
-        if (index < 0) {
+        if (index < 0)
             throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
 
-        if (index >= buffer.length) {
-            return 0;
-        }
-
-        return buffer[index];
+        return index >= buffer.length ? (byte) 0 : (byte) buffer[index];
     }
 
+    /**
+     * Sets the element at the given index.
+     *
+     * @param index
+     *            Index of the element. The size of the buffer will be increased if necessary.
+     * @param value
+     *            Value to set.
+     */
     public void set(int index, byte value) {
-        if (index < 0) {
+        if (index < 0)
             throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
 
-        if (index >= buffer.length) {
-            if (value == 0) {
-                return;
-            }
-            int newCapacity = Bag.nextPowerOfTwo(index + 1);
-            byte[] newBuffer = new byte[newCapacity];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
-            this.buffer = newBuffer;
-        }
+        ensureCapacity(index + 1);
 
-        buffer[index] = value;
+        buffer[index] = (byte) value;
     }
 
+    @Override
     public void clear() {
         byte[] buffer = this.buffer;
-        for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0;
-        }
+        for (int i = 0, n = buffer.length; i < n; ++i)
+            buffer[i] = (byte) 0;
     }
 
+    @Override
     public void clear(Mask mask) {
         byte[] buffer = this.buffer;
-        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
-            buffer[i] = 0;
-        }
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i = mask.nextSetBit(i + 1))
+            buffer[i] = (byte) 0;
     }
 }

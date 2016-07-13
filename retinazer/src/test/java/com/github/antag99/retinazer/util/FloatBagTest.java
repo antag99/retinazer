@@ -21,111 +21,117 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import com.github.antag99.retinazer.util.FloatBag;
-
-public class FloatBagTest {
-
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class FloatBagTest {
     /**
      * Ensures that the elements of a bag are actually stored
      */
     @Test
     public void testStorage() {
         FloatBag bag = new FloatBag();
+        float element0 = 1f;
+        float element1 = 1f;
+        float element2 = 1f;
+        float element3 = 1f;
+        float element4 = 1f;
+        float element5 = 1f;
+        float element6 = 1f;
+        float element7 = 1f;
 
-        bag.set(0, 0f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(0f, bag.get(1), 0f);
-        assertEquals(0f, bag.get(2), 0f);
-        assertEquals(0f, bag.get(3), 0f);
-        assertEquals(0f, bag.get(4), 0f);
-        assertEquals(0f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(0, element0);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)0f, (Float)bag.get(1));
+        assertEquals((Float)0f, (Float)bag.get(2));
+        assertEquals((Float)0f, (Float)bag.get(3));
+        assertEquals((Float)0f, (Float)bag.get(4));
+        assertEquals((Float)0f, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(1, 1f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(0f, bag.get(2), 0f);
-        assertEquals(0f, bag.get(3), 0f);
-        assertEquals(0f, bag.get(4), 0f);
-        assertEquals(0f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(1, element1);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)0f, (Float)bag.get(2));
+        assertEquals((Float)0f, (Float)bag.get(3));
+        assertEquals((Float)0f, (Float)bag.get(4));
+        assertEquals((Float)0f, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(2, 2f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(2f, bag.get(2), 0f);
-        assertEquals(0f, bag.get(3), 0f);
-        assertEquals(0f, bag.get(4), 0f);
-        assertEquals(0f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(2, element2);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)element2, (Float)bag.get(2));
+        assertEquals((Float)0f, (Float)bag.get(3));
+        assertEquals((Float)0f, (Float)bag.get(4));
+        assertEquals((Float)0f, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(3, 3f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(2f, bag.get(2), 0f);
-        assertEquals(3f, bag.get(3), 0f);
-        assertEquals(0f, bag.get(4), 0f);
-        assertEquals(0f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(3, element3);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)element2, (Float)bag.get(2));
+        assertEquals((Float)element3, (Float)bag.get(3));
+        assertEquals((Float)0f, (Float)bag.get(4));
+        assertEquals((Float)0f, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(4, 4f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(2f, bag.get(2), 0f);
-        assertEquals(3f, bag.get(3), 0f);
-        assertEquals(4f, bag.get(4), 0f);
-        assertEquals(0f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(4, element4);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)element2, (Float)bag.get(2));
+        assertEquals((Float)element3, (Float)bag.get(3));
+        assertEquals((Float)element4, (Float)bag.get(4));
+        assertEquals((Float)0f, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(5, 5f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(2f, bag.get(2), 0f);
-        assertEquals(3f, bag.get(3), 0f);
-        assertEquals(4f, bag.get(4), 0f);
-        assertEquals(5f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(5, element5);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)element2, (Float)bag.get(2));
+        assertEquals((Float)element3, (Float)bag.get(3));
+        assertEquals((Float)element4, (Float)bag.get(4));
+        assertEquals((Float)element5, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(6, 6f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(2f, bag.get(2), 0f);
-        assertEquals(3f, bag.get(3), 0f);
-        assertEquals(4f, bag.get(4), 0f);
-        assertEquals(5f, bag.get(5), 0f);
-        assertEquals(6f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        bag.set(6, element6);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)element2, (Float)bag.get(2));
+        assertEquals((Float)element3, (Float)bag.get(3));
+        assertEquals((Float)element4, (Float)bag.get(4));
+        assertEquals((Float)element5, (Float)bag.get(5));
+        assertEquals((Float)element6, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
 
-        bag.set(7, 7f);
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(1f, bag.get(1), 0f);
-        assertEquals(2f, bag.get(2), 0f);
-        assertEquals(3f, bag.get(3), 0f);
-        assertEquals(4f, bag.get(4), 0f);
-        assertEquals(5f, bag.get(5), 0f);
-        assertEquals(6f, bag.get(6), 0f);
-        assertEquals(7f, bag.get(7), 0f);
+        bag.set(7, element7);
+        assertEquals((Float)element0, (Float)bag.get(0));
+        assertEquals((Float)element1, (Float)bag.get(1));
+        assertEquals((Float)element2, (Float)bag.get(2));
+        assertEquals((Float)element3, (Float)bag.get(3));
+        assertEquals((Float)element4, (Float)bag.get(4));
+        assertEquals((Float)element5, (Float)bag.get(5));
+        assertEquals((Float)element6, (Float)bag.get(6));
+        assertEquals((Float)element7, (Float)bag.get(7));
 
         bag.clear();
 
-        assertEquals(0f, bag.get(0), 0f);
-        assertEquals(0f, bag.get(1), 0f);
-        assertEquals(0f, bag.get(2), 0f);
-        assertEquals(0f, bag.get(3), 0f);
-        assertEquals(0f, bag.get(4), 0f);
-        assertEquals(0f, bag.get(5), 0f);
-        assertEquals(0f, bag.get(6), 0f);
-        assertEquals(0f, bag.get(7), 0f);
+        assertEquals((Float)0f, (Float)bag.get(0));
+        assertEquals((Float)0f, (Float)bag.get(1));
+        assertEquals((Float)0f, (Float)bag.get(2));
+        assertEquals((Float)0f, (Float)bag.get(3));
+        assertEquals((Float)0f, (Float)bag.get(4));
+        assertEquals((Float)0f, (Float)bag.get(5));
+        assertEquals((Float)0f, (Float)bag.get(6));
+        assertEquals((Float)0f, (Float)bag.get(7));
     }
 
     /**
@@ -134,17 +140,16 @@ public class FloatBagTest {
     @Test
     public void testDefault() {
         FloatBag bag = new FloatBag();
-        assertEquals(0f, bag.get(0), 0f);
+        assertEquals((Float)0f, (Float)bag.get(0));
         bag.set(0, 1f);
-        assertEquals(0f, bag.get(1), 0f);
-        assertEquals(0f, bag.get(2), 0f);
-        assertEquals(0f, bag.get(3), 0f);
+        assertEquals((Float)0f, (Float)bag.get(1));
+        assertEquals((Float)0f, (Float)bag.get(2));
+        assertEquals((Float)0f, (Float)bag.get(3));
     }
 
     /**
-     * Ensures that the bag resizes correctly when out of capacity, that it
-     * does not resize when queried for non-existing elements, and that it does
-     * not resize when the default value is set.
+     * Ensures that the bag resizes correctly when out of capacity and that it
+     * does not resize when queried for non-existing elements.
      */
     @Test
     public void testCapacity() {
@@ -154,17 +159,17 @@ public class FloatBagTest {
         assertEquals(0, bag.buffer.length);
         bag.set(0, 1f);
         assertEquals(1, bag.buffer.length);
-        bag.set(1, 2f);
+        bag.set(1, 1f);
         assertEquals(2, bag.buffer.length);
-        bag.set(2, 3f);
+        bag.set(2, 1f);
         assertEquals(4, bag.buffer.length);
-        bag.set(3, 4f);
+        bag.set(3, 1f);
         assertEquals(4, bag.buffer.length);
-        bag.set(4, 5f);
+        bag.set(4, 1f);
         assertEquals(8, bag.buffer.length);
-        bag.set(8, 6f);
+        bag.set(8, 1f);
         assertEquals(16, bag.buffer.length);
-        bag.set(35, 7f);
+        bag.set(35, 1f);
         assertEquals(64, bag.buffer.length);
 
         bag = new FloatBag();
@@ -184,7 +189,7 @@ public class FloatBagTest {
         FloatBag bag = new FloatBag();
         for (int i = 0; i < 32; i++) {
             try {
-                bag.set(-(1 << i), 0f);
+                bag.set(-(1 << i), 1f);
             } catch (IndexOutOfBoundsException ex) {
                 if (ex.getClass() == IndexOutOfBoundsException.class)
                     continue;
@@ -192,7 +197,6 @@ public class FloatBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
-
         for (int i = 0; i < 32; i++) {
             try {
                 bag.get(-(1 << i));
@@ -203,5 +207,84 @@ public class FloatBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
+    }
+
+    /**
+     * When a negative capacity is used, a {@link NegativeArraySizeException} should be thrown.
+     */
+    @Test
+    public void testNegativeArraySizeException() {
+        FloatBag bag = new FloatBag();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.ensureCapacity(-(1 << i));
+            } catch (NegativeArraySizeException ex) {
+                if (ex.getClass() == NegativeArraySizeException.class)
+                    continue;
+            }
+
+            fail("NegativeArraySizeException expected for capacity " + (-(1 << i)));
+        }
+    }
+
+    /**
+     * Ensures that the clear() and clear(Mask) methods work properly.
+     */
+    @Test
+    public void testClear() {
+        FloatBag bag;
+
+        bag = new FloatBag();
+        bag.set(0, 1f);
+        bag.set(1, 1f);
+        bag.set(63, 1f);
+        bag.clear();
+        assertEquals((Float) 0f, (Float) bag.get(0));
+        assertEquals((Float) 0f, (Float) bag.get(1));
+        assertEquals((Float) 0f, (Float) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+
+        Mask mask = new Mask();
+        bag = new FloatBag();
+        bag.set(0, 1f);
+        bag.set(1, 1f);
+        bag.set(63, 1f);
+        mask.set(63);
+        mask.set(0);
+        bag.clear(mask);
+        assertEquals((Float) 0f, (Float) bag.get(0));
+        assertNotEquals((Float) 0f, (Float) bag.get(1));
+        assertEquals((Float) 0f, (Float) bag.get(63));
+        mask.set(1);
+        mask.set(457);
+        bag.clear(mask);
+        assertEquals((Float) 0f, (Float) bag.get(0));
+        assertEquals((Float) 0f, (Float) bag.get(1));
+        assertEquals((Float) 0f, (Float) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+    }
+
+    @Test
+    public void testCopyFrom() {
+        FloatBag bag0, bag1;
+
+        bag0 = new FloatBag();
+        bag0.set(0, 1f);
+        bag0.set(5, 1f);
+
+        bag1 = new FloatBag();
+        bag1.set(9, 1f);
+
+        bag1.copyFrom(bag0, false);
+        assertNotEquals((Float) 0f, (Float) bag1.get(0));
+        assertNotEquals((Float) 0f, (Float) bag1.get(5));
+        assertNotEquals((Float) 0f, (Float) bag1.get(9));
+
+        bag1.copyFrom(bag0);
+        assertNotEquals((Float) 0f, (Float) bag1.get(0));
+        assertNotEquals((Float) 0f, (Float) bag1.get(5));
+        assertEquals((Float) 0f, (Float) bag1.get(9));
+
+        bag0.copyFrom(bag1);
     }
 }

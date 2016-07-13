@@ -25,11 +25,11 @@ package com.github.antag99.retinazer.util;
  * Property of a packed component.
  */
 @Experimental
-public interface Property<A, T> {
+public interface Property<T, B extends AnyBag<B>> {
 
     String getName();
 
-    A getBag();
+    B getBag();
 
     Class<T> getType();
 }

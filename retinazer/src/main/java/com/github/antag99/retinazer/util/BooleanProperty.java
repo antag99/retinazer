@@ -21,16 +21,20 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 @Experimental
-public final class BooleanProperty implements Property<Mask, Boolean> {
+// This class is auto-generated; do not modify! @off
+public final class BooleanProperty implements Property<Boolean, BooleanBag> {
     private String name;
-    private Mask bag;
+    private BooleanBag bag;
 
     public BooleanProperty(String name) {
-        this.name = Objects.requireNonNull(name);
-        this.bag = new Mask();
+        this.name = requireNonNull(name, "name must not be null");
+        this.bag = new BooleanBag();
     }
 
     @Override
@@ -39,12 +43,12 @@ public final class BooleanProperty implements Property<Mask, Boolean> {
     }
 
     @Override
-    public Mask getBag() {
-        return bag;
+    public Class<Boolean> getType() {
+        return Boolean.class;
     }
 
     @Override
-    public Class<Boolean> getType() {
-        return Boolean.TYPE;
+    public BooleanBag getBag() {
+        return bag;
     }
 }

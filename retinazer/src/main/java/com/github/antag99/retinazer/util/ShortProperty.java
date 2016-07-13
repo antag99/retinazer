@@ -21,15 +21,19 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 @Experimental
-public final class ShortProperty implements Property<ShortBag, Short> {
+// This class is auto-generated; do not modify! @off
+public final class ShortProperty implements Property<Short, ShortBag> {
     private String name;
     private ShortBag bag;
 
     public ShortProperty(String name) {
-        this.name = Objects.requireNonNull(name);
+        this.name = requireNonNull(name, "name must not be null");
         this.bag = new ShortBag();
     }
 
@@ -39,13 +43,12 @@ public final class ShortProperty implements Property<ShortBag, Short> {
     }
 
     @Override
-    public ShortBag getBag() {
-        return bag;
+    public Class<Short> getType() {
+        return Short.class;
     }
 
     @Override
-    public Class<Short> getType() {
-        return Short.TYPE;
+    public ShortBag getBag() {
+        return bag;
     }
-
 }

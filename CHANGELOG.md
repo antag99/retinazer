@@ -9,8 +9,15 @@
       as more optimizations are introduced.
   - `PackedMapper` that allows access to the backing arrays for fast access
   - `Property` classes that represent properties of packed components
-- Added `clear(Mask)` implementation to all `Bag` implementations
+- Enhanced `Bag` API:
+  - Added interface `AnyBag`
+    - `copyFrom(AnyBag)` method
+    - `copyFrom(AnyBag, boolean)` method
+    - `clear(Mask)` method
+  - Removed `Bag(int)` constructor
 - Removed `Mapper.add(int, Component)`, `create` should be used instead
+- Fix: `ByteBag` implements `ensureCapacity(int)`
+- Fix: `Bag.ensureCapacity(int)` throws `NegativeArraySizeException` if `capacity` is negative.
 
 # Version 0.3.0 (released 2016-07-04)
 - `ensureCapacity(int)` for all `Bag` implementations

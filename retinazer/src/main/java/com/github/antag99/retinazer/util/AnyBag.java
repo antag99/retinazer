@@ -21,34 +21,21 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import static java.util.Objects.requireNonNull;
-
 /**
+ * A bag is an automatically expanding array.
  *
+ * @param T
+ *            Type of this bag.
  */
-@Experimental
-// This class is auto-generated; do not modify! @off
-public final class DoubleProperty implements Property<Double, DoubleBag> {
-    private String name;
-    private DoubleBag bag;
+public interface AnyBag<T extends AnyBag<T>> {
 
-    public DoubleProperty(String name) {
-        this.name = requireNonNull(name, "name must not be null");
-        this.bag = new DoubleBag();
-    }
+    void copyFrom(T bag);
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    void copyFrom(T bag, boolean clearExceeding);
 
-    @Override
-    public Class<Double> getType() {
-        return Double.class;
-    }
+    void ensureCapacity(int capacity);
 
-    @Override
-    public DoubleBag getBag() {
-        return bag;
-    }
+    void clear();
+
+    void clear(Mask mask);
 }

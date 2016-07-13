@@ -21,18 +21,22 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 @Experimental
-public final class ObjectProperty<T> implements Property<Bag<T>, T> {
+// This class is auto-generated; do not modify! @off
+public final class ObjectProperty<T> implements Property<T, Bag<T>> {
     private String name;
-    private Class<T> type;
     private Bag<T> bag;
+    private Class<T> type;
 
     public ObjectProperty(String name, Class<T> type) {
-        this.name = Objects.requireNonNull(name);
-        this.type = Objects.requireNonNull(type);
-        this.bag = new Bag<>();
+        this.name = requireNonNull(name, "name must not be null");
+        this.type = type;
+        this.bag = new Bag<T>();
     }
 
     @Override
@@ -41,12 +45,12 @@ public final class ObjectProperty<T> implements Property<Bag<T>, T> {
     }
 
     @Override
-    public Bag<T> getBag() {
-        return bag;
+    public Class<T> getType() {
+        return type;
     }
 
     @Override
-    public Class<T> getType() {
-        return type;
+    public Bag<T> getBag() {
+        return bag;
     }
 }

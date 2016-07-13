@@ -21,15 +21,19 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 @Experimental
-public final class LongProperty implements Property<LongBag, Long> {
+// This class is auto-generated; do not modify! @off
+public final class LongProperty implements Property<Long, LongBag> {
     private String name;
     private LongBag bag;
 
     public LongProperty(String name) {
-        this.name = Objects.requireNonNull(name);
+        this.name = requireNonNull(name, "name must not be null");
         this.bag = new LongBag();
     }
 
@@ -39,12 +43,12 @@ public final class LongProperty implements Property<LongBag, Long> {
     }
 
     @Override
-    public LongBag getBag() {
-        return bag;
+    public Class<Long> getType() {
+        return Long.class;
     }
 
     @Override
-    public Class<Long> getType() {
-        return Long.TYPE;
+    public LongBag getBag() {
+        return bag;
     }
 }

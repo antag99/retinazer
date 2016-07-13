@@ -21,111 +21,117 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import com.github.antag99.retinazer.util.DoubleBag;
-
-public class DoubleBagTest {
-
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class DoubleBagTest {
     /**
      * Ensures that the elements of a bag are actually stored
      */
     @Test
     public void testStorage() {
         DoubleBag bag = new DoubleBag();
+        double element0 = 1d;
+        double element1 = 1d;
+        double element2 = 1d;
+        double element3 = 1d;
+        double element4 = 1d;
+        double element5 = 1d;
+        double element6 = 1d;
+        double element7 = 1d;
 
-        bag.set(0, 0d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(0d, bag.get(1), 0d);
-        assertEquals(0d, bag.get(2), 0d);
-        assertEquals(0d, bag.get(3), 0d);
-        assertEquals(0d, bag.get(4), 0d);
-        assertEquals(0d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(0, element0);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)0d, (Double)bag.get(1));
+        assertEquals((Double)0d, (Double)bag.get(2));
+        assertEquals((Double)0d, (Double)bag.get(3));
+        assertEquals((Double)0d, (Double)bag.get(4));
+        assertEquals((Double)0d, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(1, 1d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(0d, bag.get(2), 0d);
-        assertEquals(0d, bag.get(3), 0d);
-        assertEquals(0d, bag.get(4), 0d);
-        assertEquals(0d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(1, element1);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)0d, (Double)bag.get(2));
+        assertEquals((Double)0d, (Double)bag.get(3));
+        assertEquals((Double)0d, (Double)bag.get(4));
+        assertEquals((Double)0d, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(2, 2d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(2d, bag.get(2), 0d);
-        assertEquals(0d, bag.get(3), 0d);
-        assertEquals(0d, bag.get(4), 0d);
-        assertEquals(0d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(2, element2);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)element2, (Double)bag.get(2));
+        assertEquals((Double)0d, (Double)bag.get(3));
+        assertEquals((Double)0d, (Double)bag.get(4));
+        assertEquals((Double)0d, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(3, 3d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(2d, bag.get(2), 0d);
-        assertEquals(3d, bag.get(3), 0d);
-        assertEquals(0d, bag.get(4), 0d);
-        assertEquals(0d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(3, element3);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)element2, (Double)bag.get(2));
+        assertEquals((Double)element3, (Double)bag.get(3));
+        assertEquals((Double)0d, (Double)bag.get(4));
+        assertEquals((Double)0d, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(4, 4d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(2d, bag.get(2), 0d);
-        assertEquals(3d, bag.get(3), 0d);
-        assertEquals(4d, bag.get(4), 0d);
-        assertEquals(0d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(4, element4);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)element2, (Double)bag.get(2));
+        assertEquals((Double)element3, (Double)bag.get(3));
+        assertEquals((Double)element4, (Double)bag.get(4));
+        assertEquals((Double)0d, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(5, 5d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(2d, bag.get(2), 0d);
-        assertEquals(3d, bag.get(3), 0d);
-        assertEquals(4d, bag.get(4), 0d);
-        assertEquals(5d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(5, element5);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)element2, (Double)bag.get(2));
+        assertEquals((Double)element3, (Double)bag.get(3));
+        assertEquals((Double)element4, (Double)bag.get(4));
+        assertEquals((Double)element5, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(6, 6d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(2d, bag.get(2), 0d);
-        assertEquals(3d, bag.get(3), 0d);
-        assertEquals(4d, bag.get(4), 0d);
-        assertEquals(5d, bag.get(5), 0d);
-        assertEquals(6d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        bag.set(6, element6);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)element2, (Double)bag.get(2));
+        assertEquals((Double)element3, (Double)bag.get(3));
+        assertEquals((Double)element4, (Double)bag.get(4));
+        assertEquals((Double)element5, (Double)bag.get(5));
+        assertEquals((Double)element6, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
 
-        bag.set(7, 7d);
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(1d, bag.get(1), 0d);
-        assertEquals(2d, bag.get(2), 0d);
-        assertEquals(3d, bag.get(3), 0d);
-        assertEquals(4d, bag.get(4), 0d);
-        assertEquals(5d, bag.get(5), 0d);
-        assertEquals(6d, bag.get(6), 0d);
-        assertEquals(7d, bag.get(7), 0d);
+        bag.set(7, element7);
+        assertEquals((Double)element0, (Double)bag.get(0));
+        assertEquals((Double)element1, (Double)bag.get(1));
+        assertEquals((Double)element2, (Double)bag.get(2));
+        assertEquals((Double)element3, (Double)bag.get(3));
+        assertEquals((Double)element4, (Double)bag.get(4));
+        assertEquals((Double)element5, (Double)bag.get(5));
+        assertEquals((Double)element6, (Double)bag.get(6));
+        assertEquals((Double)element7, (Double)bag.get(7));
 
         bag.clear();
 
-        assertEquals(0d, bag.get(0), 0d);
-        assertEquals(0d, bag.get(1), 0d);
-        assertEquals(0d, bag.get(2), 0d);
-        assertEquals(0d, bag.get(3), 0d);
-        assertEquals(0d, bag.get(4), 0d);
-        assertEquals(0d, bag.get(5), 0d);
-        assertEquals(0d, bag.get(6), 0d);
-        assertEquals(0d, bag.get(7), 0d);
+        assertEquals((Double)0d, (Double)bag.get(0));
+        assertEquals((Double)0d, (Double)bag.get(1));
+        assertEquals((Double)0d, (Double)bag.get(2));
+        assertEquals((Double)0d, (Double)bag.get(3));
+        assertEquals((Double)0d, (Double)bag.get(4));
+        assertEquals((Double)0d, (Double)bag.get(5));
+        assertEquals((Double)0d, (Double)bag.get(6));
+        assertEquals((Double)0d, (Double)bag.get(7));
     }
 
     /**
@@ -134,17 +140,16 @@ public class DoubleBagTest {
     @Test
     public void testDefault() {
         DoubleBag bag = new DoubleBag();
-        assertEquals(0d, bag.get(0), 0d);
+        assertEquals((Double)0d, (Double)bag.get(0));
         bag.set(0, 1d);
-        assertEquals(0d, bag.get(1), 0d);
-        assertEquals(0d, bag.get(2), 0d);
-        assertEquals(0d, bag.get(3), 0d);
+        assertEquals((Double)0d, (Double)bag.get(1));
+        assertEquals((Double)0d, (Double)bag.get(2));
+        assertEquals((Double)0d, (Double)bag.get(3));
     }
 
     /**
-     * Ensures that the bag resizes correctly when out of capacity, that it
-     * does not resize when queried for non-existing elements, and that it does
-     * not resize when the default value is set.
+     * Ensures that the bag resizes correctly when out of capacity and that it
+     * does not resize when queried for non-existing elements.
      */
     @Test
     public void testCapacity() {
@@ -154,17 +159,17 @@ public class DoubleBagTest {
         assertEquals(0, bag.buffer.length);
         bag.set(0, 1d);
         assertEquals(1, bag.buffer.length);
-        bag.set(1, 2d);
+        bag.set(1, 1d);
         assertEquals(2, bag.buffer.length);
-        bag.set(2, 3d);
+        bag.set(2, 1d);
         assertEquals(4, bag.buffer.length);
-        bag.set(3, 4d);
+        bag.set(3, 1d);
         assertEquals(4, bag.buffer.length);
-        bag.set(4, 5d);
+        bag.set(4, 1d);
         assertEquals(8, bag.buffer.length);
-        bag.set(8, 6d);
+        bag.set(8, 1d);
         assertEquals(16, bag.buffer.length);
-        bag.set(35, 7d);
+        bag.set(35, 1d);
         assertEquals(64, bag.buffer.length);
 
         bag = new DoubleBag();
@@ -184,7 +189,7 @@ public class DoubleBagTest {
         DoubleBag bag = new DoubleBag();
         for (int i = 0; i < 32; i++) {
             try {
-                bag.set(-(1 << i), 0d);
+                bag.set(-(1 << i), 1d);
             } catch (IndexOutOfBoundsException ex) {
                 if (ex.getClass() == IndexOutOfBoundsException.class)
                     continue;
@@ -192,7 +197,6 @@ public class DoubleBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
-
         for (int i = 0; i < 32; i++) {
             try {
                 bag.get(-(1 << i));
@@ -203,5 +207,84 @@ public class DoubleBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
+    }
+
+    /**
+     * When a negative capacity is used, a {@link NegativeArraySizeException} should be thrown.
+     */
+    @Test
+    public void testNegativeArraySizeException() {
+        DoubleBag bag = new DoubleBag();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.ensureCapacity(-(1 << i));
+            } catch (NegativeArraySizeException ex) {
+                if (ex.getClass() == NegativeArraySizeException.class)
+                    continue;
+            }
+
+            fail("NegativeArraySizeException expected for capacity " + (-(1 << i)));
+        }
+    }
+
+    /**
+     * Ensures that the clear() and clear(Mask) methods work properly.
+     */
+    @Test
+    public void testClear() {
+        DoubleBag bag;
+
+        bag = new DoubleBag();
+        bag.set(0, 1d);
+        bag.set(1, 1d);
+        bag.set(63, 1d);
+        bag.clear();
+        assertEquals((Double) 0d, (Double) bag.get(0));
+        assertEquals((Double) 0d, (Double) bag.get(1));
+        assertEquals((Double) 0d, (Double) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+
+        Mask mask = new Mask();
+        bag = new DoubleBag();
+        bag.set(0, 1d);
+        bag.set(1, 1d);
+        bag.set(63, 1d);
+        mask.set(63);
+        mask.set(0);
+        bag.clear(mask);
+        assertEquals((Double) 0d, (Double) bag.get(0));
+        assertNotEquals((Double) 0d, (Double) bag.get(1));
+        assertEquals((Double) 0d, (Double) bag.get(63));
+        mask.set(1);
+        mask.set(457);
+        bag.clear(mask);
+        assertEquals((Double) 0d, (Double) bag.get(0));
+        assertEquals((Double) 0d, (Double) bag.get(1));
+        assertEquals((Double) 0d, (Double) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+    }
+
+    @Test
+    public void testCopyFrom() {
+        DoubleBag bag0, bag1;
+
+        bag0 = new DoubleBag();
+        bag0.set(0, 1d);
+        bag0.set(5, 1d);
+
+        bag1 = new DoubleBag();
+        bag1.set(9, 1d);
+
+        bag1.copyFrom(bag0, false);
+        assertNotEquals((Double) 0d, (Double) bag1.get(0));
+        assertNotEquals((Double) 0d, (Double) bag1.get(5));
+        assertNotEquals((Double) 0d, (Double) bag1.get(9));
+
+        bag1.copyFrom(bag0);
+        assertNotEquals((Double) 0d, (Double) bag1.get(0));
+        assertNotEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) 0d, (Double) bag1.get(9));
+
+        bag0.copyFrom(bag1);
     }
 }

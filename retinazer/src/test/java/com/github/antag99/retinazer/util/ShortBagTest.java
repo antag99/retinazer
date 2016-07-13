@@ -21,111 +21,117 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import com.github.antag99.retinazer.util.ShortBag;
-
-public class ShortBagTest {
-
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class ShortBagTest {
     /**
      * Ensures that the elements of a bag are actually stored
      */
     @Test
     public void testStorage() {
         ShortBag bag = new ShortBag();
+        short element0 = (short) 1;
+        short element1 = (short) 1;
+        short element2 = (short) 1;
+        short element3 = (short) 1;
+        short element4 = (short) 1;
+        short element5 = (short) 1;
+        short element6 = (short) 1;
+        short element7 = (short) 1;
 
-        bag.set(0, (short) 0);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 0, bag.get(1));
-        assertEquals((short) 0, bag.get(2));
-        assertEquals((short) 0, bag.get(3));
-        assertEquals((short) 0, bag.get(4));
-        assertEquals((short) 0, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(0, element0);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)(short) 0, (Short)bag.get(1));
+        assertEquals((Short)(short) 0, (Short)bag.get(2));
+        assertEquals((Short)(short) 0, (Short)bag.get(3));
+        assertEquals((Short)(short) 0, (Short)bag.get(4));
+        assertEquals((Short)(short) 0, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(1, (short) 1);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 0, bag.get(2));
-        assertEquals((short) 0, bag.get(3));
-        assertEquals((short) 0, bag.get(4));
-        assertEquals((short) 0, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(1, element1);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)(short) 0, (Short)bag.get(2));
+        assertEquals((Short)(short) 0, (Short)bag.get(3));
+        assertEquals((Short)(short) 0, (Short)bag.get(4));
+        assertEquals((Short)(short) 0, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(2, (short) 2);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 2, bag.get(2));
-        assertEquals((short) 0, bag.get(3));
-        assertEquals((short) 0, bag.get(4));
-        assertEquals((short) 0, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(2, element2);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)element2, (Short)bag.get(2));
+        assertEquals((Short)(short) 0, (Short)bag.get(3));
+        assertEquals((Short)(short) 0, (Short)bag.get(4));
+        assertEquals((Short)(short) 0, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(3, (short) 3);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 2, bag.get(2));
-        assertEquals((short) 3, bag.get(3));
-        assertEquals((short) 0, bag.get(4));
-        assertEquals((short) 0, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(3, element3);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)element2, (Short)bag.get(2));
+        assertEquals((Short)element3, (Short)bag.get(3));
+        assertEquals((Short)(short) 0, (Short)bag.get(4));
+        assertEquals((Short)(short) 0, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(4, (short) 4);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 2, bag.get(2));
-        assertEquals((short) 3, bag.get(3));
-        assertEquals((short) 4, bag.get(4));
-        assertEquals((short) 0, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(4, element4);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)element2, (Short)bag.get(2));
+        assertEquals((Short)element3, (Short)bag.get(3));
+        assertEquals((Short)element4, (Short)bag.get(4));
+        assertEquals((Short)(short) 0, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(5, (short) 5);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 2, bag.get(2));
-        assertEquals((short) 3, bag.get(3));
-        assertEquals((short) 4, bag.get(4));
-        assertEquals((short) 5, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(5, element5);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)element2, (Short)bag.get(2));
+        assertEquals((Short)element3, (Short)bag.get(3));
+        assertEquals((Short)element4, (Short)bag.get(4));
+        assertEquals((Short)element5, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(6, (short) 6);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 2, bag.get(2));
-        assertEquals((short) 3, bag.get(3));
-        assertEquals((short) 4, bag.get(4));
-        assertEquals((short) 5, bag.get(5));
-        assertEquals((short) 6, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        bag.set(6, element6);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)element2, (Short)bag.get(2));
+        assertEquals((Short)element3, (Short)bag.get(3));
+        assertEquals((Short)element4, (Short)bag.get(4));
+        assertEquals((Short)element5, (Short)bag.get(5));
+        assertEquals((Short)element6, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
 
-        bag.set(7, (short) 7);
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 1, bag.get(1));
-        assertEquals((short) 2, bag.get(2));
-        assertEquals((short) 3, bag.get(3));
-        assertEquals((short) 4, bag.get(4));
-        assertEquals((short) 5, bag.get(5));
-        assertEquals((short) 6, bag.get(6));
-        assertEquals((short) 7, bag.get(7));
+        bag.set(7, element7);
+        assertEquals((Short)element0, (Short)bag.get(0));
+        assertEquals((Short)element1, (Short)bag.get(1));
+        assertEquals((Short)element2, (Short)bag.get(2));
+        assertEquals((Short)element3, (Short)bag.get(3));
+        assertEquals((Short)element4, (Short)bag.get(4));
+        assertEquals((Short)element5, (Short)bag.get(5));
+        assertEquals((Short)element6, (Short)bag.get(6));
+        assertEquals((Short)element7, (Short)bag.get(7));
 
         bag.clear();
 
-        assertEquals((short) 0, bag.get(0));
-        assertEquals((short) 0, bag.get(1));
-        assertEquals((short) 0, bag.get(2));
-        assertEquals((short) 0, bag.get(3));
-        assertEquals((short) 0, bag.get(4));
-        assertEquals((short) 0, bag.get(5));
-        assertEquals((short) 0, bag.get(6));
-        assertEquals((short) 0, bag.get(7));
+        assertEquals((Short)(short) 0, (Short)bag.get(0));
+        assertEquals((Short)(short) 0, (Short)bag.get(1));
+        assertEquals((Short)(short) 0, (Short)bag.get(2));
+        assertEquals((Short)(short) 0, (Short)bag.get(3));
+        assertEquals((Short)(short) 0, (Short)bag.get(4));
+        assertEquals((Short)(short) 0, (Short)bag.get(5));
+        assertEquals((Short)(short) 0, (Short)bag.get(6));
+        assertEquals((Short)(short) 0, (Short)bag.get(7));
     }
 
     /**
@@ -134,17 +140,16 @@ public class ShortBagTest {
     @Test
     public void testDefault() {
         ShortBag bag = new ShortBag();
-        assertEquals((short) 0, bag.get(0));
+        assertEquals((Short)(short) 0, (Short)bag.get(0));
         bag.set(0, (short) 1);
-        assertEquals((short) 0, bag.get(1));
-        assertEquals((short) 0, bag.get(2));
-        assertEquals((short) 0, bag.get(3));
+        assertEquals((Short)(short) 0, (Short)bag.get(1));
+        assertEquals((Short)(short) 0, (Short)bag.get(2));
+        assertEquals((Short)(short) 0, (Short)bag.get(3));
     }
 
     /**
-     * Ensures that the bag resizes correctly when out of capacity, that it
-     * does not resize when queried for non-existing elements, and that it does
-     * not resize when the default value is set.
+     * Ensures that the bag resizes correctly when out of capacity and that it
+     * does not resize when queried for non-existing elements.
      */
     @Test
     public void testCapacity() {
@@ -154,17 +159,17 @@ public class ShortBagTest {
         assertEquals(0, bag.buffer.length);
         bag.set(0, (short) 1);
         assertEquals(1, bag.buffer.length);
-        bag.set(1, (short) 2);
+        bag.set(1, (short) 1);
         assertEquals(2, bag.buffer.length);
-        bag.set(2, (short) 3);
+        bag.set(2, (short) 1);
         assertEquals(4, bag.buffer.length);
-        bag.set(3, (short) 4);
+        bag.set(3, (short) 1);
         assertEquals(4, bag.buffer.length);
-        bag.set(4, (short) 5);
+        bag.set(4, (short) 1);
         assertEquals(8, bag.buffer.length);
-        bag.set(8, (short) 6);
+        bag.set(8, (short) 1);
         assertEquals(16, bag.buffer.length);
-        bag.set(35, (short) 7);
+        bag.set(35, (short) 1);
         assertEquals(64, bag.buffer.length);
 
         bag = new ShortBag();
@@ -184,7 +189,7 @@ public class ShortBagTest {
         ShortBag bag = new ShortBag();
         for (int i = 0; i < 32; i++) {
             try {
-                bag.set(-(1 << i), (short) 0);
+                bag.set(-(1 << i), (short) 1);
             } catch (IndexOutOfBoundsException ex) {
                 if (ex.getClass() == IndexOutOfBoundsException.class)
                     continue;
@@ -192,7 +197,6 @@ public class ShortBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
-
         for (int i = 0; i < 32; i++) {
             try {
                 bag.get(-(1 << i));
@@ -203,5 +207,84 @@ public class ShortBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
+    }
+
+    /**
+     * When a negative capacity is used, a {@link NegativeArraySizeException} should be thrown.
+     */
+    @Test
+    public void testNegativeArraySizeException() {
+        ShortBag bag = new ShortBag();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.ensureCapacity(-(1 << i));
+            } catch (NegativeArraySizeException ex) {
+                if (ex.getClass() == NegativeArraySizeException.class)
+                    continue;
+            }
+
+            fail("NegativeArraySizeException expected for capacity " + (-(1 << i)));
+        }
+    }
+
+    /**
+     * Ensures that the clear() and clear(Mask) methods work properly.
+     */
+    @Test
+    public void testClear() {
+        ShortBag bag;
+
+        bag = new ShortBag();
+        bag.set(0, (short) 1);
+        bag.set(1, (short) 1);
+        bag.set(63, (short) 1);
+        bag.clear();
+        assertEquals((Short) (short) 0, (Short) bag.get(0));
+        assertEquals((Short) (short) 0, (Short) bag.get(1));
+        assertEquals((Short) (short) 0, (Short) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+
+        Mask mask = new Mask();
+        bag = new ShortBag();
+        bag.set(0, (short) 1);
+        bag.set(1, (short) 1);
+        bag.set(63, (short) 1);
+        mask.set(63);
+        mask.set(0);
+        bag.clear(mask);
+        assertEquals((Short) (short) 0, (Short) bag.get(0));
+        assertNotEquals((Short) (short) 0, (Short) bag.get(1));
+        assertEquals((Short) (short) 0, (Short) bag.get(63));
+        mask.set(1);
+        mask.set(457);
+        bag.clear(mask);
+        assertEquals((Short) (short) 0, (Short) bag.get(0));
+        assertEquals((Short) (short) 0, (Short) bag.get(1));
+        assertEquals((Short) (short) 0, (Short) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+    }
+
+    @Test
+    public void testCopyFrom() {
+        ShortBag bag0, bag1;
+
+        bag0 = new ShortBag();
+        bag0.set(0, (short) 1);
+        bag0.set(5, (short) 1);
+
+        bag1 = new ShortBag();
+        bag1.set(9, (short) 1);
+
+        bag1.copyFrom(bag0, false);
+        assertNotEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertNotEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertNotEquals((Short) (short) 0, (Short) bag1.get(9));
+
+        bag1.copyFrom(bag0);
+        assertNotEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertNotEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) (short) 0, (Short) bag1.get(9));
+
+        bag0.copyFrom(bag1);
     }
 }

@@ -21,111 +21,117 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import com.github.antag99.retinazer.util.ByteBag;
-
-public class ByteBagTest {
-
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class ByteBagTest {
     /**
      * Ensures that the elements of a bag are actually stored
      */
     @Test
     public void testStorage() {
         ByteBag bag = new ByteBag();
+        byte element0 = (byte) 1;
+        byte element1 = (byte) 1;
+        byte element2 = (byte) 1;
+        byte element3 = (byte) 1;
+        byte element4 = (byte) 1;
+        byte element5 = (byte) 1;
+        byte element6 = (byte) 1;
+        byte element7 = (byte) 1;
 
-        bag.set(0, (byte) 0);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 0, bag.get(1));
-        assertEquals((byte) 0, bag.get(2));
-        assertEquals((byte) 0, bag.get(3));
-        assertEquals((byte) 0, bag.get(4));
-        assertEquals((byte) 0, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(0, element0);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(1));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(2));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(3));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(4));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(1, (byte) 1);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 0, bag.get(2));
-        assertEquals((byte) 0, bag.get(3));
-        assertEquals((byte) 0, bag.get(4));
-        assertEquals((byte) 0, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(1, element1);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(2));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(3));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(4));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(2, (byte) 2);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 2, bag.get(2));
-        assertEquals((byte) 0, bag.get(3));
-        assertEquals((byte) 0, bag.get(4));
-        assertEquals((byte) 0, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(2, element2);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)element2, (Byte)bag.get(2));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(3));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(4));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(3, (byte) 3);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 2, bag.get(2));
-        assertEquals((byte) 3, bag.get(3));
-        assertEquals((byte) 0, bag.get(4));
-        assertEquals((byte) 0, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(3, element3);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)element2, (Byte)bag.get(2));
+        assertEquals((Byte)element3, (Byte)bag.get(3));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(4));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(4, (byte) 4);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 2, bag.get(2));
-        assertEquals((byte) 3, bag.get(3));
-        assertEquals((byte) 4, bag.get(4));
-        assertEquals((byte) 0, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(4, element4);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)element2, (Byte)bag.get(2));
+        assertEquals((Byte)element3, (Byte)bag.get(3));
+        assertEquals((Byte)element4, (Byte)bag.get(4));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(5, (byte) 5);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 2, bag.get(2));
-        assertEquals((byte) 3, bag.get(3));
-        assertEquals((byte) 4, bag.get(4));
-        assertEquals((byte) 5, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(5, element5);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)element2, (Byte)bag.get(2));
+        assertEquals((Byte)element3, (Byte)bag.get(3));
+        assertEquals((Byte)element4, (Byte)bag.get(4));
+        assertEquals((Byte)element5, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(6, (byte) 6);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 2, bag.get(2));
-        assertEquals((byte) 3, bag.get(3));
-        assertEquals((byte) 4, bag.get(4));
-        assertEquals((byte) 5, bag.get(5));
-        assertEquals((byte) 6, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        bag.set(6, element6);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)element2, (Byte)bag.get(2));
+        assertEquals((Byte)element3, (Byte)bag.get(3));
+        assertEquals((Byte)element4, (Byte)bag.get(4));
+        assertEquals((Byte)element5, (Byte)bag.get(5));
+        assertEquals((Byte)element6, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
 
-        bag.set(7, (byte) 7);
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 1, bag.get(1));
-        assertEquals((byte) 2, bag.get(2));
-        assertEquals((byte) 3, bag.get(3));
-        assertEquals((byte) 4, bag.get(4));
-        assertEquals((byte) 5, bag.get(5));
-        assertEquals((byte) 6, bag.get(6));
-        assertEquals((byte) 7, bag.get(7));
+        bag.set(7, element7);
+        assertEquals((Byte)element0, (Byte)bag.get(0));
+        assertEquals((Byte)element1, (Byte)bag.get(1));
+        assertEquals((Byte)element2, (Byte)bag.get(2));
+        assertEquals((Byte)element3, (Byte)bag.get(3));
+        assertEquals((Byte)element4, (Byte)bag.get(4));
+        assertEquals((Byte)element5, (Byte)bag.get(5));
+        assertEquals((Byte)element6, (Byte)bag.get(6));
+        assertEquals((Byte)element7, (Byte)bag.get(7));
 
         bag.clear();
 
-        assertEquals((byte) 0, bag.get(0));
-        assertEquals((byte) 0, bag.get(1));
-        assertEquals((byte) 0, bag.get(2));
-        assertEquals((byte) 0, bag.get(3));
-        assertEquals((byte) 0, bag.get(4));
-        assertEquals((byte) 0, bag.get(5));
-        assertEquals((byte) 0, bag.get(6));
-        assertEquals((byte) 0, bag.get(7));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(0));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(1));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(2));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(3));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(4));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(5));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(6));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(7));
     }
 
     /**
@@ -134,17 +140,16 @@ public class ByteBagTest {
     @Test
     public void testDefault() {
         ByteBag bag = new ByteBag();
-        assertEquals((byte) 0, bag.get(0));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(0));
         bag.set(0, (byte) 1);
-        assertEquals((byte) 0, bag.get(1));
-        assertEquals((byte) 0, bag.get(2));
-        assertEquals((byte) 0, bag.get(3));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(1));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(2));
+        assertEquals((Byte)(byte) 0, (Byte)bag.get(3));
     }
 
     /**
-     * Ensures that the bag resizes correctly when out of capacity, that it
-     * does not resize when queried for non-existing elements, and that it does
-     * not resize when the default value is set.
+     * Ensures that the bag resizes correctly when out of capacity and that it
+     * does not resize when queried for non-existing elements.
      */
     @Test
     public void testCapacity() {
@@ -154,17 +159,17 @@ public class ByteBagTest {
         assertEquals(0, bag.buffer.length);
         bag.set(0, (byte) 1);
         assertEquals(1, bag.buffer.length);
-        bag.set(1, (byte) 2);
+        bag.set(1, (byte) 1);
         assertEquals(2, bag.buffer.length);
-        bag.set(2, (byte) 3);
+        bag.set(2, (byte) 1);
         assertEquals(4, bag.buffer.length);
-        bag.set(3, (byte) 4);
+        bag.set(3, (byte) 1);
         assertEquals(4, bag.buffer.length);
-        bag.set(4, (byte) 5);
+        bag.set(4, (byte) 1);
         assertEquals(8, bag.buffer.length);
-        bag.set(8, (byte) 6);
+        bag.set(8, (byte) 1);
         assertEquals(16, bag.buffer.length);
-        bag.set(35, (byte) 7);
+        bag.set(35, (byte) 1);
         assertEquals(64, bag.buffer.length);
 
         bag = new ByteBag();
@@ -184,7 +189,7 @@ public class ByteBagTest {
         ByteBag bag = new ByteBag();
         for (int i = 0; i < 32; i++) {
             try {
-                bag.set(-(1 << i), (byte) 0);
+                bag.set(-(1 << i), (byte) 1);
             } catch (IndexOutOfBoundsException ex) {
                 if (ex.getClass() == IndexOutOfBoundsException.class)
                     continue;
@@ -192,7 +197,6 @@ public class ByteBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
-
         for (int i = 0; i < 32; i++) {
             try {
                 bag.get(-(1 << i));
@@ -203,5 +207,84 @@ public class ByteBagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
+    }
+
+    /**
+     * When a negative capacity is used, a {@link NegativeArraySizeException} should be thrown.
+     */
+    @Test
+    public void testNegativeArraySizeException() {
+        ByteBag bag = new ByteBag();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.ensureCapacity(-(1 << i));
+            } catch (NegativeArraySizeException ex) {
+                if (ex.getClass() == NegativeArraySizeException.class)
+                    continue;
+            }
+
+            fail("NegativeArraySizeException expected for capacity " + (-(1 << i)));
+        }
+    }
+
+    /**
+     * Ensures that the clear() and clear(Mask) methods work properly.
+     */
+    @Test
+    public void testClear() {
+        ByteBag bag;
+
+        bag = new ByteBag();
+        bag.set(0, (byte) 1);
+        bag.set(1, (byte) 1);
+        bag.set(63, (byte) 1);
+        bag.clear();
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+
+        Mask mask = new Mask();
+        bag = new ByteBag();
+        bag.set(0, (byte) 1);
+        bag.set(1, (byte) 1);
+        bag.set(63, (byte) 1);
+        mask.set(63);
+        mask.set(0);
+        bag.clear(mask);
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(0));
+        assertNotEquals((Byte) (byte) 0, (Byte) bag.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(63));
+        mask.set(1);
+        mask.set(457);
+        bag.clear(mask);
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+    }
+
+    @Test
+    public void testCopyFrom() {
+        ByteBag bag0, bag1;
+
+        bag0 = new ByteBag();
+        bag0.set(0, (byte) 1);
+        bag0.set(5, (byte) 1);
+
+        bag1 = new ByteBag();
+        bag1.set(9, (byte) 1);
+
+        bag1.copyFrom(bag0, false);
+        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(9));
+
+        bag1.copyFrom(bag0);
+        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(9));
+
+        bag0.copyFrom(bag1);
     }
 }

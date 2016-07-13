@@ -21,119 +21,117 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import com.github.antag99.retinazer.util.Bag;
-
-public class BagTest {
-
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class BagTest<T> {
     /**
      * Ensures that the elements of a bag are actually stored
      */
     @Test
     public void testStorage() {
-        Bag<Object> bag = new Bag<>();
-        Object element0 = new Object();
-        Object element1 = new Object();
-        Object element2 = new Object();
-        Object element3 = new Object();
-        Object element4 = new Object();
-        Object element5 = new Object();
-        Object element6 = new Object();
-        Object element7 = new Object();
+        Bag<T> bag = new Bag<T>();
+        T element0 = (T) new Object();
+        T element1 = (T) new Object();
+        T element2 = (T) new Object();
+        T element3 = (T) new Object();
+        T element4 = (T) new Object();
+        T element5 = (T) new Object();
+        T element6 = (T) new Object();
+        T element7 = (T) new Object();
 
         bag.set(0, element0);
-        assertSame(element0, bag.get(0));
-        assertSame(null, bag.get(1));
-        assertSame(null, bag.get(2));
-        assertSame(null, bag.get(3));
-        assertSame(null, bag.get(4));
-        assertSame(null, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)null, (T)bag.get(1));
+        assertEquals((T)null, (T)bag.get(2));
+        assertEquals((T)null, (T)bag.get(3));
+        assertEquals((T)null, (T)bag.get(4));
+        assertEquals((T)null, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(1, element1);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(null, bag.get(2));
-        assertSame(null, bag.get(3));
-        assertSame(null, bag.get(4));
-        assertSame(null, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)null, (T)bag.get(2));
+        assertEquals((T)null, (T)bag.get(3));
+        assertEquals((T)null, (T)bag.get(4));
+        assertEquals((T)null, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(2, element2);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(element2, bag.get(2));
-        assertSame(null, bag.get(3));
-        assertSame(null, bag.get(4));
-        assertSame(null, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)element2, (T)bag.get(2));
+        assertEquals((T)null, (T)bag.get(3));
+        assertEquals((T)null, (T)bag.get(4));
+        assertEquals((T)null, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(3, element3);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(element2, bag.get(2));
-        assertSame(element3, bag.get(3));
-        assertSame(null, bag.get(4));
-        assertSame(null, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)element2, (T)bag.get(2));
+        assertEquals((T)element3, (T)bag.get(3));
+        assertEquals((T)null, (T)bag.get(4));
+        assertEquals((T)null, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(4, element4);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(element2, bag.get(2));
-        assertSame(element3, bag.get(3));
-        assertSame(element4, bag.get(4));
-        assertSame(null, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)element2, (T)bag.get(2));
+        assertEquals((T)element3, (T)bag.get(3));
+        assertEquals((T)element4, (T)bag.get(4));
+        assertEquals((T)null, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(5, element5);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(element2, bag.get(2));
-        assertSame(element3, bag.get(3));
-        assertSame(element4, bag.get(4));
-        assertSame(element5, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)element2, (T)bag.get(2));
+        assertEquals((T)element3, (T)bag.get(3));
+        assertEquals((T)element4, (T)bag.get(4));
+        assertEquals((T)element5, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(6, element6);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(element2, bag.get(2));
-        assertSame(element3, bag.get(3));
-        assertSame(element4, bag.get(4));
-        assertSame(element5, bag.get(5));
-        assertSame(element6, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)element2, (T)bag.get(2));
+        assertEquals((T)element3, (T)bag.get(3));
+        assertEquals((T)element4, (T)bag.get(4));
+        assertEquals((T)element5, (T)bag.get(5));
+        assertEquals((T)element6, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
 
         bag.set(7, element7);
-        assertSame(element0, bag.get(0));
-        assertSame(element1, bag.get(1));
-        assertSame(element2, bag.get(2));
-        assertSame(element3, bag.get(3));
-        assertSame(element4, bag.get(4));
-        assertSame(element5, bag.get(5));
-        assertSame(element6, bag.get(6));
-        assertSame(element7, bag.get(7));
+        assertEquals((T)element0, (T)bag.get(0));
+        assertEquals((T)element1, (T)bag.get(1));
+        assertEquals((T)element2, (T)bag.get(2));
+        assertEquals((T)element3, (T)bag.get(3));
+        assertEquals((T)element4, (T)bag.get(4));
+        assertEquals((T)element5, (T)bag.get(5));
+        assertEquals((T)element6, (T)bag.get(6));
+        assertEquals((T)element7, (T)bag.get(7));
 
         bag.clear();
 
-        assertSame(null, bag.get(0));
-        assertSame(null, bag.get(1));
-        assertSame(null, bag.get(2));
-        assertSame(null, bag.get(3));
-        assertSame(null, bag.get(4));
-        assertSame(null, bag.get(5));
-        assertSame(null, bag.get(6));
-        assertSame(null, bag.get(7));
+        assertEquals((T)null, (T)bag.get(0));
+        assertEquals((T)null, (T)bag.get(1));
+        assertEquals((T)null, (T)bag.get(2));
+        assertEquals((T)null, (T)bag.get(3));
+        assertEquals((T)null, (T)bag.get(4));
+        assertEquals((T)null, (T)bag.get(5));
+        assertEquals((T)null, (T)bag.get(6));
+        assertEquals((T)null, (T)bag.get(7));
     }
 
     /**
@@ -141,41 +139,40 @@ public class BagTest {
      */
     @Test
     public void testDefault() {
-        Bag<Object> bag = new Bag<>();
-        assertEquals(null, bag.get(0));
-        bag.set(0, new Object());
-        assertEquals(null, bag.get(1));
-        assertEquals(null, bag.get(2));
-        assertEquals(null, bag.get(3));
+        Bag<T> bag = new Bag<T>();
+        assertEquals((T)null, (T)bag.get(0));
+        bag.set(0, (T) new Object());
+        assertEquals((T)null, (T)bag.get(1));
+        assertEquals((T)null, (T)bag.get(2));
+        assertEquals((T)null, (T)bag.get(3));
     }
 
     /**
-     * Ensures that the bag resizes correctly when out of capacity, that it
-     * does not resize when queried for non-existing elements, and that it does
-     * not resize when the default value is set.
+     * Ensures that the bag resizes correctly when out of capacity and that it
+     * does not resize when queried for non-existing elements.
      */
     @Test
     public void testCapacity() {
-        Bag<Object> bag;
+        Bag<T> bag;
 
-        bag = new Bag<>();
+        bag = new Bag<T>();
         assertEquals(0, bag.buffer.length);
-        bag.set(0, new Object());
+        bag.set(0, (T) new Object());
         assertEquals(1, bag.buffer.length);
-        bag.set(1, new Object());
+        bag.set(1, (T) new Object());
         assertEquals(2, bag.buffer.length);
-        bag.set(2, new Object());
+        bag.set(2, (T) new Object());
         assertEquals(4, bag.buffer.length);
-        bag.set(3, new Object());
+        bag.set(3, (T) new Object());
         assertEquals(4, bag.buffer.length);
-        bag.set(4, new Object());
+        bag.set(4, (T) new Object());
         assertEquals(8, bag.buffer.length);
-        bag.set(8, new Object());
+        bag.set(8, (T) new Object());
         assertEquals(16, bag.buffer.length);
-        bag.set(35, new Object());
+        bag.set(35, (T) new Object());
         assertEquals(64, bag.buffer.length);
 
-        bag = new Bag<>();
+        bag = new Bag<T>();
         for (int i = 0; i < 32; i++) {
             bag.get((1 << i) - 1);
             assertEquals(0, bag.buffer.length);
@@ -198,10 +195,10 @@ public class BagTest {
      */
     @Test
     public void testIndexOutOfBoundsException() {
-        Bag<Object> bag = new Bag<>();
+        Bag<T> bag = new Bag<T>();
         for (int i = 0; i < 32; i++) {
             try {
-                bag.set(-(1 << i), new Object());
+                bag.set(-(1 << i), (T) new Object());
             } catch (IndexOutOfBoundsException ex) {
                 if (ex.getClass() == IndexOutOfBoundsException.class)
                     continue;
@@ -219,5 +216,84 @@ public class BagTest {
 
             fail("IndexOutOfBoundsException expected for index " + (-(1 << i)));
         }
+    }
+
+    /**
+     * When a negative capacity is used, a {@link NegativeArraySizeException} should be thrown.
+     */
+    @Test
+    public void testNegativeArraySizeException() {
+        Bag<T> bag = new Bag<T>();
+        for (int i = 0; i < 32; i++) {
+            try {
+                bag.ensureCapacity(-(1 << i));
+            } catch (NegativeArraySizeException ex) {
+                if (ex.getClass() == NegativeArraySizeException.class)
+                    continue;
+            }
+
+            fail("NegativeArraySizeException expected for capacity " + (-(1 << i)));
+        }
+    }
+
+    /**
+     * Ensures that the clear() and clear(Mask) methods work properly.
+     */
+    @Test
+    public void testClear() {
+        Bag<T> bag;
+
+        bag = new Bag<T>();
+        bag.set(0, (T) new Object());
+        bag.set(1, (T) new Object());
+        bag.set(63, (T) new Object());
+        bag.clear();
+        assertEquals((T) null, (T) bag.get(0));
+        assertEquals((T) null, (T) bag.get(1));
+        assertEquals((T) null, (T) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+
+        Mask mask = new Mask();
+        bag = new Bag<T>();
+        bag.set(0, (T) new Object());
+        bag.set(1, (T) new Object());
+        bag.set(63, (T) new Object());
+        mask.set(63);
+        mask.set(0);
+        bag.clear(mask);
+        assertEquals((T) null, (T) bag.get(0));
+        assertNotEquals((T) null, (T) bag.get(1));
+        assertEquals((T) null, (T) bag.get(63));
+        mask.set(1);
+        mask.set(457);
+        bag.clear(mask);
+        assertEquals((T) null, (T) bag.get(0));
+        assertEquals((T) null, (T) bag.get(1));
+        assertEquals((T) null, (T) bag.get(63));
+        assertEquals(64, bag.buffer.length);
+    }
+
+    @Test
+    public void testCopyFrom() {
+        Bag<T> bag0, bag1;
+
+        bag0 = new Bag<T>();
+        bag0.set(0, (T) new Object());
+        bag0.set(5, (T) new Object());
+
+        bag1 = new Bag<T>();
+        bag1.set(9, (T) new Object());
+
+        bag1.copyFrom(bag0, false);
+        assertNotEquals((T) null, (T) bag1.get(0));
+        assertNotEquals((T) null, (T) bag1.get(5));
+        assertNotEquals((T) null, (T) bag1.get(9));
+
+        bag1.copyFrom(bag0);
+        assertNotEquals((T) null, (T) bag1.get(0));
+        assertNotEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) null, (T) bag1.get(9));
+
+        bag0.copyFrom(bag1);
     }
 }

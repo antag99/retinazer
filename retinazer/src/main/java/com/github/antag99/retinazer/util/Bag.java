@@ -21,9 +21,12 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-public final class Bag<E> {
-    @Experimental
-    public Object[] buffer;
+/**
+ * A bag is an automatically expanding array.
+ */
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class Bag<T> implements AnyBag<Bag<T>> {
 
     static int nextPowerOfTwo(int value) {
         if (value == 0) {
@@ -38,15 +41,40 @@ public final class Bag<E> {
         return value + 1;
     }
 
+    /**
+     * Backing buffer of this bag.
+     */
+    @Experimental
+    public Object[] buffer;
+
+    /**
+     * Creates a new {@code Bag} with an initial capacity of {@code 0}.
+     */
     public Bag() {
-        this(0);
+        buffer = new Object[0];
     }
 
-    public Bag(int capacity) {
-        buffer = new Object[capacity];
+    @Override
+    public void copyFrom(Bag<T> bag) {
+        copyFrom(bag, true);
     }
 
+    @Override
+    public void copyFrom(Bag<T> bag, boolean clearExceeding) {
+        if (buffer.length < bag.buffer.length)
+            buffer = new Object[bag.buffer.length];
+        System.arraycopy(bag.buffer, 0, buffer, 0, bag.buffer.length);
+        if (clearExceeding && buffer.length > bag.buffer.length) {
+            Object[] buffer = this.buffer;
+            for (int i = bag.buffer.length, n = buffer.length; i < n; i++)
+                buffer[i] = null;
+        }
+    }
+
+    @Override
     public void ensureCapacity(int capacity) {
+        if (capacity < 0)
+            throw new NegativeArraySizeException(String.valueOf(capacity));
         if (this.buffer.length >= capacity)
             return;
         int newCapacity = Bag.nextPowerOfTwo(capacity);
@@ -55,42 +83,47 @@ public final class Bag<E> {
         this.buffer = newBuffer;
     }
 
-    @SuppressWarnings("unchecked")
-    public E get(int index) {
-        if (index < 0) {
+    /**
+     * Gets the element at the given index. Returns {@code null} if it does not exist.
+     *
+     * @param index
+     *            Index of the element. The size of the buffer will not be increased if the index is greater.
+     */
+    public T get(int index) {
+        if (index < 0)
             throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
 
-        if (index >= buffer.length) {
-            return null;
-        }
-
-        return (E) buffer[index];
+        return index >= buffer.length ? null : (T) buffer[index];
     }
 
-    public void set(int index, E value) {
-        if (index < 0) {
+    /**
+     * Sets the element at the given index.
+     *
+     * @param index
+     *            Index of the element. The size of the buffer will be increased if necessary.
+     * @param value
+     *            Value to set.
+     */
+    public void set(int index, T value) {
+        if (index < 0)
             throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
 
-        if (index >= buffer.length) {
-            ensureCapacity(index + 1);
-        }
+        ensureCapacity(index + 1);
 
-        buffer[index] = value;
+        buffer[index] = (T) value;
     }
 
+    @Override
     public void clear() {
         Object[] buffer = this.buffer;
-        for (int i = 0, n = buffer.length; i < n; ++i) {
+        for (int i = 0, n = buffer.length; i < n; ++i)
             buffer[i] = null;
-        }
     }
 
+    @Override
     public void clear(Mask mask) {
         Object[] buffer = this.buffer;
-        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i = mask.nextSetBit(i + 1))
             buffer[i] = null;
-        }
     }
 }

@@ -21,15 +21,19 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 @Experimental
-public final class FloatProperty implements Property<FloatBag, Float> {
+// This class is auto-generated; do not modify! @off
+public final class FloatProperty implements Property<Float, FloatBag> {
     private String name;
     private FloatBag bag;
 
     public FloatProperty(String name) {
-        this.name = Objects.requireNonNull(name);
+        this.name = requireNonNull(name, "name must not be null");
         this.bag = new FloatBag();
     }
 
@@ -39,12 +43,12 @@ public final class FloatProperty implements Property<FloatBag, Float> {
     }
 
     @Override
-    public FloatBag getBag() {
-        return bag;
+    public Class<Float> getType() {
+        return Float.class;
     }
 
     @Override
-    public Class<Float> getType() {
-        return Float.TYPE;
+    public FloatBag getBag() {
+        return bag;
     }
 }

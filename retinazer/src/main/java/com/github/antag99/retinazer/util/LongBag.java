@@ -21,19 +21,47 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-public final class LongBag {
+/**
+ * A bag is an automatically expanding array.
+ */
+// This class is auto-generated; do not modify! @off
+@SuppressWarnings("all")
+public final class LongBag implements AnyBag<LongBag> {
+
+    /**
+     * Backing buffer of this bag.
+     */
     @Experimental
     public long[] buffer;
 
+    /**
+     * Creates a new {@code LongBag} with an initial capacity of {@code 0}.
+     */
     public LongBag() {
-        this(0);
+        buffer = new long[0];
     }
 
-    public LongBag(int capacity) {
-        buffer = new long[capacity];
+    @Override
+    public void copyFrom(LongBag bag) {
+        copyFrom(bag, true);
     }
 
+    @Override
+    public void copyFrom(LongBag bag, boolean clearExceeding) {
+        if (buffer.length < bag.buffer.length)
+            buffer = new long[bag.buffer.length];
+        System.arraycopy(bag.buffer, 0, buffer, 0, bag.buffer.length);
+        if (clearExceeding && buffer.length > bag.buffer.length) {
+            long[] buffer = this.buffer;
+            for (int i = bag.buffer.length, n = buffer.length; i < n; i++)
+                buffer[i] = 0L;
+        }
+    }
+
+    @Override
     public void ensureCapacity(int capacity) {
+        if (capacity < 0)
+            throw new NegativeArraySizeException(String.valueOf(capacity));
         if (this.buffer.length >= capacity)
             return;
         int newCapacity = Bag.nextPowerOfTwo(capacity);
@@ -42,41 +70,47 @@ public final class LongBag {
         this.buffer = newBuffer;
     }
 
+    /**
+     * Gets the element at the given index. Returns {@code 0L} if it does not exist.
+     *
+     * @param index
+     *            Index of the element. The size of the buffer will not be increased if the index is greater.
+     */
     public long get(int index) {
-        if (index < 0) {
+        if (index < 0)
             throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
 
-        if (index >= buffer.length) {
-            return 0;
-        }
-
-        return buffer[index];
+        return index >= buffer.length ? 0L : (long) buffer[index];
     }
 
+    /**
+     * Sets the element at the given index.
+     *
+     * @param index
+     *            Index of the element. The size of the buffer will be increased if necessary.
+     * @param value
+     *            Value to set.
+     */
     public void set(int index, long value) {
-        if (index < 0) {
+        if (index < 0)
             throw new IndexOutOfBoundsException("index < 0: " + index);
-        }
 
-        if (index >= buffer.length) {
-            ensureCapacity(index + 1);
-        }
+        ensureCapacity(index + 1);
 
-        buffer[index] = value;
+        buffer[index] = (long) value;
     }
 
+    @Override
     public void clear() {
         long[] buffer = this.buffer;
-        for (int i = 0, n = buffer.length; i < n; ++i) {
-            buffer[i] = 0;
-        }
+        for (int i = 0, n = buffer.length; i < n; ++i)
+            buffer[i] = 0L;
     }
 
+    @Override
     public void clear(Mask mask) {
         long[] buffer = this.buffer;
-        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i++) {
-            buffer[i] = 0;
-        }
+        for (int i = mask.nextSetBit(0), n = buffer.length; i != -1 && i < n; i = mask.nextSetBit(i + 1))
+            buffer[i] = 0L;
     }
 }

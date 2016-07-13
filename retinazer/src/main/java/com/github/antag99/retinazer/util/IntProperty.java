@@ -21,15 +21,19 @@
  ******************************************************************************/
 package com.github.antag99.retinazer.util;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 @Experimental
-public final class IntProperty implements Property<IntBag, Integer> {
+// This class is auto-generated; do not modify! @off
+public final class IntProperty implements Property<Integer, IntBag> {
     private String name;
     private IntBag bag;
 
     public IntProperty(String name) {
-        this.name = Objects.requireNonNull(name);
+        this.name = requireNonNull(name, "name must not be null");
         this.bag = new IntBag();
     }
 
@@ -39,12 +43,12 @@ public final class IntProperty implements Property<IntBag, Integer> {
     }
 
     @Override
-    public IntBag getBag() {
-        return bag;
+    public Class<Integer> getType() {
+        return Integer.class;
     }
 
     @Override
-    public Class<Integer> getType() {
-        return Integer.TYPE;
+    public IntBag getBag() {
+        return bag;
     }
 }
