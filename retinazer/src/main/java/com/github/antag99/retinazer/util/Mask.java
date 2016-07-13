@@ -33,11 +33,11 @@ public final class Mask {
      * @param other The value to set.
      * @return {@code this} mask instance
      */
-    public Mask set(Mask other) {
-        return set(other.words);
+    public Mask copyFrom(Mask other) {
+        return copyFrom(other.words);
     }
 
-    public Mask set(long[] otherWords) {
+    public Mask copyFrom(long[] otherWords) {
         if (words.length < otherWords.length) {
             words = new long[otherWords.length];
         }

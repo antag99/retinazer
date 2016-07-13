@@ -98,7 +98,7 @@ final class FamilyManager {
 
             // Find matching entities, and add them to the new family set.
             Mapper<?>[] mappers = engine.componentManager.array;
-            Mask matchedEntities = new Mask().set(engine.entityManager.entities);
+            Mask matchedEntities = new Mask().copyFrom(engine.entityManager.entities);
 
             for (int component : components) {
                 matchedEntities.and(mappers[component].componentsMask);
@@ -130,13 +130,13 @@ final class FamilyManager {
             Family family = families.get(i);
             EntitySet entities = family.entities;
 
-            Mask matchedEntities = tmpMatchedEntities.set(engine.entityManager.entities);
+            Mask matchedEntities = tmpMatchedEntities.copyFrom(engine.entityManager.entities);
             matchedEntities.andNot(engine.entityManager.remove);
 
             int[] components = family.components;
             for (int component : components) {
                 Mapper<?> mapper = mappers[component];
-                tmpMask.set(mapper.componentsMask);
+                tmpMask.copyFrom(mapper.componentsMask);
                 tmpMask.andNot(mapper.removeMask);
                 matchedEntities.and(tmpMask);
             }
@@ -144,16 +144,16 @@ final class FamilyManager {
             int[] excludedComponents = family.excludedComponents;
             for (int excludedComponent : excludedComponents) {
                 Mapper<?> mapper = mappers[excludedComponent];
-                tmpMask.set(mapper.componentsMask);
+                tmpMask.copyFrom(mapper.componentsMask);
                 tmpMask.andNot(mapper.removeMask);
                 matchedEntities.andNot(tmpMask);
             }
 
-            family.insertEntities.set(matchedEntities);
+            family.insertEntities.copyFrom(matchedEntities);
             family.insertEntities.andNot(entities.getMask());
             entities.edit().addEntities(family.insertEntities);
 
-            family.removeEntities.set(entities.getMask());
+            family.removeEntities.copyFrom(entities.getMask());
             family.removeEntities.andNot(matchedEntities);
             entities.edit().removeEntities(family.removeEntities);
         }

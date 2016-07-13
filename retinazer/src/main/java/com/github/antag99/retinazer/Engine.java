@@ -159,11 +159,11 @@ public final class Engine {
         while (dirty) {
             dirty = false;
 
-            entityManager.remove.set(entityManager.removeQueue);
+            entityManager.remove.copyFrom(entityManager.removeQueue);
             entityManager.removeQueue.clear();
 
             for (Mapper<?> mapper : componentManager.array) {
-                mapper.removeMask.set(mapper.removeQueueMask);
+                mapper.removeMask.copyFrom(mapper.removeQueueMask);
                 mapper.removeMask.or(entityManager.remove);
                 mapper.removeQueueMask.clear();
             }
