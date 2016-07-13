@@ -19,7 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.component;
 
-public final class FlagComponentC implements Component {
+import com.github.antag99.retinazer.Component;
+
+public final class TagB implements Component {
 }

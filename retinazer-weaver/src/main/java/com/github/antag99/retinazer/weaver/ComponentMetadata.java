@@ -28,13 +28,10 @@ import java.util.Map;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import static org.objectweb.asm.Opcodes.ACC_FINAL;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ASM5;
-
-final class ComponentMetadata extends ClassVisitor {
+final class ComponentMetadata extends ClassVisitor implements Opcodes {
 
     /**
      * Internal name of this component type.
@@ -51,6 +48,8 @@ final class ComponentMetadata extends ClassVisitor {
      */
     public Map<String, ComponentProperty> propertiesByName = new HashMap<>();
 
+    public boolean isInterface;
+
     public ComponentMetadata(ClassVisitor cv) {
         super(ASM5, cv);
     }
@@ -58,6 +57,7 @@ final class ComponentMetadata extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.internalName = name;
+        this.isInterface = (access & ACC_INTERFACE) != 0;
 
         super.visit(version, access, name, signature, superName, interfaces);
     }
@@ -67,8 +67,6 @@ final class ComponentMetadata extends ClassVisitor {
         if ((access & ACC_STATIC) == 0) {
             if ((access & ACC_FINAL) != 0)
                 throw new WeaverException("Failed to weave " + internalName + "; cannot declare final property " + name);
-            if (desc.equals("C"))
-                throw new WeaverException("Failed to weave " + internalName + "; cannot declare char property " + name);
             ComponentProperty property = new ComponentProperty(Type.getType(desc), name);
             properties.add(property);
             propertiesByName.put(name, property);

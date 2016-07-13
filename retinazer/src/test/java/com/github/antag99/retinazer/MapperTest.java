@@ -2,6 +2,8 @@ package com.github.antag99.retinazer;
 
 import org.junit.Test;
 
+import com.github.antag99.retinazer.component.TagA;
+
 public class MapperTest {
 
     // This should usually not be done... bad.
@@ -36,7 +38,7 @@ public class MapperTest {
     @Test
     public void testRemoveNothing() {
         Engine engine = new Engine(new EngineConfig());
-        Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
+        Mapper<TagA> mFlagA = engine.getMapper(TagA.class);
         int entity = engine.createEntity();
         mFlagA.remove(entity); // nothing should happen
         engine.update();
@@ -49,7 +51,7 @@ public class MapperTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAddTwice() {
         Engine engine = new Engine(new EngineConfig());
-        Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
+        Mapper<TagA> mFlagA = engine.getMapper(TagA.class);
         int entity = engine.createEntity();
         mFlagA.create(entity);
         mFlagA.create(entity);

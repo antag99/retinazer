@@ -119,7 +119,9 @@ final class SystemProcessor extends ChainVisitor implements Opcodes {
 
     @Override
     public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
-        final MethodVisitor visitor = super.visitMethod(access, name, desc, signature, exceptions);
+        if ((access & ACC_STATIC) != 0 || (access & ACC_ABSTRACT) != 0)
+            return super.visitMethod(access, name, desc, signature, exceptions);
+
         final MethodNode methodNode = new MethodNode(access, name, desc, signature, exceptions);
 
         return new MethodVisitor(ASM5, methodNode) {
@@ -131,7 +133,7 @@ final class SystemProcessor extends ChainVisitor implements Opcodes {
                 if (name.equals("setup") && desc.equals("()V"))
                     setupMethod = methodNode;
                 else
-                    methodNode.accept(visitor);
+                    methodNode.accept(SystemProcessor.super.visitMethod(access, name, desc, signature, exceptions));
             }
         };
     }

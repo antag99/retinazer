@@ -15,6 +15,8 @@
     - `copyFrom(AnyBag, boolean)` method
     - `clear(Mask)` method
   - Removed `Bag(int)` constructor
+  - Introduced `BooleanBag`
+  - Introduced `CharBag`
 - Removed `Mapper.add(int, Component)`, `create` should be used instead
 - Fix: `ByteBag` implements `ensureCapacity(int)`
 - Fix: `Bag.ensureCapacity(int)` throws `NegativeArraySizeException` if `capacity` is negative.

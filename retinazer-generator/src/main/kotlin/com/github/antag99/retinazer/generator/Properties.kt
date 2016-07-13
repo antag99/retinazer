@@ -37,6 +37,10 @@ enum class Properties(
             type = Bags.SHORT,
             rawPropertyName = "ShortProperty"
     ),
+    CHAR(
+            type = Bags.CHAR,
+            rawPropertyName = "CharProperty"
+    ),
     INT(
             type = Bags.INT,
             rawPropertyName = "IntProperty"

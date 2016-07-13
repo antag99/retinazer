@@ -19,7 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.system;
 
-public final class FlagComponentA implements Component {
+import com.github.antag99.retinazer.EntityProcessorSystem;
+import com.github.antag99.retinazer.Family;
+import com.github.antag99.retinazer.component.TagC;
+
+public class TagSystemC extends EntityProcessorSystem {
+    public TagSystemC() {
+        super(Family.with(TagC.class));
+    }
+
+    @Override
+    public void process(int entity) {
+    }
 }

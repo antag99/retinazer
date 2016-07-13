@@ -25,6 +25,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.github.antag99.retinazer.component.TagB;
+import com.github.antag99.retinazer.component.TagC;
+
 public class EntityListenerTest {
     private static class EntityListenerMock implements EntityListener {
         private EntitySet insertedEntities = new EntitySet();
@@ -85,10 +88,10 @@ public class EntityListenerTest {
         EntityListenerMock listenerB = new EntityListenerMock();
         EntityListenerMock listenerC = new EntityListenerMock();
         Engine engine = new Engine(new EngineConfig());
-        engine.getFamily(Family.with(FlagComponentB.class)).addListener(listenerB);
-        engine.getFamily(Family.with(FlagComponentC.class)).addListener(listenerC);
-        Mapper<FlagComponentB> mFlagB = engine.getMapper(FlagComponentB.class);
-        Mapper<FlagComponentC> mFlagC = engine.getMapper(FlagComponentC.class);
+        engine.getFamily(Family.with(TagB.class)).addListener(listenerB);
+        engine.getFamily(Family.with(TagC.class)).addListener(listenerC);
+        Mapper<TagB> mFlagB = engine.getMapper(TagB.class);
+        Mapper<TagC> mFlagC = engine.getMapper(TagC.class);
         int entity = engine.createEntity();
         engine.update();
         listenerB.verifyInserted(new int[0]);

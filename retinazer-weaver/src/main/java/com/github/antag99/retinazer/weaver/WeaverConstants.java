@@ -50,9 +50,9 @@ final class WeaverConstants {
         case Type.VOID:
             throw new IllegalArgumentException(type.getClassName());
         case Type.BOOLEAN:
-            return "com/github/antag99/retinazer/util/Mask";
+            return "com/github/antag99/retinazer/util/BooleanBag";
         case Type.CHAR:
-            throw new IllegalArgumentException(type.getClassName());
+            return "com/github/antag99/retinazer/util/CharBag";
         case Type.BYTE:
             return "com/github/antag99/retinazer/util/ByteBag";
         case Type.SHORT:
@@ -77,7 +77,7 @@ final class WeaverConstants {
         case Type.BOOLEAN:
             return "com/github/antag99/retinazer/util/BooleanProperty";
         case Type.CHAR:
-            throw new IllegalArgumentException(type.getClassName());
+            return "com/github/antag99/retinazer/util/CharProperty";
         case Type.BYTE:
             return "com/github/antag99/retinazer/util/ByteProperty";
         case Type.SHORT:

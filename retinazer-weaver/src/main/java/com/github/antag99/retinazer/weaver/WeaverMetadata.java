@@ -115,7 +115,7 @@ final class WeaverMetadata implements Opcodes {
         processed = true;
 
         List<ChainVisitor> visitors = new ArrayList<>();
-        if (componentMetadata != null) {
+        if (componentMetadata != null && !componentMetadata.isInterface) {
             visitors.add(new ComponentProcessor(componentMetadata));
             visitors.add(new AccessProcessor(weaver));
 

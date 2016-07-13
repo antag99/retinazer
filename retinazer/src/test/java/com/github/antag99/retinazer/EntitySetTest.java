@@ -2,6 +2,7 @@ package com.github.antag99.retinazer;
 
 import org.junit.Test;
 
+import com.github.antag99.retinazer.component.TagA;
 import com.github.antag99.retinazer.util.Mask;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +57,7 @@ public class EntitySetTest {
     @Test
     public void testIndices() {
         Engine engine = new Engine(new EngineConfig());
-        Mapper<FlagComponentA> mapper = engine.getMapper(FlagComponentA.class);
+        Mapper<TagA> mapper = engine.getMapper(TagA.class);
         int entity0 = engine.createEntity();
         int entity1 = engine.createEntity();
         mapper.create(entity1);
@@ -67,7 +68,7 @@ public class EntitySetTest {
         assertEquals(EngineTest.asSet(entity0, entity1, entity2, entity3, entity4),
                 EngineTest.asSet(engine.getEntities()));
         assertEquals(EngineTest.asSet(entity1), EngineTest.asSet(
-                engine.getFamily(Family.with(FlagComponentA.class)).getEntities()));
+                engine.getFamily(Family.with(TagA.class)).getEntities()));
     }
 
     @Test

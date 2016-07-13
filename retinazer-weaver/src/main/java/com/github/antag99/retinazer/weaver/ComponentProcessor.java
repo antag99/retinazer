@@ -115,7 +115,7 @@ final class ComponentProcessor extends ChainVisitor implements Opcodes {
     
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        if ((access & ACC_STATIC) != 0 || !name.equals("<init>"))
+        if (!name.equals("<init>"))
             return super.visitMethod(access, name, desc, signature, exceptions);
 
         // Turn the no-arg/default constructor into a reset() method.

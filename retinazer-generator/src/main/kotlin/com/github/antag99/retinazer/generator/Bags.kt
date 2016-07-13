@@ -45,6 +45,13 @@ enum class Bags(
             defaultValue = "(short) 0",
             testValue = "(short) 1"
     ),
+    CHAR(
+            rawBagName = "CharBag",
+            rawTypeName = "char",
+            wrapperTypeName = "Character",
+            defaultValue = "(char) 0",
+            testValue = "(char) 1"
+    ),
     INT(
             rawBagName = "IntBag",
             rawTypeName = "int",

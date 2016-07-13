@@ -36,7 +36,12 @@ final class AccessProcessor extends ChainVisitor implements Opcodes {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        return new MethodVisitor(ASM5, super.visitMethod(access, name, desc, signature, exceptions)) {
+        MethodVisitor visitor = super.visitMethod(access, name, desc, signature, exceptions);
+
+        if ((access & ACC_ABSTRACT) != 0)
+            return visitor;
+
+        return new MethodVisitor(ASM5, visitor) {
             @Override
             public void visitFieldInsn(int opcode, String owner, String name, String desc) {
                 if (opcode == GETFIELD || opcode == PUTFIELD) {

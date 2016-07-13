@@ -190,7 +190,7 @@ final class MapperGenerator implements ChainSource, Opcodes {
                 visitMethodInsn(INVOKEVIRTUAL, WeaverConstants.getMetadataName(property.type), "getBag", "()" + property.getBagDesc(), false);
                 visitVarInsn(ALOAD, 2);
                 visitMethodInsn(INVOKEVIRTUAL, WeaverConstants.getBagName(property.type),
-                        property.type == Type.BOOLEAN_TYPE ? "andNot" : "clear", "(Lcom/github/antag99/retinazer/util/Mask;)V", false);
+                        "clear", "(Lcom/github/antag99/retinazer/util/Mask;)V", false);
             }
             visitVarInsn(ALOAD, 1);
             visitVarInsn(ALOAD, 2);

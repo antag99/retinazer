@@ -29,25 +29,17 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.github.antag99.retinazer.component.TagA;
+import com.github.antag99.retinazer.component.TagB;
+import com.github.antag99.retinazer.component.TagC;
+import com.github.antag99.retinazer.system.TagSystemA;
+import com.github.antag99.retinazer.system.TagSystemB;
+import com.github.antag99.retinazer.system.TagSystemC;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class EngineTest {
-    private List<EntitySystem> initializedSystems = new ArrayList<>();
-    private List<EntitySystem> updatedSystems = new ArrayList<>();
-
-    public abstract class OrderSystem extends EntitySystem {
-        @Override
-        protected final void initialize() {
-            initializedSystems.add(this);
-        }
-
-        @Override
-        protected final void update() {
-            updatedSystems.add(this);
-        }
-    }
-
     @Test
     public void testEngine() {
         Engine engine = new Engine(new EngineConfig());
@@ -63,6 +55,21 @@ public class EngineTest {
 
     @Test
     public void testEntitySystemPriority() {
+        final List<EntitySystem> initializedSystems = new ArrayList<>();
+        final List<EntitySystem> updatedSystems = new ArrayList<>();
+
+        abstract class OrderSystem extends EntitySystem {
+            @Override
+            protected final void initialize() {
+                initializedSystems.add(this);
+            }
+
+            @Override
+            protected final void update() {
+                updatedSystems.add(this);
+            }
+        }
+
         EntitySystem entitySystemA = new OrderSystem() {
             @Override
             public String toString() {
@@ -137,9 +144,9 @@ public class EngineTest {
     @Test
     public void testEntityRetrieval() {
         Engine engine = new Engine(new EngineConfig());
-        Mapper<FlagComponentA> mFlagA = engine.getMapper(FlagComponentA.class);
-        Mapper<FlagComponentB> mFlagB = engine.getMapper(FlagComponentB.class);
-        Mapper<FlagComponentC> mFlagC = engine.getMapper(FlagComponentC.class);
+        Mapper<TagA> mFlagA = engine.getMapper(TagA.class);
+        Mapper<TagB> mFlagB = engine.getMapper(TagB.class);
+        Mapper<TagC> mFlagC = engine.getMapper(TagC.class);
 
         int entity0 = engine.createEntity();
 
@@ -189,99 +196,99 @@ public class EngineTest {
 
         assertEquals(
                 asSet(entity1, entity4, entity6, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2, entity4, entity5, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3, entity5, entity6, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity4, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentB.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagA.class, TagB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity6, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagA.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity5, entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class, FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagB.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity7),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagA.class, TagB.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity2, entity3, entity5),
-                asSet(engine.getFamily(Family.exclude(FlagComponentA.class)).getEntities()));
+                asSet(engine.getFamily(Family.exclude(TagA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity3, entity6),
-                asSet(engine.getFamily(Family.exclude(FlagComponentB.class)).getEntities()));
+                asSet(engine.getFamily(Family.exclude(TagB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1, entity2, entity4),
-                asSet(engine.getFamily(Family.exclude(FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.exclude(TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity3),
-                asSet(engine.getFamily(Family.exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
+                asSet(engine.getFamily(Family.exclude(TagA.class, TagB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity2),
-                asSet(engine.getFamily(Family.exclude(FlagComponentA.class, FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.exclude(TagA.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0, entity1),
-                asSet(engine.getFamily(Family.exclude(FlagComponentB.class, FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.exclude(TagB.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity0),
                 asSet(engine.getFamily(
-                        Family.exclude(FlagComponentA.class, FlagComponentB.class, FlagComponentC.class)).getEntities()));
+                        Family.exclude(TagA.class, TagB.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity1, entity6),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class).exclude(FlagComponentB.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagA.class).exclude(TagB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity1, entity4),
-                asSet(engine.getFamily(Family.with(FlagComponentA.class).exclude(FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagA.class).exclude(TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2, entity5),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class).exclude(FlagComponentA.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagB.class).exclude(TagA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2, entity4),
-                asSet(engine.getFamily(Family.with(FlagComponentB.class).exclude(FlagComponentC.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagB.class).exclude(TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3, entity5),
-                asSet(engine.getFamily(Family.with(FlagComponentC.class).exclude(FlagComponentA.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagC.class).exclude(TagA.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3, entity6),
-                asSet(engine.getFamily(Family.with(FlagComponentC.class).exclude(FlagComponentB.class)).getEntities()));
+                asSet(engine.getFamily(Family.with(TagC.class).exclude(TagB.class)).getEntities()));
 
         assertEquals(
                 asSet(entity1),
                 asSet(engine.getFamily(
-                        Family.with(FlagComponentA.class).exclude(FlagComponentB.class, FlagComponentC.class)).getEntities()));
+                        Family.with(TagA.class).exclude(TagB.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity2),
                 asSet(engine.getFamily(
-                        Family.with(FlagComponentB.class).exclude(FlagComponentA.class, FlagComponentC.class)).getEntities()));
+                        Family.with(TagB.class).exclude(TagA.class, TagC.class)).getEntities()));
 
         assertEquals(
                 asSet(entity3),
                 asSet(engine.getFamily(
-                        Family.with(FlagComponentC.class).exclude(FlagComponentA.class, FlagComponentB.class)).getEntities()));
+                        Family.with(TagC.class).exclude(TagA.class, TagB.class)).getEntities()));
     }
 
     public static class MissingService {
@@ -300,12 +307,12 @@ public class EngineTest {
     @Wire
     public static class ExampleSystem extends EntitySystem {
         public Engine engine;
-        public FlagSystemA flagSystemA;
-        public FlagSystemB flagSystemB;
-        public FlagSystemC flagSystemC;
-        public Mapper<FlagComponentA> mFlagA;
-        public Mapper<FlagComponentB> mFlagB;
-        public Mapper<FlagComponentC> mFlagC;
+        public TagSystemA flagSystemA;
+        public TagSystemB flagSystemB;
+        public TagSystemC flagSystemC;
+        public Mapper<TagA> mFlagA;
+        public Mapper<TagB> mFlagB;
+        public Mapper<TagC> mFlagC;
         // public Mapper<? extends Component> mBad;
         // public Mapper<? extends Component> mWorse;
     }
@@ -313,9 +320,9 @@ public class EngineTest {
     @Test
     public void testEngineDependencyInjection() {
         ExampleSystem system = new ExampleSystem();
-        FlagSystemA flagSystemA = new FlagSystemA();
-        FlagSystemB flagSystemB = new FlagSystemB();
-        FlagSystemC flagSystemC = new FlagSystemC();
+        TagSystemA flagSystemA = new TagSystemA();
+        TagSystemB flagSystemB = new TagSystemB();
+        TagSystemC flagSystemC = new TagSystemC();
         Engine engine = new Engine(new EngineConfig()
                 .addSystem(system)
                 .addSystem(flagSystemA)
@@ -325,9 +332,9 @@ public class EngineTest {
         assertSame(flagSystemA, system.flagSystemA);
         assertSame(flagSystemB, system.flagSystemB);
         assertSame(flagSystemC, system.flagSystemC);
-        assertSame(engine.getMapper(FlagComponentA.class), system.mFlagA);
-        assertSame(engine.getMapper(FlagComponentB.class), system.mFlagB);
-        assertSame(engine.getMapper(FlagComponentC.class), system.mFlagC);
+        assertSame(engine.getMapper(TagA.class), system.mFlagA);
+        assertSame(engine.getMapper(TagB.class), system.mFlagB);
+        assertSame(engine.getMapper(TagC.class), system.mFlagC);
         // assertSame(null, system.mBad);
         // assertSame(null, system.mWorse);
         engine.unwire(system);

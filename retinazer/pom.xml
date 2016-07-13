@@ -10,4 +10,13 @@
     <artifactId>retinazer</artifactId>
     <packaging>jar</packaging>
     <name>retinazer</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.antag99.retinazer</groupId>
+            <artifactId>retinazer-weaver</artifactId>
+            <version>0.3.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

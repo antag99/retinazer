@@ -19,14 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package com.github.antag99.retinazer;
+package com.github.antag99.retinazer.test;
 
-public class FlagSystemB extends EntityProcessorSystem {
-    public FlagSystemB() {
-        super(Family.with(FlagComponentB.class));
-    }
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
-    @Override
-    public void process(int entity) {
+public final class PlainTestRunner extends BlockJUnit4ClassRunner {
+    public PlainTestRunner(Class<?> klass) throws InitializationError {
+        super(klass);
     }
 }
