@@ -266,25 +266,140 @@ public final class LongBagTest {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         LongBag bag0, bag1;
+        long e0 = 1L, e1 = 1L, e2 = 1L, e3 = 1L;
 
         bag0 = new LongBag();
-        bag0.set(0, 1L);
-        bag0.set(5, 1L);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new LongBag();
-        bag1.set(9, 1L);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((Long) 0L, (Long) bag1.get(0));
-        assertNotEquals((Long) 0L, (Long) bag1.get(5));
-        assertNotEquals((Long) 0L, (Long) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((Long) 0L, (Long) bag1.get(0));
-        assertNotEquals((Long) 0L, (Long) bag1.get(5));
+        assertEquals((Long) e0, (Long) bag1.get(0));
+        assertEquals((Long) e1, (Long) bag1.get(3));
+        assertEquals((Long) e2, (Long) bag1.get(9));
+        bag1 = new LongBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((Long) e0, (Long) bag1.get(0));
+        assertEquals((Long) e1, (Long) bag1.get(3));
+        assertEquals((Long) e2, (Long) bag1.get(9));
+        assertEquals((Long) e3, (Long) bag1.get(53));
+        bag1 = new LongBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((Long) e0, (Long) bag1.get(0));
+        assertEquals((Long) e1, (Long) bag1.get(3));
+        assertEquals((Long) e2, (Long) bag1.get(9));
+        assertEquals((Long) 0L, (Long) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new LongBag();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new LongBag();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((Long) 0L, (Long) bag1.get(0));
+        assertEquals((Long) 0L, (Long) bag1.get(1));
+        assertEquals((Long) 0L, (Long) bag1.get(2));
+        assertEquals((Long) 0L, (Long) bag1.get(3));
+        assertEquals((Long) 0L, (Long) bag1.get(4));
+        assertEquals((Long) 0L, (Long) bag1.get(5));
+        assertEquals((Long) 0L, (Long) bag1.get(6));
+        assertEquals((Long) 0L, (Long) bag1.get(7));
+        bag1 = new LongBag();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((Long) 0L, (Long) bag1.get(0));
+        assertEquals((Long) 0L, (Long) bag1.get(1));
+        assertEquals((Long) 0L, (Long) bag1.get(2));
+        assertEquals((Long) 0L, (Long) bag1.get(3));
+        assertEquals((Long) e0, (Long) bag1.get(4));
+        assertEquals((Long) 0L, (Long) bag1.get(5));
+        assertEquals((Long) 0L, (Long) bag1.get(6));
+        assertEquals((Long) 0L, (Long) bag1.get(7));
+        bag1 = new LongBag();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((Long) 0L, (Long) bag1.get(0));
+        assertEquals((Long) 0L, (Long) bag1.get(1));
+        assertEquals((Long) 0L, (Long) bag1.get(2));
+        assertEquals((Long) 0L, (Long) bag1.get(3));
+        assertEquals((Long) e0, (Long) bag1.get(4));
+        assertEquals((Long) 0L, (Long) bag1.get(5));
+        assertEquals((Long) 0L, (Long) bag1.get(6));
+        assertEquals((Long) e1, (Long) bag1.get(7));
+        assertEquals((Long) 0L, (Long) bag1.get(8));
         assertEquals((Long) 0L, (Long) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new LongBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new LongBag();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((Long) 0L, (Long) bag1.get(0));
+        assertEquals((Long) e1, (Long) bag1.get(1));
+        assertEquals((Long) 0L, (Long) bag1.get(2));
+        assertEquals((Long) 0L, (Long) bag1.get(3));
+        assertEquals((Long) 0L, (Long) bag1.get(4));
+        assertEquals((Long) 0L, (Long) bag1.get(5));
+        assertEquals((Long) 0L, (Long) bag1.get(6));
+        assertEquals((Long) 0L, (Long) bag1.get(7));
+        assertEquals((Long) 0L, (Long) bag1.get(8));
+        bag0 = new LongBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new LongBag();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((Long) 0L, (Long) bag1.get(0));
+        assertEquals((Long) e1, (Long) bag1.get(1));
+        assertEquals((Long) 0L, (Long) bag1.get(2));
+        assertEquals((Long) 0L, (Long) bag1.get(3));
+        assertEquals((Long) 0L, (Long) bag1.get(4));
+        assertEquals((Long) 0L, (Long) bag1.get(5));
+        assertEquals((Long) 0L, (Long) bag1.get(6));
+        assertEquals((Long) e3, (Long) bag1.get(7));
+        assertEquals((Long) 0L, (Long) bag1.get(8));
+        assertEquals((Long) 0L, (Long) bag1.get(9));
+        assertEquals((Long) 0L, (Long) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        LongBag b0, b1;
+        long e0 = 1L, e1 = 1L, e2 = 1L, e3 = 1L;
+        b0 = new LongBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new LongBag();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((Long) e1, (Long) b1.get(1));
+        assertEquals((Long) e2, (Long) b1.get(8));
+        assertEquals((Long) e3, (Long) b1.get(0));
+        assertEquals((Long) 0L, (Long) b1.get(32));
+        assertEquals((Long) 0L, (Long) b1.get(33));
+        assertEquals((Long) 0L, (Long) b1.get(34));
+        assertEquals((Long) 0L, (Long) b1.get(35));
+        b0 = new LongBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new LongBag();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((Long) e1, (Long) b1.get(1));
+        assertEquals((Long) e2, (Long) b1.get(8));
+        assertEquals((Long) e3, (Long) b1.get(0));
+        assertEquals((Long) 0L, (Long) b1.get(32));
+        assertEquals((Long) 0L, (Long) b1.get(33));
+        assertEquals((Long) 0L, (Long) b1.get(34));
+        assertEquals((Long) 0L, (Long) b1.get(35));
     }
 }

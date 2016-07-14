@@ -42,18 +42,53 @@ public final class ShortBag implements AnyBag<ShortBag> {
     }
 
     @Override
-    public void copyFrom(ShortBag bag) {
-        copyFrom(bag, true);
+    public void copyFrom(ShortBag from) {
+        copyFrom(from, true);
     }
 
     @Override
-    public void copyFrom(ShortBag bag, boolean clearExceeding) {
-        if (buffer.length < bag.buffer.length)
-            buffer = new short[bag.buffer.length];
-        System.arraycopy(bag.buffer, 0, buffer, 0, bag.buffer.length);
-        if (clearExceeding && buffer.length > bag.buffer.length) {
+    public void copyFrom(ShortBag from, boolean clearExceeding) {
+        copyFrom(from, from.buffer.length, clearExceeding);
+    }
+
+    @Override
+    public void copyFrom(ShortBag from, int length) {
+        copyFrom(from, length, true);
+    }
+
+    @Override
+    public void copyFrom(ShortBag from, int length, boolean clearExceeding) {
+        copyFrom(from, 0, length, clearExceeding);
+    }
+
+    @Override
+    public void copyFrom(ShortBag from, int fromOffset, int length) {
+        copyFrom(from, fromOffset, length, true);
+    }
+
+    @Override
+    public void copyFrom(ShortBag from, int fromOffset, int length, boolean clearExceeding) {
+        if (buffer.length < length)
+            buffer = new short[length];
+        // Maximum number of elements that can be copied from the given buffer
+        int copyLength = Math.min(length, from.buffer.length - fromOffset);
+        System.arraycopy(from.buffer, fromOffset, buffer, 0, copyLength);
+        if (clearExceeding && buffer.length > copyLength) {
             short[] buffer = this.buffer;
-            for (int i = bag.buffer.length, n = buffer.length; i < n; i++)
+            for (int i = copyLength, n = buffer.length; i < n; i++)
+                buffer[i] = (short) 0;
+        }
+    }
+
+    @Override
+    public void copyPartFrom(ShortBag from, int fromOffset, int toOffset, int length) {
+        ensureCapacity(toOffset + length);
+        // Maximum number of elements that can be copied from the given buffer
+        int maxLength = from.buffer.length - fromOffset;
+        System.arraycopy(from.buffer, fromOffset, buffer, toOffset, Math.min(length, maxLength));
+        if (maxLength < length) {
+            short[] buffer = this.buffer;
+            for (int i = toOffset + maxLength, n = toOffset + length; i < n; i++)
                 buffer[i] = (short) 0;
         }
     }

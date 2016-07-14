@@ -11,8 +11,8 @@
   - `Property` classes that represent properties of packed components
 - Enhanced `Bag` API:
   - Added interface `AnyBag`
-    - `copyFrom(AnyBag)` method
-    - `copyFrom(AnyBag, boolean)` method
+    - `copyFrom` methods for replacing elements with those of another bag
+    - `copyPartFrom` method for copying some elements from another bag
     - `clear(Mask)` method
   - Removed `Bag(int)` constructor
   - Introduced `BooleanBag`

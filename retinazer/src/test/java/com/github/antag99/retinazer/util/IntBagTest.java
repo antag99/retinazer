@@ -266,25 +266,140 @@ public final class IntBagTest {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         IntBag bag0, bag1;
+        int e0 = 1, e1 = 1, e2 = 1, e3 = 1;
 
         bag0 = new IntBag();
-        bag0.set(0, 1);
-        bag0.set(5, 1);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new IntBag();
-        bag1.set(9, 1);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((Integer) 0, (Integer) bag1.get(0));
-        assertNotEquals((Integer) 0, (Integer) bag1.get(5));
-        assertNotEquals((Integer) 0, (Integer) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((Integer) 0, (Integer) bag1.get(0));
-        assertNotEquals((Integer) 0, (Integer) bag1.get(5));
+        assertEquals((Integer) e0, (Integer) bag1.get(0));
+        assertEquals((Integer) e1, (Integer) bag1.get(3));
+        assertEquals((Integer) e2, (Integer) bag1.get(9));
+        bag1 = new IntBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((Integer) e0, (Integer) bag1.get(0));
+        assertEquals((Integer) e1, (Integer) bag1.get(3));
+        assertEquals((Integer) e2, (Integer) bag1.get(9));
+        assertEquals((Integer) e3, (Integer) bag1.get(53));
+        bag1 = new IntBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((Integer) e0, (Integer) bag1.get(0));
+        assertEquals((Integer) e1, (Integer) bag1.get(3));
+        assertEquals((Integer) e2, (Integer) bag1.get(9));
+        assertEquals((Integer) 0, (Integer) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new IntBag();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new IntBag();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((Integer) 0, (Integer) bag1.get(0));
+        assertEquals((Integer) 0, (Integer) bag1.get(1));
+        assertEquals((Integer) 0, (Integer) bag1.get(2));
+        assertEquals((Integer) 0, (Integer) bag1.get(3));
+        assertEquals((Integer) 0, (Integer) bag1.get(4));
+        assertEquals((Integer) 0, (Integer) bag1.get(5));
+        assertEquals((Integer) 0, (Integer) bag1.get(6));
+        assertEquals((Integer) 0, (Integer) bag1.get(7));
+        bag1 = new IntBag();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((Integer) 0, (Integer) bag1.get(0));
+        assertEquals((Integer) 0, (Integer) bag1.get(1));
+        assertEquals((Integer) 0, (Integer) bag1.get(2));
+        assertEquals((Integer) 0, (Integer) bag1.get(3));
+        assertEquals((Integer) e0, (Integer) bag1.get(4));
+        assertEquals((Integer) 0, (Integer) bag1.get(5));
+        assertEquals((Integer) 0, (Integer) bag1.get(6));
+        assertEquals((Integer) 0, (Integer) bag1.get(7));
+        bag1 = new IntBag();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((Integer) 0, (Integer) bag1.get(0));
+        assertEquals((Integer) 0, (Integer) bag1.get(1));
+        assertEquals((Integer) 0, (Integer) bag1.get(2));
+        assertEquals((Integer) 0, (Integer) bag1.get(3));
+        assertEquals((Integer) e0, (Integer) bag1.get(4));
+        assertEquals((Integer) 0, (Integer) bag1.get(5));
+        assertEquals((Integer) 0, (Integer) bag1.get(6));
+        assertEquals((Integer) e1, (Integer) bag1.get(7));
+        assertEquals((Integer) 0, (Integer) bag1.get(8));
         assertEquals((Integer) 0, (Integer) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new IntBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new IntBag();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((Integer) 0, (Integer) bag1.get(0));
+        assertEquals((Integer) e1, (Integer) bag1.get(1));
+        assertEquals((Integer) 0, (Integer) bag1.get(2));
+        assertEquals((Integer) 0, (Integer) bag1.get(3));
+        assertEquals((Integer) 0, (Integer) bag1.get(4));
+        assertEquals((Integer) 0, (Integer) bag1.get(5));
+        assertEquals((Integer) 0, (Integer) bag1.get(6));
+        assertEquals((Integer) 0, (Integer) bag1.get(7));
+        assertEquals((Integer) 0, (Integer) bag1.get(8));
+        bag0 = new IntBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new IntBag();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((Integer) 0, (Integer) bag1.get(0));
+        assertEquals((Integer) e1, (Integer) bag1.get(1));
+        assertEquals((Integer) 0, (Integer) bag1.get(2));
+        assertEquals((Integer) 0, (Integer) bag1.get(3));
+        assertEquals((Integer) 0, (Integer) bag1.get(4));
+        assertEquals((Integer) 0, (Integer) bag1.get(5));
+        assertEquals((Integer) 0, (Integer) bag1.get(6));
+        assertEquals((Integer) e3, (Integer) bag1.get(7));
+        assertEquals((Integer) 0, (Integer) bag1.get(8));
+        assertEquals((Integer) 0, (Integer) bag1.get(9));
+        assertEquals((Integer) 0, (Integer) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        IntBag b0, b1;
+        int e0 = 1, e1 = 1, e2 = 1, e3 = 1;
+        b0 = new IntBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new IntBag();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((Integer) e1, (Integer) b1.get(1));
+        assertEquals((Integer) e2, (Integer) b1.get(8));
+        assertEquals((Integer) e3, (Integer) b1.get(0));
+        assertEquals((Integer) 0, (Integer) b1.get(32));
+        assertEquals((Integer) 0, (Integer) b1.get(33));
+        assertEquals((Integer) 0, (Integer) b1.get(34));
+        assertEquals((Integer) 0, (Integer) b1.get(35));
+        b0 = new IntBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new IntBag();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((Integer) e1, (Integer) b1.get(1));
+        assertEquals((Integer) e2, (Integer) b1.get(8));
+        assertEquals((Integer) e3, (Integer) b1.get(0));
+        assertEquals((Integer) 0, (Integer) b1.get(32));
+        assertEquals((Integer) 0, (Integer) b1.get(33));
+        assertEquals((Integer) 0, (Integer) b1.get(34));
+        assertEquals((Integer) 0, (Integer) b1.get(35));
     }
 }

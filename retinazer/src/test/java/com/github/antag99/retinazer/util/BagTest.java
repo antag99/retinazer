@@ -275,25 +275,140 @@ public final class BagTest<T> {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         Bag<T> bag0, bag1;
+        T e0 = (T) new Object(), e1 = (T) new Object(), e2 = (T) new Object(), e3 = (T) new Object();
 
         bag0 = new Bag<T>();
-        bag0.set(0, (T) new Object());
-        bag0.set(5, (T) new Object());
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new Bag<T>();
-        bag1.set(9, (T) new Object());
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((T) null, (T) bag1.get(0));
-        assertNotEquals((T) null, (T) bag1.get(5));
-        assertNotEquals((T) null, (T) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((T) null, (T) bag1.get(0));
-        assertNotEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) e0, (T) bag1.get(0));
+        assertEquals((T) e1, (T) bag1.get(3));
+        assertEquals((T) e2, (T) bag1.get(9));
+        bag1 = new Bag<T>();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((T) e0, (T) bag1.get(0));
+        assertEquals((T) e1, (T) bag1.get(3));
+        assertEquals((T) e2, (T) bag1.get(9));
+        assertEquals((T) e3, (T) bag1.get(53));
+        bag1 = new Bag<T>();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((T) e0, (T) bag1.get(0));
+        assertEquals((T) e1, (T) bag1.get(3));
+        assertEquals((T) e2, (T) bag1.get(9));
+        assertEquals((T) null, (T) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new Bag<T>();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new Bag<T>();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((T) null, (T) bag1.get(0));
+        assertEquals((T) null, (T) bag1.get(1));
+        assertEquals((T) null, (T) bag1.get(2));
+        assertEquals((T) null, (T) bag1.get(3));
+        assertEquals((T) null, (T) bag1.get(4));
+        assertEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) null, (T) bag1.get(6));
+        assertEquals((T) null, (T) bag1.get(7));
+        bag1 = new Bag<T>();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((T) null, (T) bag1.get(0));
+        assertEquals((T) null, (T) bag1.get(1));
+        assertEquals((T) null, (T) bag1.get(2));
+        assertEquals((T) null, (T) bag1.get(3));
+        assertEquals((T) e0, (T) bag1.get(4));
+        assertEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) null, (T) bag1.get(6));
+        assertEquals((T) null, (T) bag1.get(7));
+        bag1 = new Bag<T>();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((T) null, (T) bag1.get(0));
+        assertEquals((T) null, (T) bag1.get(1));
+        assertEquals((T) null, (T) bag1.get(2));
+        assertEquals((T) null, (T) bag1.get(3));
+        assertEquals((T) e0, (T) bag1.get(4));
+        assertEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) null, (T) bag1.get(6));
+        assertEquals((T) e1, (T) bag1.get(7));
+        assertEquals((T) null, (T) bag1.get(8));
         assertEquals((T) null, (T) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new Bag<T>();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new Bag<T>();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((T) null, (T) bag1.get(0));
+        assertEquals((T) e1, (T) bag1.get(1));
+        assertEquals((T) null, (T) bag1.get(2));
+        assertEquals((T) null, (T) bag1.get(3));
+        assertEquals((T) null, (T) bag1.get(4));
+        assertEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) null, (T) bag1.get(6));
+        assertEquals((T) null, (T) bag1.get(7));
+        assertEquals((T) null, (T) bag1.get(8));
+        bag0 = new Bag<T>();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new Bag<T>();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((T) null, (T) bag1.get(0));
+        assertEquals((T) e1, (T) bag1.get(1));
+        assertEquals((T) null, (T) bag1.get(2));
+        assertEquals((T) null, (T) bag1.get(3));
+        assertEquals((T) null, (T) bag1.get(4));
+        assertEquals((T) null, (T) bag1.get(5));
+        assertEquals((T) null, (T) bag1.get(6));
+        assertEquals((T) e3, (T) bag1.get(7));
+        assertEquals((T) null, (T) bag1.get(8));
+        assertEquals((T) null, (T) bag1.get(9));
+        assertEquals((T) null, (T) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        Bag<T> b0, b1;
+        T e0 = (T) new Object(), e1 = (T) new Object(), e2 = (T) new Object(), e3 = (T) new Object();
+        b0 = new Bag<T>();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new Bag<T>();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((T) e1, (T) b1.get(1));
+        assertEquals((T) e2, (T) b1.get(8));
+        assertEquals((T) e3, (T) b1.get(0));
+        assertEquals((T) null, (T) b1.get(32));
+        assertEquals((T) null, (T) b1.get(33));
+        assertEquals((T) null, (T) b1.get(34));
+        assertEquals((T) null, (T) b1.get(35));
+        b0 = new Bag<T>();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new Bag<T>();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((T) e1, (T) b1.get(1));
+        assertEquals((T) e2, (T) b1.get(8));
+        assertEquals((T) e3, (T) b1.get(0));
+        assertEquals((T) null, (T) b1.get(32));
+        assertEquals((T) null, (T) b1.get(33));
+        assertEquals((T) null, (T) b1.get(34));
+        assertEquals((T) null, (T) b1.get(35));
     }
 }

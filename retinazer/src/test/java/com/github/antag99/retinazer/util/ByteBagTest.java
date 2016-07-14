@@ -266,25 +266,140 @@ public final class ByteBagTest {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         ByteBag bag0, bag1;
+        byte e0 = (byte) 1, e1 = (byte) 1, e2 = (byte) 1, e3 = (byte) 1;
 
         bag0 = new ByteBag();
-        bag0.set(0, (byte) 1);
-        bag0.set(5, (byte) 1);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new ByteBag();
-        bag1.set(9, (byte) 1);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(0));
-        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(5));
-        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(0));
-        assertNotEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) e0, (Byte) bag1.get(0));
+        assertEquals((Byte) e1, (Byte) bag1.get(3));
+        assertEquals((Byte) e2, (Byte) bag1.get(9));
+        bag1 = new ByteBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((Byte) e0, (Byte) bag1.get(0));
+        assertEquals((Byte) e1, (Byte) bag1.get(3));
+        assertEquals((Byte) e2, (Byte) bag1.get(9));
+        assertEquals((Byte) e3, (Byte) bag1.get(53));
+        bag1 = new ByteBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((Byte) e0, (Byte) bag1.get(0));
+        assertEquals((Byte) e1, (Byte) bag1.get(3));
+        assertEquals((Byte) e2, (Byte) bag1.get(9));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new ByteBag();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new ByteBag();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(2));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(3));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(4));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(6));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(7));
+        bag1 = new ByteBag();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(2));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(3));
+        assertEquals((Byte) e0, (Byte) bag1.get(4));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(6));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(7));
+        bag1 = new ByteBag();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(2));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(3));
+        assertEquals((Byte) e0, (Byte) bag1.get(4));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(6));
+        assertEquals((Byte) e1, (Byte) bag1.get(7));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(8));
         assertEquals((Byte) (byte) 0, (Byte) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new ByteBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new ByteBag();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertEquals((Byte) e1, (Byte) bag1.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(2));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(3));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(4));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(6));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(7));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(8));
+        bag0 = new ByteBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new ByteBag();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(0));
+        assertEquals((Byte) e1, (Byte) bag1.get(1));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(2));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(3));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(4));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(5));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(6));
+        assertEquals((Byte) e3, (Byte) bag1.get(7));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(8));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(9));
+        assertEquals((Byte) (byte) 0, (Byte) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        ByteBag b0, b1;
+        byte e0 = (byte) 1, e1 = (byte) 1, e2 = (byte) 1, e3 = (byte) 1;
+        b0 = new ByteBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new ByteBag();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((Byte) e1, (Byte) b1.get(1));
+        assertEquals((Byte) e2, (Byte) b1.get(8));
+        assertEquals((Byte) e3, (Byte) b1.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(32));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(33));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(34));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(35));
+        b0 = new ByteBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new ByteBag();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((Byte) e1, (Byte) b1.get(1));
+        assertEquals((Byte) e2, (Byte) b1.get(8));
+        assertEquals((Byte) e3, (Byte) b1.get(0));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(32));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(33));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(34));
+        assertEquals((Byte) (byte) 0, (Byte) b1.get(35));
     }
 }

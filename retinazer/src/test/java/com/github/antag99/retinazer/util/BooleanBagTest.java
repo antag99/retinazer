@@ -266,25 +266,140 @@ public final class BooleanBagTest {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         BooleanBag bag0, bag1;
+        boolean e0 = true, e1 = true, e2 = true, e3 = true;
 
         bag0 = new BooleanBag();
-        bag0.set(0, true);
-        bag0.set(5, true);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new BooleanBag();
-        bag1.set(9, true);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((Boolean) false, (Boolean) bag1.get(0));
-        assertNotEquals((Boolean) false, (Boolean) bag1.get(5));
-        assertNotEquals((Boolean) false, (Boolean) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((Boolean) false, (Boolean) bag1.get(0));
-        assertNotEquals((Boolean) false, (Boolean) bag1.get(5));
+        assertEquals((Boolean) e0, (Boolean) bag1.get(0));
+        assertEquals((Boolean) e1, (Boolean) bag1.get(3));
+        assertEquals((Boolean) e2, (Boolean) bag1.get(9));
+        bag1 = new BooleanBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((Boolean) e0, (Boolean) bag1.get(0));
+        assertEquals((Boolean) e1, (Boolean) bag1.get(3));
+        assertEquals((Boolean) e2, (Boolean) bag1.get(9));
+        assertEquals((Boolean) e3, (Boolean) bag1.get(53));
+        bag1 = new BooleanBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((Boolean) e0, (Boolean) bag1.get(0));
+        assertEquals((Boolean) e1, (Boolean) bag1.get(3));
+        assertEquals((Boolean) e2, (Boolean) bag1.get(9));
+        assertEquals((Boolean) false, (Boolean) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new BooleanBag();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new BooleanBag();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((Boolean) false, (Boolean) bag1.get(0));
+        assertEquals((Boolean) false, (Boolean) bag1.get(1));
+        assertEquals((Boolean) false, (Boolean) bag1.get(2));
+        assertEquals((Boolean) false, (Boolean) bag1.get(3));
+        assertEquals((Boolean) false, (Boolean) bag1.get(4));
+        assertEquals((Boolean) false, (Boolean) bag1.get(5));
+        assertEquals((Boolean) false, (Boolean) bag1.get(6));
+        assertEquals((Boolean) false, (Boolean) bag1.get(7));
+        bag1 = new BooleanBag();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((Boolean) false, (Boolean) bag1.get(0));
+        assertEquals((Boolean) false, (Boolean) bag1.get(1));
+        assertEquals((Boolean) false, (Boolean) bag1.get(2));
+        assertEquals((Boolean) false, (Boolean) bag1.get(3));
+        assertEquals((Boolean) e0, (Boolean) bag1.get(4));
+        assertEquals((Boolean) false, (Boolean) bag1.get(5));
+        assertEquals((Boolean) false, (Boolean) bag1.get(6));
+        assertEquals((Boolean) false, (Boolean) bag1.get(7));
+        bag1 = new BooleanBag();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((Boolean) false, (Boolean) bag1.get(0));
+        assertEquals((Boolean) false, (Boolean) bag1.get(1));
+        assertEquals((Boolean) false, (Boolean) bag1.get(2));
+        assertEquals((Boolean) false, (Boolean) bag1.get(3));
+        assertEquals((Boolean) e0, (Boolean) bag1.get(4));
+        assertEquals((Boolean) false, (Boolean) bag1.get(5));
+        assertEquals((Boolean) false, (Boolean) bag1.get(6));
+        assertEquals((Boolean) e1, (Boolean) bag1.get(7));
+        assertEquals((Boolean) false, (Boolean) bag1.get(8));
         assertEquals((Boolean) false, (Boolean) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new BooleanBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new BooleanBag();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((Boolean) false, (Boolean) bag1.get(0));
+        assertEquals((Boolean) e1, (Boolean) bag1.get(1));
+        assertEquals((Boolean) false, (Boolean) bag1.get(2));
+        assertEquals((Boolean) false, (Boolean) bag1.get(3));
+        assertEquals((Boolean) false, (Boolean) bag1.get(4));
+        assertEquals((Boolean) false, (Boolean) bag1.get(5));
+        assertEquals((Boolean) false, (Boolean) bag1.get(6));
+        assertEquals((Boolean) false, (Boolean) bag1.get(7));
+        assertEquals((Boolean) false, (Boolean) bag1.get(8));
+        bag0 = new BooleanBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new BooleanBag();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((Boolean) false, (Boolean) bag1.get(0));
+        assertEquals((Boolean) e1, (Boolean) bag1.get(1));
+        assertEquals((Boolean) false, (Boolean) bag1.get(2));
+        assertEquals((Boolean) false, (Boolean) bag1.get(3));
+        assertEquals((Boolean) false, (Boolean) bag1.get(4));
+        assertEquals((Boolean) false, (Boolean) bag1.get(5));
+        assertEquals((Boolean) false, (Boolean) bag1.get(6));
+        assertEquals((Boolean) e3, (Boolean) bag1.get(7));
+        assertEquals((Boolean) false, (Boolean) bag1.get(8));
+        assertEquals((Boolean) false, (Boolean) bag1.get(9));
+        assertEquals((Boolean) false, (Boolean) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        BooleanBag b0, b1;
+        boolean e0 = true, e1 = true, e2 = true, e3 = true;
+        b0 = new BooleanBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new BooleanBag();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((Boolean) e1, (Boolean) b1.get(1));
+        assertEquals((Boolean) e2, (Boolean) b1.get(8));
+        assertEquals((Boolean) e3, (Boolean) b1.get(0));
+        assertEquals((Boolean) false, (Boolean) b1.get(32));
+        assertEquals((Boolean) false, (Boolean) b1.get(33));
+        assertEquals((Boolean) false, (Boolean) b1.get(34));
+        assertEquals((Boolean) false, (Boolean) b1.get(35));
+        b0 = new BooleanBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new BooleanBag();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((Boolean) e1, (Boolean) b1.get(1));
+        assertEquals((Boolean) e2, (Boolean) b1.get(8));
+        assertEquals((Boolean) e3, (Boolean) b1.get(0));
+        assertEquals((Boolean) false, (Boolean) b1.get(32));
+        assertEquals((Boolean) false, (Boolean) b1.get(33));
+        assertEquals((Boolean) false, (Boolean) b1.get(34));
+        assertEquals((Boolean) false, (Boolean) b1.get(35));
     }
 }

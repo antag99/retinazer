@@ -266,25 +266,140 @@ public final class DoubleBagTest {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         DoubleBag bag0, bag1;
+        double e0 = 1d, e1 = 1d, e2 = 1d, e3 = 1d;
 
         bag0 = new DoubleBag();
-        bag0.set(0, 1d);
-        bag0.set(5, 1d);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new DoubleBag();
-        bag1.set(9, 1d);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((Double) 0d, (Double) bag1.get(0));
-        assertNotEquals((Double) 0d, (Double) bag1.get(5));
-        assertNotEquals((Double) 0d, (Double) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((Double) 0d, (Double) bag1.get(0));
-        assertNotEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) e0, (Double) bag1.get(0));
+        assertEquals((Double) e1, (Double) bag1.get(3));
+        assertEquals((Double) e2, (Double) bag1.get(9));
+        bag1 = new DoubleBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((Double) e0, (Double) bag1.get(0));
+        assertEquals((Double) e1, (Double) bag1.get(3));
+        assertEquals((Double) e2, (Double) bag1.get(9));
+        assertEquals((Double) e3, (Double) bag1.get(53));
+        bag1 = new DoubleBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((Double) e0, (Double) bag1.get(0));
+        assertEquals((Double) e1, (Double) bag1.get(3));
+        assertEquals((Double) e2, (Double) bag1.get(9));
+        assertEquals((Double) 0d, (Double) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new DoubleBag();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new DoubleBag();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((Double) 0d, (Double) bag1.get(0));
+        assertEquals((Double) 0d, (Double) bag1.get(1));
+        assertEquals((Double) 0d, (Double) bag1.get(2));
+        assertEquals((Double) 0d, (Double) bag1.get(3));
+        assertEquals((Double) 0d, (Double) bag1.get(4));
+        assertEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) 0d, (Double) bag1.get(6));
+        assertEquals((Double) 0d, (Double) bag1.get(7));
+        bag1 = new DoubleBag();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((Double) 0d, (Double) bag1.get(0));
+        assertEquals((Double) 0d, (Double) bag1.get(1));
+        assertEquals((Double) 0d, (Double) bag1.get(2));
+        assertEquals((Double) 0d, (Double) bag1.get(3));
+        assertEquals((Double) e0, (Double) bag1.get(4));
+        assertEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) 0d, (Double) bag1.get(6));
+        assertEquals((Double) 0d, (Double) bag1.get(7));
+        bag1 = new DoubleBag();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((Double) 0d, (Double) bag1.get(0));
+        assertEquals((Double) 0d, (Double) bag1.get(1));
+        assertEquals((Double) 0d, (Double) bag1.get(2));
+        assertEquals((Double) 0d, (Double) bag1.get(3));
+        assertEquals((Double) e0, (Double) bag1.get(4));
+        assertEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) 0d, (Double) bag1.get(6));
+        assertEquals((Double) e1, (Double) bag1.get(7));
+        assertEquals((Double) 0d, (Double) bag1.get(8));
         assertEquals((Double) 0d, (Double) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new DoubleBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new DoubleBag();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((Double) 0d, (Double) bag1.get(0));
+        assertEquals((Double) e1, (Double) bag1.get(1));
+        assertEquals((Double) 0d, (Double) bag1.get(2));
+        assertEquals((Double) 0d, (Double) bag1.get(3));
+        assertEquals((Double) 0d, (Double) bag1.get(4));
+        assertEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) 0d, (Double) bag1.get(6));
+        assertEquals((Double) 0d, (Double) bag1.get(7));
+        assertEquals((Double) 0d, (Double) bag1.get(8));
+        bag0 = new DoubleBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new DoubleBag();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((Double) 0d, (Double) bag1.get(0));
+        assertEquals((Double) e1, (Double) bag1.get(1));
+        assertEquals((Double) 0d, (Double) bag1.get(2));
+        assertEquals((Double) 0d, (Double) bag1.get(3));
+        assertEquals((Double) 0d, (Double) bag1.get(4));
+        assertEquals((Double) 0d, (Double) bag1.get(5));
+        assertEquals((Double) 0d, (Double) bag1.get(6));
+        assertEquals((Double) e3, (Double) bag1.get(7));
+        assertEquals((Double) 0d, (Double) bag1.get(8));
+        assertEquals((Double) 0d, (Double) bag1.get(9));
+        assertEquals((Double) 0d, (Double) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        DoubleBag b0, b1;
+        double e0 = 1d, e1 = 1d, e2 = 1d, e3 = 1d;
+        b0 = new DoubleBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new DoubleBag();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((Double) e1, (Double) b1.get(1));
+        assertEquals((Double) e2, (Double) b1.get(8));
+        assertEquals((Double) e3, (Double) b1.get(0));
+        assertEquals((Double) 0d, (Double) b1.get(32));
+        assertEquals((Double) 0d, (Double) b1.get(33));
+        assertEquals((Double) 0d, (Double) b1.get(34));
+        assertEquals((Double) 0d, (Double) b1.get(35));
+        b0 = new DoubleBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new DoubleBag();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((Double) e1, (Double) b1.get(1));
+        assertEquals((Double) e2, (Double) b1.get(8));
+        assertEquals((Double) e3, (Double) b1.get(0));
+        assertEquals((Double) 0d, (Double) b1.get(32));
+        assertEquals((Double) 0d, (Double) b1.get(33));
+        assertEquals((Double) 0d, (Double) b1.get(34));
+        assertEquals((Double) 0d, (Double) b1.get(35));
     }
 }

@@ -266,25 +266,140 @@ public final class ShortBagTest {
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         ShortBag bag0, bag1;
+        short e0 = (short) 1, e1 = (short) 1, e2 = (short) 1, e3 = (short) 1;
 
         bag0 = new ShortBag();
-        bag0.set(0, (short) 1);
-        bag0.set(5, (short) 1);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new ShortBag();
-        bag1.set(9, (short) 1);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals((Short) (short) 0, (Short) bag1.get(0));
-        assertNotEquals((Short) (short) 0, (Short) bag1.get(5));
-        assertNotEquals((Short) (short) 0, (Short) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals((Short) (short) 0, (Short) bag1.get(0));
-        assertNotEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) e0, (Short) bag1.get(0));
+        assertEquals((Short) e1, (Short) bag1.get(3));
+        assertEquals((Short) e2, (Short) bag1.get(9));
+        bag1 = new ShortBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals((Short) e0, (Short) bag1.get(0));
+        assertEquals((Short) e1, (Short) bag1.get(3));
+        assertEquals((Short) e2, (Short) bag1.get(9));
+        assertEquals((Short) e3, (Short) bag1.get(53));
+        bag1 = new ShortBag();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals((Short) e0, (Short) bag1.get(0));
+        assertEquals((Short) e1, (Short) bag1.get(3));
+        assertEquals((Short) e2, (Short) bag1.get(9));
+        assertEquals((Short) (short) 0, (Short) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new ShortBag();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new ShortBag();
+        bag1.copyFrom(bag0, 3);
+        assertEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertEquals((Short) (short) 0, (Short) bag1.get(1));
+        assertEquals((Short) (short) 0, (Short) bag1.get(2));
+        assertEquals((Short) (short) 0, (Short) bag1.get(3));
+        assertEquals((Short) (short) 0, (Short) bag1.get(4));
+        assertEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) (short) 0, (Short) bag1.get(6));
+        assertEquals((Short) (short) 0, (Short) bag1.get(7));
+        bag1 = new ShortBag();
+        bag1.copyFrom(bag0, 5);
+        assertEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertEquals((Short) (short) 0, (Short) bag1.get(1));
+        assertEquals((Short) (short) 0, (Short) bag1.get(2));
+        assertEquals((Short) (short) 0, (Short) bag1.get(3));
+        assertEquals((Short) e0, (Short) bag1.get(4));
+        assertEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) (short) 0, (Short) bag1.get(6));
+        assertEquals((Short) (short) 0, (Short) bag1.get(7));
+        bag1 = new ShortBag();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertEquals((Short) (short) 0, (Short) bag1.get(1));
+        assertEquals((Short) (short) 0, (Short) bag1.get(2));
+        assertEquals((Short) (short) 0, (Short) bag1.get(3));
+        assertEquals((Short) e0, (Short) bag1.get(4));
+        assertEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) (short) 0, (Short) bag1.get(6));
+        assertEquals((Short) e1, (Short) bag1.get(7));
+        assertEquals((Short) (short) 0, (Short) bag1.get(8));
         assertEquals((Short) (short) 0, (Short) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new ShortBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new ShortBag();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertEquals((Short) e1, (Short) bag1.get(1));
+        assertEquals((Short) (short) 0, (Short) bag1.get(2));
+        assertEquals((Short) (short) 0, (Short) bag1.get(3));
+        assertEquals((Short) (short) 0, (Short) bag1.get(4));
+        assertEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) (short) 0, (Short) bag1.get(6));
+        assertEquals((Short) (short) 0, (Short) bag1.get(7));
+        assertEquals((Short) (short) 0, (Short) bag1.get(8));
+        bag0 = new ShortBag();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new ShortBag();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals((Short) (short) 0, (Short) bag1.get(0));
+        assertEquals((Short) e1, (Short) bag1.get(1));
+        assertEquals((Short) (short) 0, (Short) bag1.get(2));
+        assertEquals((Short) (short) 0, (Short) bag1.get(3));
+        assertEquals((Short) (short) 0, (Short) bag1.get(4));
+        assertEquals((Short) (short) 0, (Short) bag1.get(5));
+        assertEquals((Short) (short) 0, (Short) bag1.get(6));
+        assertEquals((Short) e3, (Short) bag1.get(7));
+        assertEquals((Short) (short) 0, (Short) bag1.get(8));
+        assertEquals((Short) (short) 0, (Short) bag1.get(9));
+        assertEquals((Short) (short) 0, (Short) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        ShortBag b0, b1;
+        short e0 = (short) 1, e1 = (short) 1, e2 = (short) 1, e3 = (short) 1;
+        b0 = new ShortBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new ShortBag();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals((Short) e1, (Short) b1.get(1));
+        assertEquals((Short) e2, (Short) b1.get(8));
+        assertEquals((Short) e3, (Short) b1.get(0));
+        assertEquals((Short) (short) 0, (Short) b1.get(32));
+        assertEquals((Short) (short) 0, (Short) b1.get(33));
+        assertEquals((Short) (short) 0, (Short) b1.get(34));
+        assertEquals((Short) (short) 0, (Short) b1.get(35));
+        b0 = new ShortBag();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new ShortBag();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals((Short) e1, (Short) b1.get(1));
+        assertEquals((Short) e2, (Short) b1.get(8));
+        assertEquals((Short) e3, (Short) b1.get(0));
+        assertEquals((Short) (short) 0, (Short) b1.get(32));
+        assertEquals((Short) (short) 0, (Short) b1.get(33));
+        assertEquals((Short) (short) 0, (Short) b1.get(34));
+        assertEquals((Short) (short) 0, (Short) b1.get(35));
     }
 }

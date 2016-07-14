@@ -42,18 +42,53 @@ public final class DoubleBag implements AnyBag<DoubleBag> {
     }
 
     @Override
-    public void copyFrom(DoubleBag bag) {
-        copyFrom(bag, true);
+    public void copyFrom(DoubleBag from) {
+        copyFrom(from, true);
     }
 
     @Override
-    public void copyFrom(DoubleBag bag, boolean clearExceeding) {
-        if (buffer.length < bag.buffer.length)
-            buffer = new double[bag.buffer.length];
-        System.arraycopy(bag.buffer, 0, buffer, 0, bag.buffer.length);
-        if (clearExceeding && buffer.length > bag.buffer.length) {
+    public void copyFrom(DoubleBag from, boolean clearExceeding) {
+        copyFrom(from, from.buffer.length, clearExceeding);
+    }
+
+    @Override
+    public void copyFrom(DoubleBag from, int length) {
+        copyFrom(from, length, true);
+    }
+
+    @Override
+    public void copyFrom(DoubleBag from, int length, boolean clearExceeding) {
+        copyFrom(from, 0, length, clearExceeding);
+    }
+
+    @Override
+    public void copyFrom(DoubleBag from, int fromOffset, int length) {
+        copyFrom(from, fromOffset, length, true);
+    }
+
+    @Override
+    public void copyFrom(DoubleBag from, int fromOffset, int length, boolean clearExceeding) {
+        if (buffer.length < length)
+            buffer = new double[length];
+        // Maximum number of elements that can be copied from the given buffer
+        int copyLength = Math.min(length, from.buffer.length - fromOffset);
+        System.arraycopy(from.buffer, fromOffset, buffer, 0, copyLength);
+        if (clearExceeding && buffer.length > copyLength) {
             double[] buffer = this.buffer;
-            for (int i = bag.buffer.length, n = buffer.length; i < n; i++)
+            for (int i = copyLength, n = buffer.length; i < n; i++)
+                buffer[i] = 0d;
+        }
+    }
+
+    @Override
+    public void copyPartFrom(DoubleBag from, int fromOffset, int toOffset, int length) {
+        ensureCapacity(toOffset + length);
+        // Maximum number of elements that can be copied from the given buffer
+        int maxLength = from.buffer.length - fromOffset;
+        System.arraycopy(from.buffer, fromOffset, buffer, toOffset, Math.min(length, maxLength));
+        if (maxLength < length) {
+            double[] buffer = this.buffer;
+            for (int i = toOffset + maxLength, n = toOffset + length; i < n; i++)
                 buffer[i] = 0d;
         }
     }

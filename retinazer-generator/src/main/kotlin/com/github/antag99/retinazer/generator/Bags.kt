@@ -139,18 +139,53 @@ ${
     }
 
     @Override
-    public void copyFrom($genericBagName bag) {
-        copyFrom(bag, true);
+    public void copyFrom($genericBagName from) {
+        copyFrom(from, true);
     }
 
     @Override
-    public void copyFrom($genericBagName bag, boolean clearExceeding) {
-        if (buffer.length < bag.buffer.length)
-            buffer = new $rawTypeName[bag.buffer.length];
-        System.arraycopy(bag.buffer, 0, buffer, 0, bag.buffer.length);
-        if (clearExceeding && buffer.length > bag.buffer.length) {
+    public void copyFrom($genericBagName from, boolean clearExceeding) {
+        copyFrom(from, from.buffer.length, clearExceeding);
+    }
+
+    @Override
+    public void copyFrom($genericBagName from, int length) {
+        copyFrom(from, length, true);
+    }
+
+    @Override
+    public void copyFrom($genericBagName from, int length, boolean clearExceeding) {
+        copyFrom(from, 0, length, clearExceeding);
+    }
+
+    @Override
+    public void copyFrom($genericBagName from, int fromOffset, int length) {
+        copyFrom(from, fromOffset, length, true);
+    }
+
+    @Override
+    public void copyFrom($genericBagName from, int fromOffset, int length, boolean clearExceeding) {
+        if (buffer.length < length)
+            buffer = new $rawTypeName[length];
+        // Maximum number of elements that can be copied from the given buffer
+        int copyLength = Math.min(length, from.buffer.length - fromOffset);
+        System.arraycopy(from.buffer, fromOffset, buffer, 0, copyLength);
+        if (clearExceeding && buffer.length > copyLength) {
             $rawTypeName[] buffer = this.buffer;
-            for (int i = bag.buffer.length, n = buffer.length; i < n; i++)
+            for (int i = copyLength, n = buffer.length; i < n; i++)
+                buffer[i] = $defaultValue;
+        }
+    }
+
+    @Override
+    public void copyPartFrom($genericBagName from, int fromOffset, int toOffset, int length) {
+        ensureCapacity(toOffset + length);
+        // Maximum number of elements that can be copied from the given buffer
+        int maxLength = from.buffer.length - fromOffset;
+        System.arraycopy(from.buffer, fromOffset, buffer, toOffset, Math.min(length, maxLength));
+        if (maxLength < length) {
+            $rawTypeName[] buffer = this.buffer;
+            for (int i = toOffset + maxLength, n = toOffset + length; i < n; i++)
                 buffer[i] = $defaultValue;
         }
     }
@@ -475,26 +510,141 @@ ${
 
     @Test
     public void testCopyFrom() {
+        // Test copyFrom(bag) and copyFrom(bag, clearExceeding)
         $genericBagName bag0, bag1;
+        $genericTypeName e0 = $testValue, e1 = $testValue, e2 = $testValue, e3 = $testValue;
 
         bag0 = new $genericBagName();
-        bag0.set(0, $testValue);
-        bag0.set(5, $testValue);
-
+        bag0.set(0, e0);
+        bag0.set(3, e1);
+        bag0.set(9, e2);
         bag1 = new $genericBagName();
-        bag1.set(9, $testValue);
-
-        bag1.copyFrom(bag0, false);
-        assertNotEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
-        assertNotEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
-        assertNotEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(9));
-
         bag1.copyFrom(bag0);
-        assertNotEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
-        assertNotEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
+        assertEquals(($wrapperTypeName) e0, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) e2, ($wrapperTypeName) bag1.get(9));
+        bag1 = new $genericBagName();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, false);
+        assertEquals(($wrapperTypeName) e0, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) e2, ($wrapperTypeName) bag1.get(9));
+        assertEquals(($wrapperTypeName) e3, ($wrapperTypeName) bag1.get(53));
+        bag1 = new $genericBagName();
+        bag1.set(53, e3);
+        bag1.copyFrom(bag0, true);
+        assertEquals(($wrapperTypeName) e0, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) e2, ($wrapperTypeName) bag1.get(9));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(53));
+
+        // Test copyFrom(bag, length) and copyFrom(bag, length, clearExceeding)
+        bag0 = new $genericBagName();
+        bag0.set(4, e0);
+        bag0.set(7, e1);
+        bag1 = new $genericBagName();
+        bag1.copyFrom(bag0, 3);
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(1));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(2));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(4));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(6));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(7));
+        bag1 = new $genericBagName();
+        bag1.copyFrom(bag0, 5);
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(1));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(2));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) e0, ($wrapperTypeName) bag1.get(4));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(6));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(7));
+        bag1 = new $genericBagName();
+        bag1.set(8, e2);
+        bag1.copyFrom(bag0, 8, true);
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(1));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(2));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) e0, ($wrapperTypeName) bag1.get(4));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(6));
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) bag1.get(7));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(8));
         assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(9));
 
-        bag0.copyFrom(bag1);
+        // Test copyFrom(bag, fromOffset, length) and copyFrom(bag, fromOffset, length, clearExceeding)
+        bag0 = new $genericBagName();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(6, e2);
+        bag1 = new $genericBagName();
+        bag1.copyFrom(bag0, 3, 2);
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) bag1.get(1));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(2));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(4));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(6));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(7));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(8));
+        bag0 = new $genericBagName();
+        bag0.set(0, e0);
+        bag0.set(4, e1);
+        bag0.set(10, e2);
+        bag1 = new $genericBagName();
+        bag1.set(7, e3);
+        bag1.copyFrom(bag0, 3, 2, false);
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(0));
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) bag1.get(1));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(2));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(3));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(4));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(5));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(6));
+        assertEquals(($wrapperTypeName) e3, ($wrapperTypeName) bag1.get(7));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(8));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(9));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) bag1.get(10));
+    }
+
+    @Test
+    public void testCopyPartFrom() {
+        $genericBagName b0, b1;
+        $genericTypeName e0 = $testValue, e1 = $testValue, e2 = $testValue, e3 = $testValue;
+        b0 = new $genericBagName();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new $genericBagName();
+        b1.set(0, e3);
+        b1.set(33, e0);
+        b1.copyPartFrom(b0, 14, 1, 33);
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) b1.get(1));
+        assertEquals(($wrapperTypeName) e2, ($wrapperTypeName) b1.get(8));
+        assertEquals(($wrapperTypeName) e3, ($wrapperTypeName) b1.get(0));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(32));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(33));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(34));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(35));
+        b0 = new $genericBagName();
+        b0.set(5, e0);
+        b0.set(14, e1);
+        b0.set(21, e2);
+        b1 = new $genericBagName();
+        b1.set(0, e3);
+        b1.copyPartFrom(b0, 14, 1, 8);
+        assertEquals(($wrapperTypeName) e1, ($wrapperTypeName) b1.get(1));
+        assertEquals(($wrapperTypeName) e2, ($wrapperTypeName) b1.get(8));
+        assertEquals(($wrapperTypeName) e3, ($wrapperTypeName) b1.get(0));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(32));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(33));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(34));
+        assertEquals(($wrapperTypeName) $defaultValue, ($wrapperTypeName) b1.get(35));
     }
 }
 """
