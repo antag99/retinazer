@@ -1,13 +1,13 @@
 # Retinazer
 [![Build Status][build_badge]][build]
 [![Coverage Status][coverage_badge]][coverage]
-[![License][license_badge]][license]
-[![Join the chat at https://gitter.im/antag99/retinazer][gitter_badge]][gitter]
 [![Download][bintray_badge]][bintray]
+[![Join the chat at https://gitter.im/antag99/retinazer][gitter_badge]][gitter]
+
+[![GNU Lesser General Public License][lgpl_logo]][lgpl]
 
 Retinazer is an implementation of the [entity-component-system][ecs] design
-pattern in Java. Check out the source code for documentation; or help me set up
-the [wiki](https://github.com/antag99/retinazer/wiki).
+pattern in Java.
 
 ## Using retinazer in your project
 Head over to [bintray](https://bintray.com/antag99/maven/retinazer/view)
@@ -48,19 +48,20 @@ dependencies {
 Snapshot builds can be obtained via `https://jitpack.io/` using `-SNAPSHOT` as
 version.
 
-## Contributing
-Contributions are welcome, but make sure to follow the [contribution guidelines](CONTRIBUTING.md).
-Also, if you plan to implement a new major feature, please open an issue first
-so I can provide input.
+## License
+The latest version of Retinazer is available under the GNU Lesser General
+Public License. `85350a7fa951666bc7e47713129dca6ce601813d` and earlier
+revisions are available under the MIT license. The range `2015-2016` is used in
+source file headers to denote the years within that range, inclusively.
 
 [build]: https://travis-ci.org/antag99/retinazer
 [build_badge]: https://travis-ci.org/antag99/retinazer.svg?branch=master
 [coverage]: https://coveralls.io/github/antag99/retinazer?branch=master
 [coverage_badge]: https://coveralls.io/repos/antag99/retinazer/badge.svg?branch=master&service=github
-[license]: http://choosealicense.com/licenses/mit/
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[gitter]: https://gitter.im/antag99/retinazer
-[gitter_badge]: https://img.shields.io/badge/GITTER-JOIN_CHAT_%E2%86%92-1dce73.svg
 [bintray]: https://bintray.com/antag99/maven/retinazer/_latestVersion
 [bintray_badge]: https://api.bintray.com/packages/antag99/maven/retinazer/images/download.svg
+[gitter]: https://gitter.im/antag99/retinazer
+[gitter_badge]: https://img.shields.io/badge/GITTER-JOIN_CHAT_%E2%86%92-1dce73.svg
+[lgpl]: https://www.gnu.org/copyleft/lesser.html
+[lgpl_logo]: https://www.gnu.org/graphics/lgplv3-147x51.png
 [ecs]: https://en.wikipedia.org/wiki/Entity_component_system

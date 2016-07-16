@@ -1,59 +1,33 @@
+/*******************************************************************************
+ * Retinazer, an entity-component-system framework for Java
+ *
+ * Copyright (C) 2015-2016 Anton Gustafsson
+ *
+ * This file is part of Retinazer.
+ *
+ * Retinazer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Retinazer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Retinazer.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package com.github.antag99.retinazer;
 
 import org.junit.Test;
 
 import com.github.antag99.retinazer.component.TagA;
-import com.github.antag99.retinazer.util.Mask;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class EntitySetTest {
-    public static final class TestEntitySetListener implements EntityListener {
-        public Mask inserted = new Mask();
-        public Mask removed = new Mask();
-        public int insertedInvocations = 0;
-        public int removedInvocations = 0;
-
-        @Override
-        public void inserted(EntitySet entities) {
-            insertedInvocations++;
-            inserted.or(entities.getMask());
-        }
-
-        @Override
-        public void removed(EntitySet entities) {
-            removedInvocations++;
-            removed.or(entities.getMask());
-        }
-
-        public void verifyInserted(int... entities) {
-            Mask mask = new Mask();
-            for (int e : entities)
-                mask.set(e);
-            assertEquals(mask, inserted);
-            inserted.clear();
-        }
-
-        public void verifyRemoved(int... entities) {
-            Mask mask = new Mask();
-            for (int e : entities)
-                mask.set(e);
-            assertEquals(mask, removed);
-            removed.clear();
-        }
-
-        public void verifyInsertedInvocations(int count) {
-            assertEquals(count, insertedInvocations);
-            insertedInvocations = 0;
-        }
-
-        public void verifyRemovedInvocations(int count) {
-            assertEquals(count, removedInvocations);
-            removedInvocations = 0;
-        }
-    }
-
     @Test
     public void testIndices() {
         Engine engine = new Engine(new EngineConfig());

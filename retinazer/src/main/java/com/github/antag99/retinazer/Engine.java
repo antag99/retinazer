@@ -1,23 +1,22 @@
 /*******************************************************************************
- * Copyright (C) 2015 Anton Gustafsson
+ * Retinazer, an entity-component-system framework for Java
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Copyright (C) 2015-2016 Anton Gustafsson
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * This file is part of Retinazer.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Retinazer is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Retinazer is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Retinazer.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package com.github.antag99.retinazer;
 
@@ -29,7 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.antag99.retinazer.ComponentState.CopyHandler;
 import com.github.antag99.retinazer.EngineConfig.EntitySystemRegistration;
+import com.github.antag99.retinazer.util.Bag;
+import com.github.antag99.retinazer.util.Experimental;
 
 /**
  * Engine is the core class of retinazer; it manages all active entities,
@@ -40,6 +42,7 @@ public final class Engine {
     private final EntitySystem[] systems;
     private final Map<Class<? extends EntitySystem>, EntitySystem> systemsByType;
 
+    final EngineStateBase state;
     final EntityManager entityManager;
     final ComponentManager componentManager;
     final FamilyManager familyManager;
@@ -63,6 +66,23 @@ public final class Engine {
         componentManager = new ComponentManager(this, config);
         familyManager = new FamilyManager(this, config);
         wireManager = new WireManager(this, config);
+        state = new EngineStateBase(this, entityManager.entities, new Bag<ComponentStateBase<?>>(), 0) {
+            @Override
+            public void copyFrom(EngineState other, CopyHandler handler) {
+                if (engine.update) {
+                    throw new IllegalStateException("Cannot use engine.getState()"
+                            + ".copyFrom(...) inside of engine.update()");
+                }
+
+                super.copyFrom(other, handler);
+
+                entityManager.remove.clear();
+                entityManager.removeQueue.clear();
+
+                dirty = true;
+                flush();
+            }
+        };
 
         List<EntitySystemRegistration> systemRegistrations = new ArrayList<>(config.systems);
 
@@ -96,20 +116,17 @@ public final class Engine {
         flush();
     }
 
+    @Experimental
+    public EngineState getState() {
+        return state;
+    }
+
     public void wire(Object object) {
         wireManager.wire(object);
     }
 
     public void unwire(Object object) {
         wireManager.unwire(object);
-    }
-
-    public void addEntityListener(EntityListener entityListener) {
-        getFamily(new FamilyConfig()).addListener(entityListener);
-    }
-
-    public void removeEntityListener(EntityListener entityListener) {
-        getFamily(new FamilyConfig()).removeListener(entityListener);
     }
 
     /**
@@ -156,7 +173,7 @@ public final class Engine {
         update = false;
     }
 
-    private void flush() {
+    void flush() {
         while (dirty) {
             dirty = false;
 
