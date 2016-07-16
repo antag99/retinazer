@@ -19,6 +19,7 @@
   - Introduced `CharBag`
 - Removed `Mapper.add(int, Component)`, `create` should be used instead
 - `Mask.set(Mask/long[])` renamed to `copyFrom`
+- `Engine.getSystems()` returns `EntitySystem[]` instead of `Iterable<EntitySystem>`
 - Fix: `ByteBag` implements `ensureCapacity(int)`
 - Fix: `Bag.ensureCapacity(int)` throws `NegativeArraySizeException` if `capacity` is negative.
 

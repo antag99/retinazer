@@ -22,6 +22,7 @@
 package com.github.antag99.retinazer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -267,8 +268,8 @@ public final class Engine {
      *
      * @return all systems registered during configuration of the engine.
      */
-    public Iterable<EntitySystem> getSystems() {
-        return systemsByType.values();
+    public EntitySystem[] getSystems() {
+        return Arrays.copyOf(systems, systems.length);
     }
 
     /**
