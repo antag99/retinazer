@@ -45,7 +45,7 @@ public final class EngineConfig {
         wireResolvers.add(new DefaultWireResolver());
     }
 
-    List<EntitySystemRegistration> systems = new ArrayList<>();
+    List<EntitySystemRegistration> registry = new ArrayList<>();
     List<WireResolver> wireResolvers = new ArrayList<>();
 
     /**
@@ -74,13 +74,13 @@ public final class EngineConfig {
         Class<? extends EntitySystem> systemType = system.getClass();
 
         for (int i = 0, n = systems.size(); i < n; i++) {
-            if (systems.get(i).system.getClass() == systemType) {
+            if (registry.get(i).system.getClass() == systemType) {
                 throw new IllegalArgumentException(
                         "System of type " + systemType.getName() + " has already been registered");
             }
         }
 
-        systems.add(new EntitySystemRegistration(system, priority));
+        registry.add(new EntitySystemRegistration(system, priority));
         return this;
     }
 
