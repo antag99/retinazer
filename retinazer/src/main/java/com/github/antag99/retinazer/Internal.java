@@ -24,6 +24,7 @@ final class Internal {
     private Internal() {
     }
 
+    // sneaky throw a la Lombok
     @SuppressWarnings("unchecked")
     private static <T extends Throwable> void doSneakyThrow(Throwable ex) throws T {
         throw (T) ex;
